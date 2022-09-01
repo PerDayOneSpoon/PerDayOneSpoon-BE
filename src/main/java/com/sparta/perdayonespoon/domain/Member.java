@@ -19,7 +19,7 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column
     private String Email;
 
     @JsonIgnore
@@ -32,6 +32,8 @@ public class Member {
     @Column(nullable = false, unique = true)
     private String socialId;
 
+    private String socialCode;
+
     @Column
     private String profileImage;
 
@@ -39,9 +41,10 @@ public class Member {
     private Authority authority;
 
     @Builder
-    public Member(String email, String password, String nickname, String socialId,String profileImage, Authority authority) {
+    public Member(String email, String password,String socialCode, String nickname, String socialId,String profileImage, Authority authority) {
         this.Email = email;
         this.password = password;
+        this.socialCode = socialCode;
         this.nickname = nickname;
         this.profileImage = profileImage;
         this.socialId = socialId;

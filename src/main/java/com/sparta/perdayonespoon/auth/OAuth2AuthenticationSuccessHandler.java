@@ -1,6 +1,5 @@
 package com.sparta.perdayonespoon.auth;
 
-import com.sparta.perdayonespoon.domain.OAuth2UserInfo;
 import com.sparta.perdayonespoon.domain.ProviderType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;

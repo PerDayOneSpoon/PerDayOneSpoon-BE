@@ -3,8 +3,11 @@ package com.sparta.perdayonespoon.domain.dto.response;
 import com.sparta.perdayonespoon.domain.Authority;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 @Builder
 public class MemberResponseDto {
     private Long id;

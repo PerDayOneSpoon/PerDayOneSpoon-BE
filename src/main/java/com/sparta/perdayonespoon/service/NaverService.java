@@ -13,8 +13,10 @@ import com.sparta.perdayonespoon.domain.dto.response.MemberResponseDto;
 import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.jwt.TokenProvider;
+import com.sparta.perdayonespoon.mapper.MemberMapper;
 import com.sparta.perdayonespoon.repository.MemberRepository;
 import com.sparta.perdayonespoon.repository.RefreshTokenRepository;
+import com.sparta.perdayonespoon.util.GenerateHeader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -61,17 +63,18 @@ public class NaverService {
     public ResponseEntity login(String code,String state) {
 
         OauthToken oauthToken = getAccessToken(code,state);
+
         Member member = saveUser(oauthToken.getAccess_token());
         // 토큰발급
         TokenDto tokenDto = generateToken(member);
 
         // 리턴할 헤더 제작
-        HttpHeaders headers = generateResponse(tokenDto);
+        HttpHeaders httpHeaders = GenerateHeader.getHttpHeaders(tokenDto);
 
         // 리턴할 바디 제작
-        MemberResponseDto memberResponseDto = convertDto(member); // 추후 리팩토링 예정 -> 이거는 맵스트럭트로 리팩토링할예정
+        MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member);
 
-        return ResponseEntity.ok().headers(headers).body(memberResponseDto);
+        return ResponseEntity.ok().headers(httpHeaders).body(memberResponseDto);
     }
 
     private OauthToken getAccessToken(String code,String state) {
@@ -102,14 +105,13 @@ public class NaverService {
     private Member saveUser(String access_token) {
         NaverProfile profile = findProfile(access_token);
 
-        System.out.println(profile);
-
         //(2)
         Optional<Member> checkmember = memberRepository.findBySocialId(profile.getResponse().getId());
 
         //(3)
         if(checkmember.isEmpty()) {
             Member member = Member.builder()
+                    .socialCode(UUID.randomUUID().toString().substring(0,5))
                     .socialId(profile.getResponse().getId())
                     .nickname(profile.getResponse().getName())
                     .email(profile.getResponse().getEmail())
@@ -126,8 +128,6 @@ public class NaverService {
 
     private NaverProfile findProfile(String token) {
 
-        System.out.println(token);
-
         //(1-3)
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token); //(1-4)
@@ -140,10 +140,6 @@ public class NaverService {
         //(1-6)
         // Http 요청 (POST 방식) 후, response 변수에 응답을 받음
         ResponseEntity<String>  naverProfileResponse = restTemplate.postForEntity(NAVER_SNS_User_URL,googleProfileRequest,String.class);
-
-        System.out.println("-------------------");
-        System.out.println(naverProfileResponse);
-        System.out.println("-------------------");
 
         //(1-7)
         ObjectMapper objectMapper = new ObjectMapper();
@@ -170,25 +166,5 @@ public class NaverService {
 
         refreshTokenRepository.save(refreshToken);
         return tokenDto;
-    }
-
-    private HttpHeaders generateResponse(TokenDto tokenDto){
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + tokenDto.getAccessToken());
-        headers.add("Refresh-Token", tokenDto.getRefreshToken());
-        headers.add("Access-Token-Expire-Time", String.valueOf(tokenDto.getAccessTokenExpiresIn()));
-        return headers;
-    }
-
-    private MemberResponseDto convertDto(Member member) {
-        return MemberResponseDto.builder()
-                .id(member.getId())
-                .socialCode(member.getSocialId().substring(0,5)+member.getId())
-                .socialId(member.getSocialId())
-                .authority(member.getAuthority())
-                .socialEmail(member.getEmail())
-                .profileImage(member.getProfileImage())
-                .nickname(member.getNickname())
-                .build();
     }
 }

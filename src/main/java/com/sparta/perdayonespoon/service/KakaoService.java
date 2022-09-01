@@ -12,12 +12,13 @@ import com.sparta.perdayonespoon.domain.dto.response.MemberResponseDto;
 import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.jwt.TokenProvider;
+import com.sparta.perdayonespoon.mapper.MemberMapper;
 import com.sparta.perdayonespoon.repository.MemberRepository;
 import com.sparta.perdayonespoon.repository.RefreshTokenRepository;
+import com.sparta.perdayonespoon.util.GenerateHeader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -73,15 +74,15 @@ public class KakaoService {
         TokenDto tokenDto = generateToken(member);
 
         // 리턴할 헤더 제작
-        HttpHeaders headers = generateResponse(tokenDto);
+        HttpHeaders httpHeaders = GenerateHeader.getHttpHeaders(tokenDto);
 
         // 리턴할 바디 제작
-        MemberResponseDto memberResponseDto = convertDto(member); // 추후 리팩토링 예정 -> 이거는 맵스트럭트로 리팩토링할예정
+        MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member);
 
-        return ResponseEntity.ok().headers(headers).body(memberResponseDto);
+        return ResponseEntity.ok().headers(httpHeaders).body(memberResponseDto);
     }
 
-    private OauthToken getAccessToken(String code) {
+    public OauthToken getAccessToken(String code) {
         //(3)
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -118,10 +119,8 @@ public class KakaoService {
     @Transactional
     public Member saveUser(String access_token) {
         KakaoProfile profile = findProfile(access_token);
-        System.out.println(profile);
         //(2)
         Optional<Member> checkmember = memberRepository.findBySocialId(profile.getId());
-
         //(3)
         if(checkmember.isEmpty()) {
             Member member = Member.builder()
@@ -132,12 +131,9 @@ public class KakaoService {
                     .authority(Authority.ROLE_USER)
                     .password(passwordEncoder.encode(UUID.randomUUID().toString()))
                     .build();
-
             return memberRepository.save(member);
         }
-
         return checkmember.get();
-
     }
 
     private KakaoProfile findProfile(String token) {
@@ -168,7 +164,7 @@ public class KakaoService {
         return kakaoProfile;
     }
 
-    private TokenDto generateToken(Member member) {
+    public TokenDto generateToken(Member member) {
         Principaldetail principaldetail = new Principaldetail(member);
         Authentication authentication = new UsernamePasswordAuthenticationToken(principaldetail, null, principaldetail.getAuthorities());
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
@@ -180,24 +176,5 @@ public class KakaoService {
 
         refreshTokenRepository.save(refreshToken);
         return tokenDto;
-    }
-    private HttpHeaders generateResponse(TokenDto tokenDto){
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + tokenDto.getAccessToken());
-        headers.add("Refresh-Token", tokenDto.getRefreshToken());
-        headers.add("Access-Token-Expire-Time", String.valueOf(tokenDto.getAccessTokenExpiresIn()));
-        return headers;
-    }
-
-    private MemberResponseDto convertDto(Member member) {
-        return MemberResponseDto.builder()
-                .id(member.getId())
-                .socialCode(member.getSocialId().substring(0,5)+member.getId())
-                .socialId(member.getSocialId())
-                .authority(member.getAuthority())
-                .socialEmail(member.getEmail())
-                .profileImage(member.getProfileImage())
-                .nickname(member.getNickname())
-                .build();
     }
 }

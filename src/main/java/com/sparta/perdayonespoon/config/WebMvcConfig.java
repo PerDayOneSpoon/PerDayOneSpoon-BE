@@ -11,9 +11,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry
-                .addMapping("/**")
-//                .allowedOrigins("*")
+        registry.addMapping("/**")
                 .allowedOrigins("*")
                 .allowedMethods(
                         HttpMethod.GET.name(),
@@ -23,11 +21,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         HttpMethod.PATCH.name(),
                         HttpMethod.DELETE.name(),
                         HttpMethod.OPTIONS.name())
-//                .allowedOrigins("http://**")
-//                .allowedOrigins("https://**")
-//                .allowedMethods("GET", "POST", "HEAD", "PUT", "DELETE", "OPTIONS", "PATCH")
-                .allowedHeaders("Authorization , Refresh-Token")
-                .exposedHeaders("Authorization , Refresh-Token")
+                .allowedHeaders("*")
+                .exposedHeaders("*")
                 .maxAge(3600L);
 //
 //        .allowedHeaders(HttpHeaders.AUTHORIZATION, HttpHeaders.CONTENT_TYPE, "accessToken", "CorrelationId", "source")

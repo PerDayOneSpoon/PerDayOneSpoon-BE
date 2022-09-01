@@ -12,8 +12,10 @@ import com.sparta.perdayonespoon.domain.dto.response.MemberResponseDto;
 import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.jwt.TokenProvider;
+import com.sparta.perdayonespoon.mapper.MemberMapper;
 import com.sparta.perdayonespoon.repository.MemberRepository;
 import com.sparta.perdayonespoon.repository.RefreshTokenRepository;
+import com.sparta.perdayonespoon.util.GenerateHeader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -26,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
 import java.util.Optional;
 import java.util.UUID;
 
@@ -62,18 +63,19 @@ public class GoogleService {
         // 인가코드로 토큰받기
         OauthToken oauthToken = getAccessToken(code);
 
+        // 토큰으로 사용자 정보 요청
         Member member = saveUser(oauthToken.getAccess_token());
 
-        // 토큰발급
+        // 사용자 정보를 토대로 토큰발급
         TokenDto tokenDto = generateToken(member);
 
         // 리턴할 헤더 제작
-        HttpHeaders headers = generateResponse(tokenDto);
+        HttpHeaders httpHeaders = GenerateHeader.getHttpHeaders(tokenDto);
 
         // 리턴할 바디 제작
-        MemberResponseDto memberResponseDto = convertDto(member); // 추후 리팩토링 예정 -> 이거는 맵스트럭트로 리팩토링할예정
+        MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member);
 
-        return ResponseEntity.ok().headers(headers).body(memberResponseDto);
+        return ResponseEntity.ok().headers(httpHeaders).body(memberResponseDto);
     }
     private OauthToken getAccessToken(String code) {
         HttpHeaders headers = new HttpHeaders();
@@ -139,8 +141,17 @@ public class GoogleService {
         HttpEntity<MultiValueMap<String, String>> googleProfileRequest =
                 new HttpEntity<>(headers);
 
-        //(1-6)
-        // Http 요청 (POST 방식) 후, response 변수에 응답을 받음
+//        String requestUrl = UriComponentsBuilder.fromHttpUrl(GOOGLE_SNS_User_URL)
+//                .queryParam("id_token", token).encode().toUriString();
+////        String resultJson = restTemplate.getForObject(requestUrl, String.class);
+//
+//        System.out.println(requestUrl);
+//        ResponseEntity<String> googleProfileResponse = restTemplate.getForEntity(requestUrl, String.class);
+
+//        System.out.println(googleProfileResponse);
+//
+//        (1-6)
+//         Http 요청 (POST 방식) 후, response 변수에 응답을 받음
         ResponseEntity<String> googleProfileResponse = restTemplate.postForEntity(GOOGLE_SNS_User_URL,googleProfileRequest,String.class);
 
         //(1-7)
@@ -168,25 +179,5 @@ public class GoogleService {
 
         refreshTokenRepository.save(refreshToken);
         return tokenDto;
-    }
-
-    private HttpHeaders generateResponse(TokenDto tokenDto){
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + tokenDto.getAccessToken());
-        headers.add("Refresh-Token", tokenDto.getRefreshToken());
-        headers.add("Access-Token-Expire-Time", String.valueOf(tokenDto.getAccessTokenExpiresIn()));
-        return headers;
-    }
-
-    private MemberResponseDto convertDto(Member member) {
-        return MemberResponseDto.builder()
-                .id(member.getId())
-                .socialCode(member.getSocialId().substring(0,5)+member.getId())
-                .socialId(member.getSocialId())
-                .authority(member.getAuthority())
-                .socialEmail(member.getEmail())
-                .profileImage(member.getProfileImage())
-                .nickname(member.getNickname())
-                .build();
     }
 }
