@@ -5,9 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpHeaders;
 
-import javax.servlet.http.HttpServletResponse;
-
-
 @Getter
 @NoArgsConstructor
 public class GenerateHeader {

@@ -85,14 +85,16 @@ dependencies {
     //이메일 인증
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 
-    //websocket
-//    implementation 'org.springframework.boot:spring-boot-starter-websocket'
-//    implementation 'org.webjars:sockjs-client:1.1.2'
-//    implementation 'org.webjars:stomp-websocket:2.3.3-1'
+//    websocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.webjars:sockjs-client:1.1.2'
+    implementation 'org.webjars:stomp-websocket:2.3.3-1'
 
 
     //aws 의존성
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.0.1.RELEASE'
+
+//    implementation "com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.6.1"
 
     // 스웨거
     implementation 'io.springfox:springfox-swagger2:2.9.2'
@@ -133,6 +135,7 @@ compileQuerydsl { // 이놈
     options.annotationProcessorPath = configurations.querydsl
 }
 
+// log42 랑 겹치는 것들 제외
 configurations {
     all {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'

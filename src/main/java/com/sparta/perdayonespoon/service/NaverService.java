@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.perdayonespoon.domain.Authority;
 import com.sparta.perdayonespoon.domain.Member;
 import com.sparta.perdayonespoon.domain.RefreshToken;
-import com.sparta.perdayonespoon.domain.auth.GoogleProfile;
 import com.sparta.perdayonespoon.domain.auth.NaverProfile;
 import com.sparta.perdayonespoon.domain.dto.OauthToken;
 import com.sparta.perdayonespoon.domain.dto.response.MemberResponseDto;
@@ -17,10 +16,12 @@ import com.sparta.perdayonespoon.mapper.MemberMapper;
 import com.sparta.perdayonespoon.repository.MemberRepository;
 import com.sparta.perdayonespoon.repository.RefreshTokenRepository;
 import com.sparta.perdayonespoon.util.GenerateHeader;
+import com.sparta.perdayonespoon.util.GenerateMsg;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -52,7 +53,7 @@ public class NaverService {
     @Value("${spring.security.oauth2.client.registration.naver.clientId}")
     private String NAVER_SNS_CLIENT_ID;
 
-    @Value("${spring.security.oauth2.client.registration.naver.redirect-uri}")
+    @Value("${spring.security.oauth2.client.registration.naver.redirectUri}")
     private String NAVER_SNS_CALLBACK_URL;
 
     @Value("${spring.security.oauth2.client.registration.naver.clientSecret}")
@@ -74,12 +75,13 @@ public class NaverService {
         // 리턴할 바디 제작
         MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member);
 
+        //리턴 바디 상태 코드 및 메세지 넣기
+        memberResponseDto.setTwoField(GenerateMsg.getMsg(HttpStatus.OK.value(),"로그인이 성공하셨습니다."));
+
         return ResponseEntity.ok().headers(httpHeaders).body(memberResponseDto);
     }
 
     private OauthToken getAccessToken(String code,String state) {
-            ObjectMapper mapper = new ObjectMapper();
-
             UriComponents builder = UriComponentsBuilder.fromHttpUrl(NAVER_SNS_LOGIN_URL)
                     .queryParam("grant_type", "authorization_code")
                     .queryParam("client_id", NAVER_SNS_CLIENT_ID)
@@ -104,10 +106,8 @@ public class NaverService {
 
     private Member saveUser(String access_token) {
         NaverProfile profile = findProfile(access_token);
-
         //(2)
         Optional<Member> checkmember = memberRepository.findBySocialId(profile.getResponse().getId());
-
         //(3)
         if(checkmember.isEmpty()) {
             Member member = Member.builder()
@@ -127,7 +127,6 @@ public class NaverService {
     }
 
     private NaverProfile findProfile(String token) {
-
         //(1-3)
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token); //(1-4)

@@ -16,10 +16,12 @@ import com.sparta.perdayonespoon.mapper.MemberMapper;
 import com.sparta.perdayonespoon.repository.MemberRepository;
 import com.sparta.perdayonespoon.repository.RefreshTokenRepository;
 import com.sparta.perdayonespoon.util.GenerateHeader;
+import com.sparta.perdayonespoon.util.GenerateMsg;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -74,6 +76,9 @@ public class GoogleService {
 
         // 리턴할 바디 제작
         MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member);
+
+        //리턴 바디 상태 코드 및 메세지 넣기
+        memberResponseDto.setTwoField(GenerateMsg.getMsg(HttpStatus.OK.value(),"로그인이 성공하셨습니다."));
 
         return ResponseEntity.ok().headers(httpHeaders).body(memberResponseDto);
     }

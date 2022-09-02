@@ -22,16 +22,17 @@ import java.util.List;
 @EnableSwagger2
 public class SwaggerConfig {  // Swagger
 
-    private static final String API_NAME = "Instagram API";
+    private static final String API_NAME = "하루한줌 프로젝트 API";
     private static final String API_VERSION = "0.0.1";
-    private static final String API_DESCRIPTION = "Instagram API 명세서";
+    private static final String API_DESCRIPTION = "하루한줌 프로젝트 API 명세서";
 
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
+                .useDefaultResponseMessages(false)
                 // 스웨거에서 헤더에 토큰을 받기위한 설정들 추가
-                .securityContexts(Arrays.asList(securityContext()))
-                .securitySchemes(Arrays.asList(apiKey()))
+                .securityContexts(Arrays.asList(securityContext(),securityContexts()))
+                .securitySchemes(Arrays.asList(accesstoken(),refreshtoken()))
                 // 스웨거에서 헤더에 토큰을 받기위한 설정들 추가
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.sparta.perdayonespoon"))  // Swagger를 적용할 클래스의 package명
@@ -54,6 +55,12 @@ public class SwaggerConfig {  // Swagger
                 .securityReferences(defaultAuth())
                 .build();
     }
+
+    private SecurityContext securityContexts() {
+        return SecurityContext.builder()
+                .securityReferences(defaultOauth())
+                .build();
+    }
     private List<SecurityReference> defaultAuth() {
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
@@ -61,7 +68,17 @@ public class SwaggerConfig {  // Swagger
         return Arrays.asList(new SecurityReference("Authorization", authorizationScopes));
     }
 
-    private ApiKey apiKey() {
+    private List<SecurityReference> defaultOauth() {
+        AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
+        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
+        authorizationScopes[0] = authorizationScope;
+        return Arrays.asList(new SecurityReference("refreshtoken", authorizationScopes));
+    }
+
+    private ApiKey accesstoken() {
         return new ApiKey("Authorization", "Authorization", "header");
+    }
+    private ApiKey refreshtoken() {
+        return new ApiKey("refreshtoken", "refreshtoken", "header");
     }
 }
