@@ -77,36 +77,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .apply(new JwtSecurityConfig(tokenProvider));
     }
-//
-//    /*
-//     * 쿠키 기반 인가 Repository
-//     * 인가 응답을 연계 하고 검증할 때 사용.
-//     * */
-//    @Bean
-//    public OAuth2AuthorizationRequestBasedOnCookieRepository oAuth2AuthorizationRequestBasedOnCookieRepository() {
-//        return new OAuth2AuthorizationRequestBasedOnCookieRepository();
-//    }
-//
-//    /*
-//     * Oauth 인증 성공 핸들러
-//     * */
-//    @Bean
-//    public OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler() {
-//        return new OAuth2AuthenticationSuccessHandler(
-//                tokenProvider,
-//                appProperties,
-//                userRefreshTokenRepository,
-//                oAuth2AuthorizationRequestBasedOnCookieRepository()
-//        );
-//    }
-//
-//    /*
-//     * Oauth 인증 실패 핸들러
-//     * */
-//    @Bean
-//    public OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler() {
-//        return new OAuth2AuthenticationFailureHandler(oAuth2AuthorizationRequestBasedOnCookieRepository());
-//    }
 
     private static final String[] PERMIT_URL_ARRAY = {
             /* swagger v2 */

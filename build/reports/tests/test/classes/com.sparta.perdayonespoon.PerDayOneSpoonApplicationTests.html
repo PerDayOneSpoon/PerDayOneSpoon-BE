@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - PerDayOneSpoonApplicationTests</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>PerDayOneSpoonApplicationTests</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/com.sparta.perdayonespoon.html">com.sparta.perdayonespoon</a> &gt; PerDayOneSpoonApplicationTests</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">1</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">0.152s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Tests</a>
+</li>
+<li>
+<a href="#tab1">Standard output</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">contextLoads()</td>
+<td class="success">0.152s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.5.3)
+
+2022-09-03 16:36:13.723  WARN 12724 --- [    Test worker] ory$DuplicateJsonObjectContextCustomizer : 
+
+Found multiple occurrences of org.json.JSONObject on the class path:
+
+	jar:file:/C:/Users/User/.gradle/caches/modules-2/files-2.1/org.json/json/20200518/41a767de4bde8f01d53856b905c49b2db8862f13/json-20200518.jar!/org/json/JSONObject.class
+	jar:file:/C:/Users/User/.gradle/caches/modules-2/files-2.1/com.vaadin.external.google/android-json/0.0.20131108.vaadin1/fa26d351fe62a6a17f5cda1287c1c6110dec413f/android-json-0.0.20131108.vaadin1.jar!/org/json/JSONObject.class
+
+You may wish to exclude one of them to ensure predictable runtime behavior
+
+2022-09-03 16:36:13.743  INFO 12724 --- [    Test worker] c.s.p.PerDayOneSpoonApplicationTests     : Starting PerDayOneSpoonApplicationTests using Java 11.0.16 on DESKTOP-4A7377S with PID 12724 (started by User in C:\Users\User\IdeaProjects\PerDayOneSpoon)
+2022-09-03 16:36:13.746  INFO 12724 --- [    Test worker] c.s.p.PerDayOneSpoonApplicationTests     : The following profiles are active: aws,credentials
+2022-09-03 16:36:18.004  INFO 12724 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
+2022-09-03 16:36:18.006  INFO 12724 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2022-09-03 16:36:18.265  INFO 12724 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 248 ms. Found 3 JPA repository interfaces.
+2022-09-03 16:36:18.281  INFO 12724 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
+2022-09-03 16:36:18.282  INFO 12724 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2022-09-03 16:36:18.301  INFO 12724 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.sparta.perdayonespoon.repository.ImageRepository. If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository.
+2022-09-03 16:36:18.303  INFO 12724 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.sparta.perdayonespoon.repository.MemberRepository. If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository.
+2022-09-03 16:36:18.304  INFO 12724 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.sparta.perdayonespoon.repository.RefreshTokenRepository. If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository.
+2022-09-03 16:36:18.304  INFO 12724 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 13 ms. Found 0 Redis repository interfaces.
+2022-09-03 16:36:19.338  INFO 12724 --- [    Test worker] o.h.j.i.u.LogHelper                      : HHH000204: Processing PersistenceUnitInfo [name: default]
+2022-09-03 16:36:19.413  INFO 12724 --- [    Test worker] o.h.Version                              : HHH000412: Hibernate ORM core version 5.4.32.Final
+2022-09-03 16:36:19.593  INFO 12724 --- [    Test worker] o.h.a.c.Version                          : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2022-09-03 16:36:19.735  INFO 12724 --- [    Test worker] c.z.h.HikariDataSource                   : HikariPool-1 - Starting...
+2022-09-03 16:36:19.947  INFO 12724 --- [    Test worker] c.z.h.HikariDataSource                   : HikariPool-1 - Start completed.
+2022-09-03 16:36:19.969  INFO 12724 --- [    Test worker] o.h.d.Dialect                            : HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+2022-09-03 16:36:20.759  INFO 12724 --- [    Test worker] p6spy                                    : #1662190580759 | took 1ms | statement | connection 1| url jdbc:h2:mem:testdb
+drop table if exists image CASCADE 
+drop table if exists image CASCADE ;
+2022-09-03 16:36:20.759  INFO 12724 --- [    Test worker] p6spy                                    : #1662190580759 | took 0ms | statement | connection 1| url jdbc:h2:mem:testdb
+drop table if exists member CASCADE 
+drop table if exists member CASCADE ;
+2022-09-03 16:36:20.760  INFO 12724 --- [    Test worker] p6spy                                    : #1662190580760 | took 0ms | statement | connection 1| url jdbc:h2:mem:testdb
+drop table if exists refresh_token CASCADE 
+drop table if exists refresh_token CASCADE ;
+2022-09-03 16:36:20.771  INFO 12724 --- [    Test worker] p6spy                                    : #1662190580771 | took 7ms | statement | connection 2| url jdbc:h2:mem:testdb
+create table image (id bigint generated by default as identity, primary key (id))
+create table image (id bigint generated by default as identity, primary key (id));
+2022-09-03 16:36:20.775  INFO 12724 --- [    Test worker] p6spy                                    : #1662190580775 | took 1ms | statement | connection 2| url jdbc:h2:mem:testdb
+create table member (id bigint generated by default as identity, email varchar(255), authority varchar(255), nickname varchar(255) not null, password varchar(255) not null, profile_image varchar(255), social_code varchar(255), social_id varchar(255) not null, primary key (id))
+create table member (id bigint generated by default as identity, email varchar(255), authority varchar(255), nickname varchar(255) not null, password varchar(255) not null, profile_image varchar(255), social_code varchar(255), social_id varchar(255) not null, primary key (id));
+2022-09-03 16:36:20.779  INFO 12724 --- [    Test worker] p6spy                                    : #1662190580779 | took 3ms | statement | connection 2| url jdbc:h2:mem:testdb
+create table refresh_token (rt_key varchar(255) not null, rt_value varchar(255), primary key (rt_key))
+create table refresh_token (rt_key varchar(255) not null, rt_value varchar(255), primary key (rt_key));
+2022-09-03 16:36:20.780  INFO 12724 --- [    Test worker] p6spy                                    : #1662190580780 | took 0ms | statement | connection 2| url jdbc:h2:mem:testdb
+alter table member add constraint UK_cg0m49ypu6gpkduabm79rb5fm unique (password)
+alter table member add constraint UK_cg0m49ypu6gpkduabm79rb5fm unique (password);
+2022-09-03 16:36:20.781  INFO 12724 --- [    Test worker] p6spy                                    : #1662190580780 | took 0ms | statement | connection 2| url jdbc:h2:mem:testdb
+alter table member add constraint UK_ghllwqgkdbwwp28ijrqih43nt unique (social_id)
+alter table member add constraint UK_ghllwqgkdbwwp28ijrqih43nt unique (social_id);
+2022-09-03 16:36:20.784  INFO 12724 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-09-03 16:36:20.794  INFO 12724 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2022-09-03 16:36:20.987  WARN 12724 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2022-09-03 16:36:22.104  INFO 12724 --- [    Test worker] o.s.b.a.h.H2ConsoleAutoConfiguration     : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
+2022-09-03 16:36:22.783  INFO 12724 --- [    Test worker] o.s.s.w.DefaultSecurityFilterChain       : Will secure Ant [pattern='/h2-console/**'] with []
+2022-09-03 16:36:22.783  INFO 12724 --- [    Test worker] o.s.s.w.DefaultSecurityFilterChain       : Will secure Ant [pattern='/favicon.ico'] with []
+2022-09-03 16:36:22.914  INFO 12724 --- [    Test worker] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
+2022-09-03 16:36:23.130  INFO 12724 --- [    Test worker] o.s.s.w.DefaultSecurityFilterChain       : Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2a6f3ac7, org.springframework.security.web.context.SecurityContextPersistenceFilter@255eadf5, org.springframework.security.web.header.HeaderWriterFilter@5d5ad1e2, org.springframework.web.filter.CorsFilter@68fe866b, org.springframework.security.web.authentication.logout.LogoutFilter@199dee18, com.sparta.perdayonespoon.jwt.JwtFilter@729feae8, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@5b1295c0, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@55d607b, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@283a5c2b, org.springframework.security.web.session.SessionManagementFilter@3b93d874, org.springframework.security.web.access.ExceptionTranslationFilter@5fb0c234, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@25ee6683]
+2022-09-03 16:36:23.607  WARN 12724 --- [    Test worker] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
+2022-09-03 16:36:24.343  INFO 12724 --- [    Test worker] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2022-09-03 16:36:24.368  INFO 12724 --- [    Test worker] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2022-09-03 16:36:24.405  INFO 12724 --- [    Test worker] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2022-09-03 16:36:24.590  INFO 12724 --- [    Test worker] c.s.p.PerDayOneSpoonApplicationTests     : Started PerDayOneSpoonApplicationTests in 11.278 seconds (JVM running for 12.997)
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="http://www.gradle.org">Gradle 7.5</a> at 2022. 9. 3. 오후 4:36:25</p>
+</div>
+</div>
+</body>
+</html>
