@@ -27,7 +27,7 @@ public class Member {
     private String Email;
 
     @JsonIgnore
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String password;
 
     @ApiModelProperty(example = "소셜 로그인에서 사용하는 유저의 닉네임")
