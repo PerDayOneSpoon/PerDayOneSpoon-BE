@@ -2,6 +2,9 @@
 
 name: Java CI with Gradle
 
+env:
+  JASYPT_PASSWORD: ${{jasypt.encryptor.password}}
+
 on:
   push:
     branches: [ "main" ]
