@@ -55,7 +55,7 @@ public class KakaoService {
     @Value("${spring.security.oauth2.client.registration.kakao.clientId}")
     private String KAKAO_SNS_CLIENT_ID;
 
-    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
+    @Value("${spring.security.oauth2.client.registration.kakao.redirectUri}")
     private String KAKAO_SNS_CALLBACK_URL;
 
     @Value("${spring.security.oauth2.client.registration.kakao.clientSecret}")

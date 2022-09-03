@@ -1,0 +1,144 @@
+spring:
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: ENC(N8D5myUsgLW3Jw2fffadWA==)
+    password:
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+
+
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://springboot-database.cslbgysopvvg.ap-northeast-2.rds.amazonaws.com:3306/instagram?serverTimezone=Asia/Seoul
+#    username: sparta22
+#    password: sparta22!
+#    hikari:
+#      pool-name: jpa-hikari-pool
+#      maximum-pool-size: 5
+#      jdbc-url: ${spring.datasource.url}
+#      username: ${spring.datasource.username}
+#      password: ${spring.datasource.password}
+#      driver-class-name: ${spring.datasource.driver-class-name}
+#      data-source-properties:
+#        rewriteBatchedStatements: true
+
+#  jpa:
+#    database-platform : org.hibernate.dialect.MySQL5Dialect
+#    database-platform: org.hibernate.dialect.H2Dialect
+#    generate-ddl: true
+#    hibernate:
+#      ddl-auto: create-drop
+
+  # Security OAuth
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: ENC(j/TV562vKzzuzFqdse3jX6/2qdK8B0lA7svNVS/QKg24H0jVc3Tr2aIYTTnqpodk+b+U6joKIAQufb2irvPJGlvS6Ky3SzhJYfDHJuRWL7ca9sk0pIhq/g==)
+            clientSecret: ENC(ylLBGIkbJT6yjNzCMqDdNQQ/GV9shnj7KFjKdexjjwvm83rpxQadGIaM/pgkNRe8)
+            redirectUri: ENC(8g4sjBt499fv1ynG1KVG2NA9rrOAmNF+DP7Qs0kE+HGLqZAWULpOYARwfZlUMUrhPNu7r2UkCVU=) # 로컬3000으로 되어있음 추후 변경예정
+            scope:
+              - email
+              - profile
+          naver:
+            clientId: ENC(X1qQUnnc4aZReD7rEpzxip1efXHEoBGfQAzAjtC9jFs=)  # 네이버 API 만들고 나서 얻는거 저장
+            clientSecret: ENC(ef0AgnGbej2sUOF2tGxv7Ssmq8RyeBN4)
+            clientAuthenticationMethod: post
+            authorizationGrantType: authorization_code
+            redirectUri: ENC(iGRH8mTD4nR3apRACsBQjQPtdx/5emfyEYjGicEhUZV15fKqChzF6c/VzhvDAoxK)
+            scope:
+              - nickname
+              - email
+              - profile_image
+            clientName: Naver
+          kakao:
+            clientId: ENC(Ku1bDDOU/ikyUN9GyL+t5CpAuqWFqfI4y/xeMURbBkLz+r+7rgvHX22D4iu+bxSn)
+            clientSecret: ENC(Wcc9FDYBfPNCGphyR8VzALZhGODjpLAQxdBTMg/amMdOL/iybFfjPqiSogK7nhGl)
+            clientAuthenticationMethod: post
+            authorizationGrantType: authorization_code
+            redirectUri: ENC(7kPNfdRRRzuNGOSYgMqnLbvbwbGnxZmR0QlFqi4198PY9rlCYnC0Ica3F0wMrS+m+IobyZPtSkE=)
+            scope:
+              - profile_nickname
+              - profile_image
+              - account_email
+            clientName: Kakao
+        # Provider ??
+        provider:
+          naver:
+            authorizationUri: https://nid.naver.com/oauth2.0/authorize
+            tokenUri: https://nid.naver.com/oauth2.0/token
+            userInfoUri: https://openapi.naver.com/v1/nid/me
+            userNameAttribute: response
+          kakao:
+            authorizationUri: https://kauth.kakao.com/oauth/authorize
+            tokenUri: https://kauth.kakao.com/oauth/token
+            userInfoUri: https://kapi.kakao.com/v2/user/me
+            userNameAttribute: id
+          google:
+            tokenUri: https://oauth2.googleapis.com/token
+            userInfoUri: "https://oauth2.googleapis.com/tokeninfo"
+
+
+  #elasticsearch: // ?????
+  #  host: 54.180.24.4
+  #  port: 8080
+
+  mvc:
+    path match:
+      matching-strategy: ant_path_matcher #swagger ??? ?? yml??
+
+  profiles:
+    include:
+      - aws
+      - credentials
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB
+      max-request-size: 20MB
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+    property:
+      prefix: ENC(
+      suffix: )
+
+logging:
+  level:
+    com.tutorial: debug
+
+# HS512 ????? ??? ??? ??? 512bit, ? 64byte ??? secret key? ???? ??.
+# Secret ?? ?? ???? Base64 ? ???? ? ?? (?? ???? ???? ??? ??? ??)
+# $ echo 'spring-boot-security-jwt-tutorial-jiwoon-spring-boot-security-jwt-tutorial' | base64
+jwt:
+  secret: ENC(gxx+m8sS0WVnpUP3aZdPUU0HkzsWJs1EwTV78lCMgmvnKDKBkPz0XCBCDDMuXwrrWJ08uhhOeOjAwXf//Uu7+sXA4JoYjZyl6WijpuqEbagih82YNwfemVQPX18ptje41TVzj5/3RPI/KiSpqD8ZXA==)
+
+
+cloud:
+  aws:
+    s3:
+      bucket: ENC(Ti4LG+bZq20l7ja40WiweWx6KVpc89HR)
+    region:
+      static: ap-northeast-2
+    credentials:
+      #            accessKey: 12341
+      #            secretKey: 12341
+
+      accessKey: ENC(3NuOC7J6CL4mUrVlexWkpJN/Z9q2RHPle7mudfEIqB0=)
+      secretKey: ENC(9O3WKWQvGe4VRZIzdZY5wRRLcyDGDPwSkTS5JDH+8tMoTPUuLn4oGDCp5p/vj9f0Vqz6SBrA45Y=)
+
+    stack:
+      auto: false
+
+
