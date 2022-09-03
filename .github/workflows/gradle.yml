@@ -32,6 +32,6 @@ jobs:
       
         
     - name: Build with Gradle
-      run: ./gradlew bootjar
+      run: ./gradlew build
       shell: bash
 
