@@ -15,9 +15,6 @@ permissions:
 
 jobs:
   build:
-    env:
-      JASYPT_PASSWORD: ${{jasypt.encryptor.password}}
-
     runs-on: ubuntu-latest
 
     steps:
