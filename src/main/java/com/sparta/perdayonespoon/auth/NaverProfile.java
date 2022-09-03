@@ -1,4 +1,4 @@
-package com.sparta.perdayonespoon.domain.auth;
+package com.sparta.perdayonespoon.auth;
 
 import lombok.Data;
 

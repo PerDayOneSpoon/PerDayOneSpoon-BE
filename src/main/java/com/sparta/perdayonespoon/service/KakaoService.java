@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.perdayonespoon.domain.Authority;
 import com.sparta.perdayonespoon.domain.Member;
 import com.sparta.perdayonespoon.domain.RefreshToken;
-import com.sparta.perdayonespoon.domain.auth.KakaoProfile;
+import com.sparta.perdayonespoon.auth.KakaoProfile;
 import com.sparta.perdayonespoon.domain.dto.OauthToken;
 import com.sparta.perdayonespoon.domain.dto.response.MemberResponseDto;
 import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
