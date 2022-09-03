@@ -2,8 +2,7 @@
 
 name: Java CI with Gradle
 
-env:
-  JASYPT_PASSWORD: ${{jasypt.encryptor.password}}
+
 
 on:
   push:
@@ -16,6 +15,8 @@ permissions:
 
 jobs:
   build:
+    env:
+      JASYPT_PASSWORD: ${{jasypt.encryptor.password}}
 
     runs-on: ubuntu-latest
 
