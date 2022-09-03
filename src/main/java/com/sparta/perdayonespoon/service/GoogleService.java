@@ -8,6 +8,7 @@ import com.sparta.perdayonespoon.domain.Member;
 import com.sparta.perdayonespoon.domain.RefreshToken;
 import com.sparta.perdayonespoon.domain.auth.GoogleProfile;
 import com.sparta.perdayonespoon.domain.dto.OauthToken;
+import com.sparta.perdayonespoon.domain.dto.ParamsDto;
 import com.sparta.perdayonespoon.domain.dto.response.MemberResponseDto;
 import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
@@ -17,6 +18,7 @@ import com.sparta.perdayonespoon.repository.MemberRepository;
 import com.sparta.perdayonespoon.repository.RefreshTokenRepository;
 import com.sparta.perdayonespoon.util.GenerateHeader;
 import com.sparta.perdayonespoon.util.GenerateMsg;
+import com.sparta.perdayonespoon.util.MultiValueMapConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -83,6 +85,7 @@ public class GoogleService {
         return ResponseEntity.ok().headers(httpHeaders).body(memberResponseDto);
     }
     private OauthToken getAccessToken(String code) {
+        ObjectMapper objectMapper = new ObjectMapper();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
@@ -102,7 +105,6 @@ public class GoogleService {
         //(6)
 
         //(7)
-        ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         OauthToken oauthToken = null;
         try {

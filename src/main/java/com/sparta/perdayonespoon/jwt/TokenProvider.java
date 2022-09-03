@@ -108,7 +108,6 @@ public class TokenProvider {
                 .nickname(claims.get(MEMBER_KEY).toString())
                 .build();
 
-
         Principaldetail principaldetail = new Principaldetail(member);
         // UserDetails 객체를 만들어서 Authentication 리턴
 //        UserDetails principal = new User(claims.getSubject(), "", authorities);
