@@ -66,17 +66,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/api/**").permitAll() // CORS설정 관련 security 열어주기
                 .antMatchers(PERMIT_URL_ARRAY).permitAll() // swagger사용을 위해 api 열기
-                .antMatchers(HttpMethod.GET,"/api/article/all").permitAll()
-                .antMatchers(HttpMethod.GET,"/api/article/{id}").permitAll()
                 .antMatchers("user/login/**").permitAll()
                 .antMatchers(HttpMethod.GET,"/user/login/kakao").permitAll()
                 .antMatchers(HttpMethod.GET,"/user/login/google").permitAll()
                 .antMatchers(HttpMethod.GET,"/user/login/naver").permitAll()
-                .antMatchers("/api/comment/**").permitAll()
 //                .antMatchers("/api/**").permitAll()
                 .anyRequest().authenticated()   // 나머지 API 는 전부 인증 필요
-
-
                 // spring security 동작 중 우리가 등록한 jwt 필터에서 tokenprovider를 사용할 수 있게 저용
                 // JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
                 .and()
