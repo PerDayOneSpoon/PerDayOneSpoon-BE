@@ -5,7 +5,6 @@ import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
 import com.sparta.perdayonespoon.service.GoogleService;
 import com.sparta.perdayonespoon.service.KakaoService;
 import com.sparta.perdayonespoon.service.NaverService;
-import com.sparta.perdayonespoon.util.GenerateHeader;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Nullable;
 //@Tag(name = "user", description = "사용자 API")
 @Api(tags="소셜로그인 REST API")
-@RequestMapping("user/login")
+@RequestMapping("/user/login")
 @RequiredArgsConstructor
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "*")
@@ -51,9 +50,11 @@ public class AuthController {
     })
     @GetMapping("/google") // (3)
     public ResponseEntity getgoogleLogin(@RequestParam("code") String code) { //(4)
+
+        System.out.println("구글0번로그인");
+        System.out.println(code);
         return googleService.login(code);
     }
-
     @ApiOperation(value = "네이버 로그인 API", notes = "네이버 로그인 하는 apI ")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "code", value = "서버로 넘겨주는 인가코드"),

@@ -30,6 +30,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -51,7 +54,7 @@ public class GoogleService {
     @Value("${spring.security.oauth2.client.registration.google.clientId}")
     private String GOOGLE_SNS_CLIENT_ID;
 
-    @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
+    @Value("${spring.security.oauth2.client.registration.google.redirectUri}")
     private String GOOGLE_SNS_CALLBACK_URL;
 
     @Value("${spring.security.oauth2.client.registration.google.clientSecret}")
@@ -83,25 +86,25 @@ public class GoogleService {
         return ResponseEntity.ok().headers(httpHeaders).body(memberResponseDto);
     }
     private OauthToken getAccessToken(String code) {
-        ObjectMapper objectMapper = new ObjectMapper();
+        String decodedCode = "";
+        decodedCode = java.net.URLDecoder.decode(code, StandardCharsets.UTF_8);
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         //(4)
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", "authorization_code");
         params.add("client_id", GOOGLE_SNS_CLIENT_ID);
+        params.add("client_secret", GOOGLE_SNS_CLIENT_SECRET);
+        params.add("code", decodedCode);
         params.add("redirect_uri", GOOGLE_SNS_CALLBACK_URL);
-        params.add("code", code);
-        params.add("client_secret", GOOGLE_SNS_CLIENT_SECRET); // 생략 가능!
-
+        params.add("grant_type", "authorization_code");
         //(5)
-        HttpEntity<MultiValueMap<String, String>> googleTokenRequest =
-                new HttpEntity<>(params, headers);
+        HttpEntity<MultiValueMap<String, String>> googleTokenRequest = new HttpEntity<>(params, headers);
 
         ResponseEntity<String> tokenResponse1 = restTemplate.postForEntity(GOOGLE_SNS_LOGIN_URL,googleTokenRequest,String.class);
         //(6)
-
+        ObjectMapper objectMapper = new ObjectMapper();
         //(7)
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         OauthToken oauthToken = null;
@@ -136,29 +139,15 @@ public class GoogleService {
     }
 
     private GoogleProfile findProfile(String token) {
-
         //(1-3)
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token); //(1-4)
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-
         //(1-5)
         HttpEntity<MultiValueMap<String, String>> googleProfileRequest =
                 new HttpEntity<>(headers);
 
-//        String requestUrl = UriComponentsBuilder.fromHttpUrl(GOOGLE_SNS_User_URL)
-//                .queryParam("id_token", token).encode().toUriString();
-////        String resultJson = restTemplate.getForObject(requestUrl, String.class);
-//
-//        System.out.println(requestUrl);
-//        ResponseEntity<String> googleProfileResponse = restTemplate.getForEntity(requestUrl, String.class);
-
-//        System.out.println(googleProfileResponse);
-//
-//        (1-6)
-//         Http 요청 (POST 방식) 후, response 변수에 응답을 받음
         ResponseEntity<String> googleProfileResponse = restTemplate.postForEntity(GOOGLE_SNS_User_URL,googleProfileRequest,String.class);
-
         //(1-7)
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

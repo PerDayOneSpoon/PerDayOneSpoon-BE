@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Api(tags="설정페이지 REST API")
-@RequestMapping("user/login")
+@RequestMapping("/user/set")
 @RequiredArgsConstructor
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "*")

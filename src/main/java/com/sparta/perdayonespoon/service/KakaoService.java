@@ -107,7 +107,6 @@ public class KakaoService {
         // 밑에 바꾼거 때매 그런가?
         ResponseEntity<String> tokenResponse1 = restTemplate.postForEntity(KAKAO_SNS_LOGIN_URL,kakaoTokenRequest,String.class);
         //(6)
-        System.out.println(tokenResponse1);
 
         //(7)
         ObjectMapper objectMapper = new ObjectMapper();

@@ -10,10 +10,11 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 
 @Api(tags="캘린더 페이지 REST API")
-@RequestMapping("api/calender")
+@RequestMapping("/api/calender")
 @RequiredArgsConstructor
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "*")
@@ -25,10 +26,11 @@ public class CalenderController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "API 정상 작동",response = MemberResponseDto.class,
                     responseHeaders = {@ResponseHeader(name = "Authorization", description = "accesstoken이 담기는 헤더의 이름", response = TokenDto.class),
-                            @ResponseHeader(name = "refreshtoken", description = "refreshtoken이 담기는 헤더의 이름", response = TokenDto.class)}),
+                                       @ResponseHeader(name = "refreshtoken", description = "refreshtoken이 담기는 헤더의 이름", response = TokenDto.class)}),
             @ApiResponse(code = 400, message = "Request타입 에러"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @ApiIgnore
     @GetMapping("/test")
     public Principaldetail getPrincipal(@AuthenticationPrincipal Principaldetail principaldetail){
         return principaldetail;
