@@ -15,12 +15,11 @@ spring:
 #    properties:
 #      hibernate:
 
-
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://database-1.cy6dpdsrdbon.ap-northeast-2.rds.amazonaws.com:3306/perdayonespoon?serverTimezone=Asia/Seoul
-    username: ENC(rPYyD8h+HZmWnQ/8wh/geg==)
-    password: ENC(4K3KHM0iJn5QytEo/0BUUZVW2FQy3aoD)
+    username: ENC(k3ytHzF66+V4OJw5PJPVAQ==)
+    password: ENC(K+pFW7XZvCdwCVQHJRt9BPLsxxbTquu8)
     hikari:
       pool-name: jpa-hikari-pool
       maximum-pool-size: 5
@@ -43,29 +42,33 @@ spring:
       client:
         registration:
           google:
-            clientId: ENC(j/TV562vKzzuzFqdse3jX6/2qdK8B0lA7svNVS/QKg24H0jVc3Tr2aIYTTnqpodk+b+U6joKIAQufb2irvPJGlvS6Ky3SzhJYfDHJuRWL7ca9sk0pIhq/g==)
-            clientSecret: ENC(ylLBGIkbJT6yjNzCMqDdNQQ/GV9shnj7KFjKdexjjwvm83rpxQadGIaM/pgkNRe8)
-            redirectUri: ENC(8g4sjBt499fv1ynG1KVG2NA9rrOAmNF+DP7Qs0kE+HGLqZAWULpOYARwfZlUMUrhPNu7r2UkCVU=) # 로컬3000으로 되어있음 추후 변경예정
+            clientId: ENC(g8WoHBYWBvmBHHmxw9e7DKQnkFzkPAK1jO6gnOAjeMFlDWV6/jSZDJI2CZP2mcURBBl+dOP+b5ZxlNrZ3GWTMvHCs678cdZcTVLlwjzgjkUe+8CP9b3TDw==)
+            clientSecret: ENC(iF2apuDhYP/qtvK5gjp9Jmd6530IvIqoQW32xgEoaXMMn/SIdpLMEObzfCvtaOCe)
+            redirectUri: ENC(SL7/IA7YeBHSn8shDMkVpiCdxnOufOQF75YDxXvTJxQzzTNP0wztG1G/2yJhT3K3)
             scope:
               - email
               - profile
+          facebook:
+            client-id: your-client-id
+            client-secret: your-client-secret
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
           naver:
-            clientId: ENC(X1qQUnnc4aZReD7rEpzxip1efXHEoBGfQAzAjtC9jFs=)  # 네이버 API 만들고 나서 얻는거 저장
-            clientSecret: ENC(ef0AgnGbej2sUOF2tGxv7Ssmq8RyeBN4)
+            clientId: ENC(19qhAMtVE+LkNN1JKjWJln0z/CaYPRVMS3rTboAsLeU=)  # 네이버 API 만들고 나서 얻는거 저장
+            clientSecret: ENC(EpBz3Sr0DuOzDqkuATljEMBPu5Jt6fgN)
             clientAuthenticationMethod: post
             authorizationGrantType: authorization_code
-            redirectUri: ENC(iGRH8mTD4nR3apRACsBQjQPtdx/5emfyEYjGicEhUZV15fKqChzF6c/VzhvDAoxK)
+            redirectUri: ENC(n48BYtmUMZYSbbhg98SQap39XsQpT2XriMrdc/v53vhj1Mvz9JcxKu7VDUTXy4Oy)
             scope:
               - nickname
               - email
               - profile_image
             clientName: Naver
           kakao:
-            clientId: ENC(Ku1bDDOU/ikyUN9GyL+t5CpAuqWFqfI4y/xeMURbBkLz+r+7rgvHX22D4iu+bxSn)
-            clientSecret: ENC(Wcc9FDYBfPNCGphyR8VzALZhGODjpLAQxdBTMg/amMdOL/iybFfjPqiSogK7nhGl)
+            clientId: ENC(84neOoXg5Ut1aZqWVlQ0CRKs2fEWkKvpMz0rZzaLzS91rlqi9pDMQK0Vv00TZak9)
+            clientSecret: ENC(pYeIOwYVo+rIpalj/lM2yATxpqojWagwxFE4WpT/SciBReh1dIiAqzFyRZRHVQyv)
             clientAuthenticationMethod: post
             authorizationGrantType: authorization_code
-            redirectUri: ENC(7kPNfdRRRzuNGOSYgMqnLbvbwbGnxZmR0QlFqi4198PY9rlCYnC0Ica3F0wMrS+m+IobyZPtSkE=)
+            redirectUri: ENC(U32Iyo/eyBOh+tyfnx9mmQhLC+adfKcSOEoT2IUHWgu2tM1XLONqRVA7Qg5dCYO3mcOurr8KIwc=)
             scope:
               - profile_nickname
               - profile_image
@@ -85,7 +88,7 @@ spring:
             userNameAttribute: id
           google:
             tokenUri: https://oauth2.googleapis.com/token
-            userInfoUri: "https://oauth2.googleapis.com/tokeninfo"
+            userInfoUri: https://openidconnect.googleapis.com/v1/userinfo
 
 
   #elasticsearch: // ?????
@@ -109,9 +112,14 @@ spring:
 jasypt:
   encryptor:
     bean: jasyptStringEncryptor
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
     property:
       prefix: ENC(
       suffix: )
+    pool-size: 1
+    salt-generator-classname: org.jasypt.salt.RandomSaltGenerator
+    password: ${JASYPT_PASSWORD}
 
 logging:
   level:
@@ -121,21 +129,21 @@ logging:
 # Secret ?? ?? ???? Base64 ? ???? ? ?? (?? ???? ???? ??? ??? ??)
 # $ echo 'spring-boot-security-jwt-tutorial-jiwoon-spring-boot-security-jwt-tutorial' | base64
 jwt:
-  secret: ENC(gxx+m8sS0WVnpUP3aZdPUU0HkzsWJs1EwTV78lCMgmvnKDKBkPz0XCBCDDMuXwrrWJ08uhhOeOjAwXf//Uu7+sXA4JoYjZyl6WijpuqEbagih82YNwfemVQPX18ptje41TVzj5/3RPI/KiSpqD8ZXA==)
+  secret: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXR1dG9yaWFsLWppd29vbi1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3QtdHV0b3JpYWwK
 
 
 cloud:
   aws:
     s3:
-      bucket: ENC(Ti4LG+bZq20l7ja40WiweWx6KVpc89HR)
+      bucket: ENC(Pe40tAguN4lLyOV/XadpZDFQP5AwXLzQ)
     region:
       static: ap-northeast-2
     credentials:
       #            accessKey: 12341
       #            secretKey: 12341
 
-      accessKey: ENC(3NuOC7J6CL4mUrVlexWkpJN/Z9q2RHPle7mudfEIqB0=)
-      secretKey: ENC(9O3WKWQvGe4VRZIzdZY5wRRLcyDGDPwSkTS5JDH+8tMoTPUuLn4oGDCp5p/vj9f0Vqz6SBrA45Y=)
+      accessKey: ENC(1ngOO+XHJx1YXnm7P+MqgAhw0KCIdzHYLGxlooFuc+0=)
+      secretKey: ENC(nboDf9aeNDNgtq3lmRpo7SW6Ws3e9f7a1PgcIWwFEdk9mHHOS7vGxM+2rcttCbPsSplni3IEQ8w=)
 
     stack:
       auto: false

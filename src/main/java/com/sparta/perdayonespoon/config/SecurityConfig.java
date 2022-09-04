@@ -6,9 +6,7 @@ import com.sparta.perdayonespoon.jwt.JwtAuthenticationEntryPoint;
 import com.sparta.perdayonespoon.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -66,7 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/api/**").permitAll() // CORS설정 관련 security 열어주기
                 .antMatchers(PERMIT_URL_ARRAY).permitAll() // swagger사용을 위해 api 열기
-                .antMatchers("user/login/**").permitAll()
+                .antMatchers("/user/login/**").permitAll()
                 .antMatchers(HttpMethod.GET,"/user/login/kakao").permitAll()
                 .antMatchers(HttpMethod.GET,"/user/login/google").permitAll()
                 .antMatchers(HttpMethod.GET,"/user/login/naver").permitAll()
