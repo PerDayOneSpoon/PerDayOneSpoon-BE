@@ -129,7 +129,7 @@ logging:
 # Secret ?? ?? ???? Base64 ? ???? ? ?? (?? ???? ???? ??? ??? ??)
 # $ echo 'spring-boot-security-jwt-tutorial-jiwoon-spring-boot-security-jwt-tutorial' | base64
 jwt:
-  secret: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXR1dG9yaWFsLWppd29vbi1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3QtdHV0b3JpYWwK
+  secret: ENC(RqUj9hi7gkT34WnH8zu9za3cgo4TdWvzqdcQsojm6dnvVRePec8uio7OKKn/aY7b0ByvrXz1L/lgzpXbGqYdzuR9o1rwdE7FZFSpEEjHvueLNXCTJHvHn2CmPi3CD/ILPhRunjGCsGPEVrJOexUq0Q==)
 
 
 cloud:
