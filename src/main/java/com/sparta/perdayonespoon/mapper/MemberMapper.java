@@ -11,6 +11,7 @@ import org.mapstruct.factory.Mappers;
 public interface MemberMapper {
     MemberMapper INSTANCE = Mappers.getMapper(MemberMapper.class); // 2
 
-    @Mapping(target = "socialCode", expression = "java(member.getSocialCode()+member.getId())") // 4
+    @Mapping(target = "socialCode", expression = "java(member.getSocialId()+member.getId())") // 4
+    @Mapping(target = "profileImage", expression = "java(member.getImage().getImgUrl())")
     MemberResponseDto orderToDto(Member member);
 }

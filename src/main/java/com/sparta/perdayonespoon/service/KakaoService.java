@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.perdayonespoon.domain.Authority;
+import com.sparta.perdayonespoon.domain.Image;
 import com.sparta.perdayonespoon.domain.Member;
 import com.sparta.perdayonespoon.domain.RefreshToken;
 import com.sparta.perdayonespoon.auth.KakaoProfile;
@@ -13,6 +14,7 @@ import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.jwt.TokenProvider;
 import com.sparta.perdayonespoon.mapper.MemberMapper;
+import com.sparta.perdayonespoon.repository.ImageRepository;
 import com.sparta.perdayonespoon.repository.MemberRepository;
 import com.sparta.perdayonespoon.repository.RefreshTokenRepository;
 import com.sparta.perdayonespoon.util.GenerateHeader;
@@ -20,7 +22,6 @@ import com.sparta.perdayonespoon.util.GenerateMsg;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,6 +32,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpHeaders;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.util.Optional;
 import java.util.UUID;
@@ -48,6 +50,8 @@ public class KakaoService {
     private final RestTemplate restTemplate;
 
     private final MemberRepository memberRepository;
+
+    private final ImageRepository imageRepository;
 
     @Value("${spring.security.oauth2.client.provider.kakao.tokenUri}")
     private String KAKAO_SNS_LOGIN_URL;
@@ -82,7 +86,7 @@ public class KakaoService {
         MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member);
 
         //리턴 바디 상태 코드 및 메세지 넣기
-        memberResponseDto.setTwoField(GenerateMsg.getMsg(HttpStatus.OK.value(),"로그인이 성공하셨습니다."));
+        memberResponseDto.setTwoField(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"로그인이 성공하셨습니다."));
 
         return ResponseEntity.ok().headers(httpHeaders).body(memberResponseDto);
     }
@@ -120,7 +124,6 @@ public class KakaoService {
         return oauthToken; //(8)
     }
 
-    @Transactional
     public Member saveUser(String access_token) {
         KakaoProfile profile = findProfile(access_token);
         //(2)
@@ -131,13 +134,20 @@ public class KakaoService {
                     .socialId(profile.getId())
                     .nickname(profile.getKakao_account().getProfile().getNickname())
                     .email(profile.getKakao_account().getEmail())
-                    .profileImage(profile.getKakao_account().getProfile().getProfile_image_url())
                     .authority(Authority.ROLE_USER)
                     .password(passwordEncoder.encode(UUID.randomUUID().toString()))
                     .build();
-            return memberRepository.save(member);
+            memberRepository.save(member);
+            Image image = Image.builder()
+                    .member(member)
+                    .ImgUrl(profile.getKakao_account().getProfile().getProfile_image_url())
+                    .build();
+            imageRepository.save(image);
+            member.SetImage(image);
+            return member;
         }
-        return checkmember.get();
+        else
+            return checkmember.get();
     }
 
     private KakaoProfile findProfile(String token) {
@@ -174,11 +184,24 @@ public class KakaoService {
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
 
         RefreshToken refreshToken = RefreshToken.builder()
-                .key(authentication.getName())
+                .key(member.getSocialId())
                 .value(tokenDto.getRefreshToken())
                 .build();
 
         refreshTokenRepository.save(refreshToken);
         return tokenDto;
+    }
+
+    private ResponseEntity regenerateToken(String token){
+        if(tokenProvider.validateToken(token)){
+            Optional<RefreshToken> refreshtoken = refreshTokenRepository.findByValue(token);
+            Optional<Member> member = memberRepository.findBySocialId(refreshtoken.orElseThrow(()-> new IllegalArgumentException("유효하지 않습니다.")).getKey());
+            Principaldetail principaldetail = new Principaldetail(member.orElseThrow(()-> new IllegalArgumentException("유효하지 않습니다.")));
+            Authentication authentication = new UsernamePasswordAuthenticationToken(principaldetail, null, principaldetail.getAuthorities());
+            TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
+            return ResponseEntity.ok().headers(GenerateHeader.setTokenHeaders(tokenDto)).body(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"토큰 재발급 성공하셨습니다."));
+        }
+        else
+            throw new IllegalArgumentException("리프레쉬 토큰이 유효하지 않습니다.");
     }
 }

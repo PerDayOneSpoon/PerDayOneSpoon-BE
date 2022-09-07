@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.perdayonespoon.domain.Authority;
+import com.sparta.perdayonespoon.domain.Image;
 import com.sparta.perdayonespoon.domain.Member;
 import com.sparta.perdayonespoon.domain.RefreshToken;
 import com.sparta.perdayonespoon.auth.GoogleProfile;
@@ -13,6 +14,7 @@ import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.jwt.TokenProvider;
 import com.sparta.perdayonespoon.mapper.MemberMapper;
+import com.sparta.perdayonespoon.repository.ImageRepository;
 import com.sparta.perdayonespoon.repository.MemberRepository;
 import com.sparta.perdayonespoon.repository.RefreshTokenRepository;
 import com.sparta.perdayonespoon.util.GenerateHeader;
@@ -31,7 +33,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.UnsupportedEncodingException;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.UUID;
@@ -47,6 +50,8 @@ public class GoogleService {
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final RestTemplate restTemplate;
+
+    private final ImageRepository imageRepository;
 
     @Value("${spring.security.oauth2.client.provider.google.tokenUri}")
     private String GOOGLE_SNS_LOGIN_URL;
@@ -116,23 +121,29 @@ public class GoogleService {
         return oauthToken; //(8)
     }
 
-    private Member saveUser(String access_token) {
+    @Transactional
+    public Member saveUser(String access_token) {
         GoogleProfile profile = findProfile(access_token);
         //(2)
         Optional<Member> checkmember = memberRepository.findBySocialId(profile.getSub());
-
         //(3)
         if(checkmember.isEmpty()) {
             Member member = Member.builder()
                     .socialId(profile.getSub())
                     .nickname(profile.getName())
                     .email(profile.getEmail())
-                    .profileImage(profile.getPicture())
                     .authority(Authority.ROLE_USER)
                     .password(passwordEncoder.encode(UUID.randomUUID().toString()))
                     .build();
+            memberRepository.save(member);
+            Image image = Image.builder()
+                    .member(member)
+                    .ImgUrl(profile.getPicture())
+                    .build();
+            imageRepository.save(image);
+            member.SetImage(image);
 
-            return memberRepository.save(member);
+            return member;
         }
 
         return checkmember.get();
@@ -167,11 +178,24 @@ public class GoogleService {
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
 
         RefreshToken refreshToken = RefreshToken.builder()
-                .key(authentication.getName())
+                .key(member.getSocialId())
                 .value(tokenDto.getRefreshToken())
                 .build();
 
         refreshTokenRepository.save(refreshToken);
         return tokenDto;
+    }
+
+    public ResponseEntity regenerateToken(String token){
+        if(tokenProvider.validateToken(token)){
+            Optional<RefreshToken> refreshtoken = refreshTokenRepository.findByValue(token);
+            Optional<Member> member = memberRepository.findBySocialId(refreshtoken.orElseThrow(()-> new IllegalArgumentException("유효하지 않습니다.")).getKey());
+            Principaldetail principaldetail = new Principaldetail(member.orElseThrow(() -> new IllegalArgumentException("유효하지 않습니다.")));
+            Authentication authentication = new UsernamePasswordAuthenticationToken(principaldetail, null, principaldetail.getAuthorities());
+            TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
+            return ResponseEntity.ok().headers(GenerateHeader.setTokenHeaders(tokenDto)).body(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"토큰 재발급 성공하셨습니다."));
+        }
+        else
+            throw new IllegalArgumentException("리프레쉬 토큰이 유효하지 않습니다.");
     }
 }
