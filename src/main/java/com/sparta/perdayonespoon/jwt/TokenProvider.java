@@ -30,7 +30,11 @@ public class TokenProvider {
 
     private static final String MEMBER_KEY = "member";
 
+    private static final String SOCIAL_ID = "socialid";
+
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;            // 30분
+
+//    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 40;            // 20초
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // 7일
     private final Key key;
 
@@ -54,6 +58,7 @@ public class TokenProvider {
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         String accessToken = Jwts.builder()
                 .setSubject(member.getEmail())       // payload "sub": "name"
+                .claim(SOCIAL_ID,member.getSocialId())
                 .claim(MEMBER_KEY,member.getNickname())      // payload "member" : "member.getUserNic"
                 .claim(AUTHORITIES_KEY, authorities)        // payload "auth": "ROLE_USER"
                 .setExpiration(accessTokenExpiresIn)        // payload "exp": 1516239022 (예시)
@@ -106,11 +111,10 @@ public class TokenProvider {
                 .authority(authority)
                 .email(claims.getSubject())
                 .nickname(claims.get(MEMBER_KEY).toString())
+                .socialId(claims.get(SOCIAL_ID).toString())
                 .build();
 
         Principaldetail principaldetail = new Principaldetail(member);
-        // UserDetails 객체를 만들어서 Authentication 리턴
-//        UserDetails principal = new User(claims.getSubject(), "", authorities);
         return new UsernamePasswordAuthenticationToken(principaldetail, "", authorities);
     }
 

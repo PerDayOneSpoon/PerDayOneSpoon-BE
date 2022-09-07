@@ -62,12 +62,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .cors().and()
                 .authorizeRequests()
+                .antMatchers("/h2-console/**").permitAll()  // 누구나 h2-console 접속 허용
                 .antMatchers(HttpMethod.OPTIONS, "/api/**").permitAll() // CORS설정 관련 security 열어주기
                 .antMatchers(PERMIT_URL_ARRAY).permitAll() // swagger사용을 위해 api 열기
-                .antMatchers("/user/login/**").permitAll()
-                .antMatchers(HttpMethod.GET,"/user/login/kakao").permitAll()
-                .antMatchers(HttpMethod.GET,"/user/login/google").permitAll()
-                .antMatchers(HttpMethod.GET,"/user/login/naver").permitAll()
+                .antMatchers("/login/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/login/kakao").permitAll()
+                .antMatchers(HttpMethod.GET,"/login/google").permitAll()
+                .antMatchers(HttpMethod.GET,"/login/naver").permitAll()
+                .antMatchers(HttpMethod.POST,"/login/reissue").permitAll()
 //                .antMatchers("/api/**").permitAll()
                 .anyRequest().authenticated()   // 나머지 API 는 전부 인증 필요
                 // spring security 동작 중 우리가 등록한 jwt 필터에서 tokenprovider를 사용할 수 있게 저용

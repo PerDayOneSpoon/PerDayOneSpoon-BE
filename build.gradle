@@ -79,8 +79,10 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.9.0'
 
-    //redis
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.5.3'
+//    //redis
+//    implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.5.3'
+
+    implementation group: 'com.github.scribejava', name: 'scribejava-core', version: '2.8.1'
 
     //이메일 인증
     implementation 'org.springframework.boot:spring-boot-starter-mail'
@@ -91,14 +93,23 @@ dependencies {
     implementation 'org.webjars:stomp-websocket:2.3.3-1'
 
 
+    // scalr 라이브러리
+    implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
+    implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.17'
+
+
     //aws 의존성
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.0.1.RELEASE'
 
 //    implementation "com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.6.1"
 
+
+    //Redis 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
     // 스웨거
     implementation 'io.springfox:springfox-swagger2:2.9.2'
-    implementation'io.springfox:springfox-swagger-ui:2.9.2'
+    implementation 'io.springfox:springfox-swagger-ui:2.9.2'
 
     // 자바 암호화 Jasypt
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'

@@ -16,4 +16,10 @@ public class GenerateHeader {
         httpHeaders.set("Access-Token-Expire-Time", String.valueOf(tokenDto.getAccessTokenExpiresIn()));
         return httpHeaders;
     }
+
+    public static HttpHeaders setTokenHeaders(TokenDto tokenDto){
+        httpHeaders.set("Authorization", "Bearer " + tokenDto.getAccessToken());
+        httpHeaders.set("Access-Token-Expire-Time", String.valueOf(tokenDto.getAccessTokenExpiresIn()));
+        return httpHeaders;
+    }
 }

@@ -52,12 +52,12 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         JSONObject responseJson = new JSONObject();
         responseJson.put("message", code.getMessage()); // 넘어온 code의 메세지 입력
         responseJson.put("code", code.getCode());
-        if(code.getCode().equals("1004")) // 해당 코드에 맞춰 상태메세지 200 변환
-            response.setStatus(HttpServletResponse.SC_OK);
-        else if(code.getCode().equals("1003"))
-            response.setStatus(HttpServletResponse.SC_OK);
-        else if(code.getCode().equals("1005"))
-            response.setStatus(HttpServletResponse.SC_OK);
+        if(code.getCode().equals("401")) // 해당 코드에 맞춰 상태메세지 변환
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        else if(code.getCode().equals("400"))
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        else if(code.getCode().equals("408"))
+            response.setStatus(HttpServletResponse.SC_REQUEST_TIMEOUT);
         else if(code.getCode().equals("1006"))
             response.setStatus(HttpServletResponse.SC_OK);
         else if(code.getCode().equals("1007"))

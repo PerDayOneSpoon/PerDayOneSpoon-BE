@@ -29,18 +29,20 @@ public class MemberResponseDto {
     @ApiModelProperty(example = "소셜 로그인시 생성한 socialCode")
     private String socialCode;
 
-    @ApiModelProperty(example = "소셜 로그인시 가져온 profileImage")
-    private String profileImage;
-
     @ApiModelProperty(example = "소셜 로그인시 가져온 권한")
     private Authority authority;
+
+    @ApiModelProperty(example = "사용자가 설정한 상태메세지")
+    private String status;
 
     @ApiModelProperty(example = "통신 성공시 서버에서 보내주는 상태code")
     private long code;
 
-
     @ApiModelProperty(example = "통신 성공시 서버에서 보내주는 응답 메세지")
     private String msg;
+
+    @ApiModelProperty(example = "소셜 로그인시 가져온 profileImage")
+    private String profileImage;
 
     @ApiIgnore
     public void setTwoField(MsgDto msgDto){

@@ -3,14 +3,17 @@ package com.sparta.perdayonespoon.controller;
 import com.sparta.perdayonespoon.domain.dto.response.MemberResponseDto;
 import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
+import com.sparta.perdayonespoon.service.CalenderService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.Calendar;
 
 
 @Api(tags="캘린더 페이지 REST API")
@@ -20,8 +23,9 @@ import springfox.documentation.annotations.ApiIgnore;
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "*")
 public class CalenderController {
 
+    private final CalenderService calenderService;
 
-    @ApiOperation(value = "캘린더 API", notes = "구글로 로그인 하는 apI ")
+    @ApiOperation(value = "캘린더 API", notes = "캘린더 페이지에서 전체 정보를 보여주는 apI ")
     @ApiImplicitParam(name = "code", value = "서버로 넘겨주는 인가코드")  // Swagger에 사용하는 파라미터에 대해 설명
     @ApiResponses({
             @ApiResponse(code = 200, message = "API 정상 작동",response = MemberResponseDto.class,
@@ -31,8 +35,9 @@ public class CalenderController {
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @ApiIgnore
+    @ResponseStatus(value = HttpStatus.OK)
     @GetMapping("/test")
-    public Principaldetail getPrincipal(@AuthenticationPrincipal Principaldetail principaldetail){
-        return principaldetail;
+    public ResponseEntity getPrincipal(@AuthenticationPrincipal Principaldetail principaldetail){
+        return calenderService.getAlldate(principaldetail);
     }
 }
