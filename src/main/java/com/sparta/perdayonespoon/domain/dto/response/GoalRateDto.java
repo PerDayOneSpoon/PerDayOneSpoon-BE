@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -15,10 +16,6 @@ public class GoalRateDto {
     private double rate;
     @ApiModelProperty(example = "목표 만든 사람의 socialId")
     private String socialId;
-
-    @ApiModelProperty(example = "목표의 요일을 의미하는 정수")
-    private int whatsday;
-
     @ApiModelProperty(example = "목표의 요일")
     private String dayString;
     @ApiModelProperty(example = "목표 달성 여부")
@@ -33,10 +30,10 @@ public class GoalRateDto {
     private String Msg;
 
     @QueryProjection
-    public GoalRateDto(String socialId, int dayofweek , boolean checkGoal, long totalcount){
+    public GoalRateDto(String socialId, String dayofweek , boolean checkGoal, long totalcount){
         this.socialId=socialId;
-        dayString = DayOfWeek.of(dayofweek).getDisplayName(TextStyle.SHORT, Locale.KOREAN);
-        whatsday = dayofweek;
+//        dayString = dayofweek.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
+        dayString = LocalDate.parse(dayofweek).getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
         this.checkGoal=checkGoal;
         this.totalcount=totalcount;
     }

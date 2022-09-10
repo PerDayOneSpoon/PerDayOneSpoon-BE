@@ -4,6 +4,7 @@ package com.sparta.perdayonespoon.jwt;
 import com.sparta.perdayonespoon.domain.Authority;
 import com.sparta.perdayonespoon.domain.Member;
 import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
+import com.sparta.perdayonespoon.util.RedisUtil;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -16,6 +17,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.time.Duration;
+import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -89,7 +92,10 @@ public class TokenProvider {
     // createToken 과 정확히 반대의 역할을 해주는 메소드이다.
     // 토큰을 parameter 로 받아서 토큰으로 claim 을 만들고, 최종적으로는 Authentication 객체를 리턴한다.
     public Authentication getAuthentication(String accessToken) {
-        // 토큰 복호화
+
+//        RedisUtil redisUtil = new RedisUtil();
+//        redisUtil.setValues("accesstoken",accessToken, Duration.from((TemporalAmount) parseClaims(accessToken).getExpiration()));
+//        // 토큰 복호화
         Claims claims = parseClaims(accessToken);
 
         if (claims.get(AUTHORITIES_KEY) == null) {

@@ -16,7 +16,6 @@ public class JasyptConfig {
 
     // yml 파일을 암,복호화 하기 위한 config
 
-
     @Bean(name = "jasyptStringEncryptor")
     public StringEncryptor stringEncryptor() {
 

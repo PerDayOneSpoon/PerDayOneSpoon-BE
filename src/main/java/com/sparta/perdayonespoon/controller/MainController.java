@@ -43,7 +43,7 @@ public class MainController {
             @ApiResponse(code = 200, message = "API 정상 작동",response = GoalDto.class)
     })
     @PostMapping("/create")
-    public ResponseEntity CreateGoal(@ApiParam @RequestBody List<GoalDto> goalDto, @ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail) {
+    public ResponseEntity CreateGoal(@ApiParam @RequestBody GoalDto goalDto, @ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail) {
         return mainService.CreateGoal(goalDto,principaldetail);
     }
 }
