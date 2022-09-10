@@ -3,6 +3,7 @@ package com.sparta.perdayonespoon.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.sparta.perdayonespoon.domain.dto.request.StatusDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
@@ -64,9 +65,9 @@ public class Member extends  Timestamped {
         this.image = image;
     }
 
-    public void SetTwoColumn(String nickname, String status){
-        this.nickname = nickname;
-        this.status = status;
+    public void SetTwoColumn(StatusDto statusDto){
+        this.nickname = statusDto.getNickname();
+        this.status = statusDto.getStatus();
     }
 
     public void Setname(String nickname){

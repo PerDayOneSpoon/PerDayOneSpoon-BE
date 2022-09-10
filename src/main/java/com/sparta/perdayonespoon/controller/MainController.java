@@ -14,6 +14,7 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Api(tags="메인페이지 REST API")
@@ -28,10 +29,6 @@ public class MainController {
     @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름")
     @ApiResponses({
             @ApiResponse(code = 200, message = "API 정상 작동",response = CalenderResponseDto.class),
-            @ApiResponse(code = 400, message = "Request타입 에러, 토큰이 없을때 에러 - 토큰이 존재하지 않습니다."),
-            @ApiResponse(code = 401, message = "변조된 토큰 에러 - 변조된 토큰입니다."),
-            @ApiResponse(code = 408, message = "만료된 토큰 에러 - 만료된 토큰입니다."),
-            @ApiResponse(code = 500, message = "서버 에러")
     })
     @GetMapping("/confirm/goal")
     public ResponseEntity getGoal(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail) {
@@ -39,16 +36,14 @@ public class MainController {
     }
 
     @ApiOperation(value = "메인페이지 목표 만들기 API ", notes = "토큰검사 후 만든 목표 응답")
-    @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름"),
+    })
     @ApiResponses({
-            @ApiResponse(code = 200, message = "API 정상 작동",response = GoalDto.class),
-            @ApiResponse(code = 400, message = "Request타입 에러, 토큰이 없을때 에러"),
-            @ApiResponse(code = 401, message = "변조된 토큰 에러 - 변조된 토큰입니다."),
-            @ApiResponse(code = 408, message = "만료된 토큰 에러 - 만료된 토큰입니다."),
-            @ApiResponse(code = 500, message = "서버 에러")
+            @ApiResponse(code = 200, message = "API 정상 작동",response = GoalDto.class)
     })
     @PostMapping("/create")
-    public ResponseEntity CreateGoal(@RequestBody List<GoalDto> goalDto, @ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail) {
+    public ResponseEntity CreateGoal(@ApiParam @RequestBody List<GoalDto> goalDto, @ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail) {
         return mainService.CreateGoal(goalDto,principaldetail);
     }
 }

@@ -1,5 +1,6 @@
 package com.sparta.perdayonespoon.domain.dto.response;
 
+import com.querydsl.core.annotations.QueryProjection;
 import com.sparta.perdayonespoon.domain.Authority;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -11,7 +12,6 @@ import springfox.documentation.annotations.ApiIgnore;
 
 @Setter
 @Getter
-@Builder
 @ApiModel(description = "소셜 로그인시 반환되는 바디에 들어갈 내용들")
 public class MemberResponseDto {
     @ApiModelProperty(example = "소셜 로그인시 저장된 db 번호")
@@ -48,5 +48,18 @@ public class MemberResponseDto {
     public void setTwoField(MsgDto msgDto){
         code = msgDto.getCode();
         msg = msgDto.getMsg();
+    }
+
+    @Builder
+    public MemberResponseDto(Long id, String socialEmail,String nickname, String socialId, String socialCode, Authority authority
+    ,String status, String profileImage){
+        this.id = id;
+        this.socialEmail = socialEmail;
+        this.nickname = nickname;
+        this.socialId=socialId;
+        this.socialCode=socialCode;
+        this.status=status;
+        this.authority=authority;
+        this.profileImage=profileImage;
     }
 }

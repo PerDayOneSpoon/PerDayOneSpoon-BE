@@ -34,7 +34,7 @@ public class TokenProvider {
 
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;            // 30분
 
-//    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 40;            // 20초
+//    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 20;            // 20초
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // 7일
     private final Key key;
 
@@ -71,7 +71,6 @@ public class TokenProvider {
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setHeaderParam("JWT_HEADER_PARAM_TYPE","headerType")
                 .compact();
-
 //      return Jwts.builder()
 //              .setHeaderParam("typ", BEARER_TYPE)
 //              .claim(AUTHORITIES_KEY, authorities)

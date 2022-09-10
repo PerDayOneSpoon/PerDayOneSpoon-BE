@@ -31,11 +31,7 @@ public class CalenderController {
             @ApiResponse(code = 200, message = "API 정상 작동",response = MemberResponseDto.class,
                     responseHeaders = {@ResponseHeader(name = "Authorization", description = "accesstoken이 담기는 헤더의 이름", response = TokenDto.class),
                                        @ResponseHeader(name = "refreshtoken", description = "refreshtoken이 담기는 헤더의 이름", response = TokenDto.class)}),
-            @ApiResponse(code = 400, message = "Request타입 에러"),
-            @ApiResponse(code = 500, message = "서버 에러")
     })
-    @ApiIgnore
-    @ResponseStatus(value = HttpStatus.OK)
     @GetMapping("/test")
     public ResponseEntity getPrincipal(@AuthenticationPrincipal Principaldetail principaldetail){
         return calenderService.getAlldate(principaldetail);

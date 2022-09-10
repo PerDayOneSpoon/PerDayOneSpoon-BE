@@ -33,7 +33,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpHeaders;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -133,17 +132,17 @@ public class KakaoService {
             Member member = Member.builder()
                     .socialId(profile.getId())
                     .nickname(profile.getKakao_account().getProfile().getNickname())
+                    .socialCode(profile.getId().substring(0,5)+UUID.randomUUID().toString().charAt(0))
                     .email(profile.getKakao_account().getEmail())
                     .authority(Authority.ROLE_USER)
                     .password(passwordEncoder.encode(UUID.randomUUID().toString()))
                     .build();
             memberRepository.save(member);
             Image image = Image.builder()
-                    .member(member)
                     .ImgUrl(profile.getKakao_account().getProfile().getProfile_image_url())
                     .build();
+            image.setMember(member);
             imageRepository.save(image);
-            member.SetImage(image);
             return member;
         }
         else
@@ -190,18 +189,5 @@ public class KakaoService {
 
         refreshTokenRepository.save(refreshToken);
         return tokenDto;
-    }
-
-    private ResponseEntity regenerateToken(String token){
-        if(tokenProvider.validateToken(token)){
-            Optional<RefreshToken> refreshtoken = refreshTokenRepository.findByValue(token);
-            Optional<Member> member = memberRepository.findBySocialId(refreshtoken.orElseThrow(()-> new IllegalArgumentException("유효하지 않습니다.")).getKey());
-            Principaldetail principaldetail = new Principaldetail(member.orElseThrow(()-> new IllegalArgumentException("유효하지 않습니다.")));
-            Authentication authentication = new UsernamePasswordAuthenticationToken(principaldetail, null, principaldetail.getAuthorities());
-            TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
-            return ResponseEntity.ok().headers(GenerateHeader.setTokenHeaders(tokenDto)).body(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"토큰 재발급 성공하셨습니다."));
-        }
-        else
-            throw new IllegalArgumentException("리프레쉬 토큰이 유효하지 않습니다.");
     }
 }
