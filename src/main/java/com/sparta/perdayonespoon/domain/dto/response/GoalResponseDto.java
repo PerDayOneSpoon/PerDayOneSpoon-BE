@@ -10,6 +10,8 @@ public class GoalResponseDto {
     private String title;
     private String start_date;
     private String end_date;
+
+    private String currentdate;
     private String time;
     private long CharacterId;
     private long category;
@@ -23,9 +25,11 @@ public class GoalResponseDto {
 
     @Builder
     public GoalResponseDto(String title, String start_date, String end_date, String time, long characterId,
-                           Long id,long category,boolean privateCheck,MsgDto msgDto,String socialId, boolean achievementCheck){
+                           Long id,long category,boolean privateCheck,MsgDto msgDto,String socialId,
+                           String currentdate,boolean achievementCheck){
         this.title = title;
         this.start_date = start_date;
+        this.currentdate = currentdate;
         this.end_date = end_date;
         this.time = time;
         this.CharacterId = characterId;

@@ -21,6 +21,9 @@ public class Goal extends Timestamped{
     private LocalDateTime start_date;
 
     @Column
+    private LocalDateTime currentdate;
+
+    @Column
     private LocalDateTime end_date;
 
     @Column
@@ -42,11 +45,12 @@ public class Goal extends Timestamped{
     private boolean achievementCheck;
 
     @Builder
-    public Goal(String title, LocalDateTime start_date,LocalDateTime end_date, String time, long category,
+    public Goal(String title, LocalDateTime start_date,LocalDateTime currentdate,LocalDateTime end_date, String time, long category,
                 long characterId, boolean privateCheck, String socialId,boolean achievementCheck){
         this.title = title;
         this.category = category;
         this.start_date = start_date;
+        this.currentdate = currentdate;
         this.end_date = end_date;
         this.characterId = characterId;
         this.privateCheck = privateCheck;
