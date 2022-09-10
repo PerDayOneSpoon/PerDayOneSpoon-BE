@@ -1,5 +1,6 @@
 package com.sparta.perdayonespoon.util;
 
+import com.sparta.perdayonespoon.domain.RefreshToken;
 import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,12 +14,6 @@ public class GenerateHeader {
     public static HttpHeaders getHttpHeaders(TokenDto tokenDto){
         httpHeaders.set("Authorization", "Bearer " + tokenDto.getAccessToken());
         httpHeaders.set("RefreshToken", tokenDto.getRefreshToken());
-        httpHeaders.set("Access-Token-Expire-Time", String.valueOf(tokenDto.getAccessTokenExpiresIn()));
-        return httpHeaders;
-    }
-
-    public static HttpHeaders setTokenHeaders(TokenDto tokenDto){
-        httpHeaders.set("Authorization", "Bearer " + tokenDto.getAccessToken());
         httpHeaders.set("Access-Token-Expire-Time", String.valueOf(tokenDto.getAccessTokenExpiresIn()));
         return httpHeaders;
     }

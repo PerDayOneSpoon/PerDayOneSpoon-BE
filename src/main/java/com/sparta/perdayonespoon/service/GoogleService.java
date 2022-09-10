@@ -3,14 +3,13 @@ package com.sparta.perdayonespoon.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.perdayonespoon.domain.Authority;
-import com.sparta.perdayonespoon.domain.Image;
-import com.sparta.perdayonespoon.domain.Member;
-import com.sparta.perdayonespoon.domain.RefreshToken;
+import com.sparta.perdayonespoon.domain.*;
 import com.sparta.perdayonespoon.auth.GoogleProfile;
 import com.sparta.perdayonespoon.domain.dto.OauthToken;
+import com.sparta.perdayonespoon.domain.dto.request.TokenSearchCondition;
 import com.sparta.perdayonespoon.domain.dto.response.MemberResponseDto;
 import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
+import com.sparta.perdayonespoon.domain.dto.response.TwoFieldDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.jwt.TokenProvider;
 import com.sparta.perdayonespoon.mapper.MemberMapper;
@@ -36,6 +35,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -69,22 +69,16 @@ public class GoogleService {
     private String GOOGLE_SNS_User_URL;
 
     public ResponseEntity login(String code) {
-
         // 인가코드로 토큰받기
         OauthToken oauthToken = getAccessToken(code);
-
         // 토큰으로 사용자 정보 요청
         Member member = saveUser(oauthToken.getAccess_token());
-
         // 사용자 정보를 토대로 토큰발급
         TokenDto tokenDto = generateToken(member);
-
         // 리턴할 헤더 제작
         HttpHeaders httpHeaders = GenerateHeader.getHttpHeaders(tokenDto);
-
         // 리턴할 바디 제작
         MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member);
-
         //리턴 바디 상태 코드 및 메세지 넣기
         memberResponseDto.setTwoField(GenerateMsg.getMsg(HttpStatus.OK.value(),"로그인이 성공하셨습니다."));
 
@@ -93,10 +87,8 @@ public class GoogleService {
     private OauthToken getAccessToken(String code) {
         String decodedCode = "";
         decodedCode = java.net.URLDecoder.decode(code, StandardCharsets.UTF_8);
-
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-
         //(4)
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("client_id", GOOGLE_SNS_CLIENT_ID);
@@ -106,7 +98,6 @@ public class GoogleService {
         params.add("grant_type", "authorization_code");
         //(5)
         HttpEntity<MultiValueMap<String, String>> googleTokenRequest = new HttpEntity<>(params, headers);
-
         ResponseEntity<String> tokenResponse1 = restTemplate.postForEntity(GOOGLE_SNS_LOGIN_URL,googleTokenRequest,String.class);
         //(6)
         ObjectMapper objectMapper = new ObjectMapper();
@@ -130,6 +121,7 @@ public class GoogleService {
         if(checkmember.isEmpty()) {
             Member member = Member.builder()
                     .socialId(profile.getSub())
+                    .socialCode(profile.getSub().substring(0,5)+UUID.randomUUID().toString().charAt(0))
                     .nickname(profile.getName())
                     .email(profile.getEmail())
                     .authority(Authority.ROLE_USER)
@@ -137,15 +129,12 @@ public class GoogleService {
                     .build();
             memberRepository.save(member);
             Image image = Image.builder()
-                    .member(member)
                     .ImgUrl(profile.getPicture())
                     .build();
+            image.setMember(member);
             imageRepository.save(image);
-            member.SetImage(image);
-
             return member;
         }
-
         return checkmember.get();
     }
 
@@ -157,7 +146,6 @@ public class GoogleService {
         //(1-5)
         HttpEntity<MultiValueMap<String, String>> googleProfileRequest =
                 new HttpEntity<>(headers);
-
         ResponseEntity<String> googleProfileResponse = restTemplate.postForEntity(GOOGLE_SNS_User_URL,googleProfileRequest,String.class);
         //(1-7)
         ObjectMapper objectMapper = new ObjectMapper();
@@ -168,7 +156,6 @@ public class GoogleService {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-
         return googleProfile;
     }
 
@@ -176,24 +163,25 @@ public class GoogleService {
         Principaldetail principaldetail = new Principaldetail(member);
         Authentication authentication = new UsernamePasswordAuthenticationToken(principaldetail, null, principaldetail.getAuthorities());
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
-
         RefreshToken refreshToken = RefreshToken.builder()
                 .key(member.getSocialId())
                 .value(tokenDto.getRefreshToken())
                 .build();
-
         refreshTokenRepository.save(refreshToken);
         return tokenDto;
     }
 
-    public ResponseEntity regenerateToken(String token){
-        if(tokenProvider.validateToken(token)){
-            Optional<RefreshToken> refreshtoken = refreshTokenRepository.findByValue(token);
-            Optional<Member> member = memberRepository.findBySocialId(refreshtoken.orElseThrow(()-> new IllegalArgumentException("유효하지 않습니다.")).getKey());
-            Principaldetail principaldetail = new Principaldetail(member.orElseThrow(() -> new IllegalArgumentException("유효하지 않습니다.")));
+    public ResponseEntity regenerateToken(TokenSearchCondition condition){
+        if(tokenProvider.validateToken(condition.getRefreshtoken())){
+            TwoFieldDto twoFieldDto = refreshTokenRepository.getMember(condition);
+            Principaldetail principaldetail = new Principaldetail(twoFieldDto.getMember());
             Authentication authentication = new UsernamePasswordAuthenticationToken(principaldetail, null, principaldetail.getAuthorities());
             TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
-            return ResponseEntity.ok().headers(GenerateHeader.setTokenHeaders(tokenDto)).body(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"토큰 재발급 성공하셨습니다."));
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + tokenDto.getAccessToken());
+            headers.set("RefreshToken", twoFieldDto.getRefreshToken().getValue());
+            headers.set("Access-Token-Expire-Time", String.valueOf(tokenDto.getAccessTokenExpiresIn()));
+            return ResponseEntity.ok().headers(headers).body(GenerateMsg.getMsg(MsgCollector.RE_GENERATE_TOKEN.getCode(), MsgCollector.RE_GENERATE_TOKEN.getMsg()));
         }
         else
             throw new IllegalArgumentException("리프레쉬 토큰이 유효하지 않습니다.");

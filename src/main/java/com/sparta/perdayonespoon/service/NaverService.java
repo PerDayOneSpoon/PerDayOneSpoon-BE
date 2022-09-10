@@ -94,7 +94,6 @@ public class NaverService {
                     .queryParam("client_secret", NAVER_SNS_CLIENT_SECRET)
                     .queryParam("redirect_uri", NAVER_SNS_CALLBACK_URL)
                     .build();
-
             ResponseEntity<String> resultEntity = restTemplate.postForEntity(builder.toUriString(), null, String.class);
             System.out.println(resultEntity);
             ObjectMapper objectMapper = new ObjectMapper();
@@ -124,11 +123,10 @@ public class NaverService {
                     .build();
             memberRepository.save(member);
             Image image = Image.builder()
-                    .member(member)
                     .ImgUrl(profile.getResponse().getProfile_image())
                     .build();
+            image.setMember(member);
             imageRepository.save(image);
-            member.SetImage(image);
             return member;
         }
 
@@ -174,20 +172,5 @@ public class NaverService {
 
         refreshTokenRepository.save(refreshToken);
         return tokenDto;
-    }
-
-
-
-    private ResponseEntity regenerateToken(String token){
-        if(tokenProvider.validateToken(token)){
-            Optional<RefreshToken> refreshtoken = refreshTokenRepository.findByValue(token);
-            Optional<Member> member = memberRepository.findBySocialId(refreshtoken.orElseThrow(()-> new IllegalArgumentException("유효하지 않습니다.")).getKey());
-            Principaldetail principaldetail = new Principaldetail(member.orElseThrow(()-> new IllegalArgumentException("유효하지 않습니다.")));
-            Authentication authentication = new UsernamePasswordAuthenticationToken(principaldetail, null, principaldetail.getAuthorities());
-            TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
-            return ResponseEntity.ok().headers(GenerateHeader.setTokenHeaders(tokenDto)).body(GenerateMsg.getMsg(HttpStatus.OK.value(),"토큰 재발급 성공하셨습니다."));
-        }
-        else
-            throw new IllegalArgumentException("리프레쉬 토큰이 유효하지 않습니다.");
     }
 }

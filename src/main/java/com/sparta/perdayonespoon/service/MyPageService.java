@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -71,38 +70,59 @@ public class MyPageService {
         return true;
     }
 
-    @Transactional
+
     public ResponseEntity changeImage(Principaldetail principaldetail, MultipartFile multipartFile) throws IOException {
         if(multipartFile.isEmpty()){
             throw new IllegalArgumentException("게시글 작성시 이미지 파일이 필요합니다.");
         }
-        Optional<Member> member = memberRepository.findBySocialId(principaldetail.getMember().getSocialId());
+        Member member = memberRepository.findBySocialId(principaldetail.getMember().getSocialId()).orElseThrow(IllegalArgumentException::new);
         S3Dto s3Dto = scalr_resize_s3Uploader.uploadImage(multipartFile);
-        DeletedUrlPath deletedUrlPath = DeletedUrlPath.builder().deletedUrlPath(member.get().getImage().getImgUrl()).build();
+        DeletedUrlPath deletedUrlPath = DeletedUrlPath.builder().deletedUrlPath(member.getImage().getImgUrl()).build();
         deletedUrlPathRepository.save(deletedUrlPath);
-        member.orElseThrow(()->new IllegalArgumentException("유저가 없습니다.")).getImage().SetTwoField(s3Dto);
+        member.getImage().SetTwoField(s3Dto);
+        memberRepository.save(member);
         ImageDto imageDto = ImageDto.builder()
-                .imageName(member.get().getImage().getImgName())
-                .uploadImageUrl(member.get().getImage().getImgUrl())
+                .imageName(member.getImage().getImgName())
+                .uploadImageUrl(member.getImage().getImgUrl())
                 .build();
         imageDto.SetTwoproperties(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"이미지 변경에 성공하셨습니다."));
         return ResponseEntity.ok(imageDto);
     }
 
-    @Transactional
     public ResponseEntity changeStatus(Principaldetail principaldetail, StatusDto statusDto) {
-        Optional<Member> member = memberRepository.findBySocialId(principaldetail.getMember().getSocialId());
+        Member member = memberRepository.findBySocialId(principaldetail.getMember().getSocialId()).orElseThrow(IllegalArgumentException::new);
         if(statusDto.getStatus() != null && statusDto.getNickname() !=null){
-            member.get().SetTwoColumn(statusDto.getNickname(),statusDto.getStatus());
+            member.SetTwoColumn(statusDto);
         }else if (statusDto.getNickname() != null){
-            member.orElseThrow(()-> new IllegalArgumentException("사용자가 없습니다.")).Setname(statusDto.getNickname());
-        } else if (statusDto.getStatus() != null) {
-            member.orElseThrow(()-> new IllegalArgumentException("사용자가 없습니다.")).SetStatus(statusDto.getStatus());
+            member.Setname(statusDto.getNickname());
+        }else if (statusDto.getStatus() != null) {
+            member.SetStatus(statusDto.getStatus());
+        }else if(statusDto.getStatus() == null && statusDto.getNickname() == null){
+            throw new IllegalArgumentException("입력을 받지 못했습니다.");
         }
-        MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member.get());
+        memberRepository.save(member);
+        MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member);
         memberResponseDto.setTwoField(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"성공하셨습니다."));
         return ResponseEntity.ok(memberResponseDto);
     }
+
+//    public ResponseEntity changeStatus(Principaldetail principaldetail, StatusDto statusDto) {
+//        Optional<Member> member = memberRepository.findBySocialId(principaldetail.getMember().getSocialId());
+//        if(statusDto.getStatus() != null && statusDto.getNickname() !=null){
+//            member.orElseThrow(() -> new IllegalArgumentException("사용자가 없습니다.")).SetTwoColumn(statusDto);
+////            member.get().SetTwoColumn(statusDto.getNickname(),statusDto.getStatus());
+//        }else if (statusDto.getNickname() != null){
+//            member.orElseThrow(()-> new IllegalArgumentException("사용자가 없습니다.")).Setname(statusDto.getNickname());
+//        }else if (statusDto.getStatus() != null) {
+//            member.orElseThrow(()-> new IllegalArgumentException("사용자가 없습니다.")).SetStatus(statusDto.getStatus());
+//        }else if(statusDto.getStatus() == null && statusDto.getNickname() == null){
+//            throw new IllegalArgumentException("입력을 받지 못했습니다.");
+//        }
+//        memberRepository.save(member.get());
+//        MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member.get());
+//        memberResponseDto.setTwoField(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"성공하셨습니다."));
+//        return ResponseEntity.ok(memberResponseDto);
+//    }
 
     public void removeS3Image() {
         List<DeletedUrlPath> deletedUrlPaths = deletedUrlPathRepository.findAll();

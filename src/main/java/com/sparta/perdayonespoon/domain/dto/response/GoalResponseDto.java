@@ -14,6 +14,8 @@ public class GoalResponseDto {
     private long CharacterId;
     private long category;
     private boolean privateCheck;
+
+    private boolean achievementCheck;
     private long code;
     private String msg;
 
@@ -21,7 +23,7 @@ public class GoalResponseDto {
 
     @Builder
     public GoalResponseDto(String title, String start_date, String end_date, String time, long characterId,
-                           Long id,long category,boolean privateCheck,MsgDto msgDto,String socialId){
+                           Long id,long category,boolean privateCheck,MsgDto msgDto,String socialId, boolean achievementCheck){
         this.title = title;
         this.start_date = start_date;
         this.end_date = end_date;
@@ -32,6 +34,7 @@ public class GoalResponseDto {
         this.msg = msgDto.getMsg();
         this.code = msgDto.getCode();
         this.socialId = socialId;
+        this.achievementCheck = achievementCheck;
         this.id = id;
     }
 

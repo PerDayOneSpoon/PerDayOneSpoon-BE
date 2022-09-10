@@ -1,8 +1,9 @@
 package com.sparta.perdayonespoon.controller;
 
+import com.sparta.perdayonespoon.domain.dto.ImageDto;
 import com.sparta.perdayonespoon.domain.dto.request.StatusDto;
+import com.sparta.perdayonespoon.domain.dto.response.MemberResponseDto;
 import com.sparta.perdayonespoon.domain.dto.response.MsgDto;
-import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.service.MyPageService;
 import io.swagger.annotations.*;
@@ -29,10 +30,6 @@ public class MyPageController {
     @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름")
     @ApiResponses({
             @ApiResponse(code = 200, message = "API 정상 작동",response = MsgDto.class),
-            @ApiResponse(code = 400, message = "Request타입 에러, 토큰이 없을때 에러"),
-            @ApiResponse(code = 401, message = "변조된 토큰 에러"),
-            @ApiResponse(code = 408, message = "만료된 토큰 에러"),
-            @ApiResponse(code = 500, message = "서버 에러")
     })
     @GetMapping("confirm/profile")
     public ResponseEntity getProfile(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
@@ -42,11 +39,7 @@ public class MyPageController {
     @ApiOperation(value = "마이페이지 사진변경 API", notes = "토큰검사 후 사진 변경한 뒤 응답")
     @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "API 정상 작동",response = MsgDto.class),
-            @ApiResponse(code = 400, message = "Request타입 에러, 토큰이 없을때 에러"),
-            @ApiResponse(code = 401, message = "변조된 토큰 에러"),
-            @ApiResponse(code = 408, message = "만료된 토큰 에러"),
-            @ApiResponse(code = 500, message = "서버 에러")
+            @ApiResponse(code = 200, message = "API 정상 작동",response = ImageDto.class),
     })
     @PatchMapping(value = "change/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity changeImage (@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail, @RequestPart(required = false) MultipartFile multipartFile)throws IOException {
@@ -56,14 +49,10 @@ public class MyPageController {
     @ApiOperation(value = "마이페이지 상태메세지 변경 API", notes = "토큰검사 후 사진 변경한 뒤 응답")
     @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "API 정상 작동",response = MsgDto.class),
-            @ApiResponse(code = 400, message = "Request타입 에러, 토큰이 없을때 에러"),
-            @ApiResponse(code = 401, message = "변조된 토큰 에러"),
-            @ApiResponse(code = 408, message = "만료된 토큰 에러"),
-            @ApiResponse(code = 500, message = "서버 에러")
+            @ApiResponse(code = 200, message = "API 정상 작동",response = MemberResponseDto.class),
     })
     @PatchMapping("change/status")
-    public ResponseEntity changeStatus (@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail, StatusDto statusDto){
+    public ResponseEntity changeStatus (@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail, @RequestBody StatusDto statusDto){
         return myPageService.changeStatus(principaldetail,statusDto);
     }
 
@@ -71,10 +60,6 @@ public class MyPageController {
     @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름")
     @ApiResponses({
             @ApiResponse(code = 200, message = "API 정상 작동",response = MsgDto.class),
-            @ApiResponse(code = 400, message = "Request타입 에러, 토큰이 없을때 에러"),
-            @ApiResponse(code = 401, message = "변조된 토큰 에러"),
-            @ApiResponse(code = 408, message = "만료된 토큰 에러"),
-            @ApiResponse(code = 500, message = "서버 에러")
     })
     @DeleteMapping("delete/user/logout")
     public ResponseEntity deleteToken (@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
@@ -85,10 +70,6 @@ public class MyPageController {
     @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름")
     @ApiResponses({
             @ApiResponse(code = 200, message = "API 정상 작동",response = MsgDto.class),
-            @ApiResponse(code = 400, message = "Request타입 에러, 토큰이 없을때 에러"),
-            @ApiResponse(code = 401, message = "변조된 토큰 에러"),
-            @ApiResponse(code = 408, message = "만료된 토큰 에러"),
-            @ApiResponse(code = 500, message = "서버 에러")
     })
     @DeleteMapping("delete/user/register")
     public ResponseEntity deleteMember (@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){

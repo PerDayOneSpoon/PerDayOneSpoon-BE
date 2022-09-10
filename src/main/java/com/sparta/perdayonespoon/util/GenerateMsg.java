@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class GenerateMsg {
-    private static final long code = 0;
-    private static final String msg = new String();
 
     public static MsgDto getMsg(long code , String msg){
         return MsgDto.builder()

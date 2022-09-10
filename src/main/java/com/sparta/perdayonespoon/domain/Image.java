@@ -40,4 +40,9 @@ public class Image extends  Timestamped{
             this.ImgName = s3DTO.getFileName();
             this.ImgUrl = s3DTO.getUploadImageUrl();
         }
+
+        public void setMember(Member member){
+            this.member = member;
+            this.getMember().SetImage(this);
+        }
 }

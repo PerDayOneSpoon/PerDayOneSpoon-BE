@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -17,10 +18,10 @@ public class Goal extends Timestamped{
     @Column
     private String title;
     @Column
-    private String start_date;
+    private LocalDateTime start_date;
 
     @Column
-    private String end_date;
+    private LocalDateTime end_date;
 
     @Column
     private String time;
@@ -37,9 +38,12 @@ public class Goal extends Timestamped{
     @Column
     private String socialId;
 
+    @Column
+    private boolean achievementCheck;
+
     @Builder
-    public Goal(String title, String start_date, String end_date, String time, long category,
-                long characterId, boolean privateCheck, String socialId){
+    public Goal(String title, LocalDateTime start_date,LocalDateTime end_date, String time, long category,
+                long characterId, boolean privateCheck, String socialId,boolean achievementCheck){
         this.title = title;
         this.category = category;
         this.start_date = start_date;
@@ -48,5 +52,6 @@ public class Goal extends Timestamped{
         this.privateCheck = privateCheck;
         this.time = time;
         this.socialId=socialId;
+        this.achievementCheck=achievementCheck;
     }
 }

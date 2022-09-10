@@ -5,6 +5,7 @@ spring:
       settings:
         web-allow-others: true  # 추가
 
+  #
   datasource:
     url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
@@ -15,14 +16,14 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
 #    properties:
 #      hibernate:
 #   redis 설정 기본 6379로 작동
   redis:
-    host: park-minhyeok.shop
+    host: 127.0.0.1
     port: 6379
-
+#
 #  datasource:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
 #    url: jdbc:mysql://database-1.cy6dpdsrdbon.ap-northeast-2.rds.amazonaws.com:3306/perdayonespoon?serverTimezone=Asia/Seoul
@@ -38,11 +39,14 @@ spring:
 #      data-source-properties:
 #        rewriteBatchedStatements: true
 #
+#
 #  jpa:
 ##    database-platform : org.hibernate.dialect.MySQL5Dialect
+##    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+##    database: mysql
 #    generate-ddl: true
 #    hibernate:
-#      ddl-auto: update
+#      ddl-auto: create
 #      naming:
 #        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 #    defer-datasource-initialization: true
