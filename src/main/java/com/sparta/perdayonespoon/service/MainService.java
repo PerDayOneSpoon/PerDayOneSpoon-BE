@@ -1,6 +1,5 @@
 package com.sparta.perdayonespoon.service;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sparta.perdayonespoon.domain.Goal;
 import com.sparta.perdayonespoon.domain.MsgCollector;
 import com.sparta.perdayonespoon.domain.dto.CountDto;
@@ -10,9 +9,7 @@ import com.sparta.perdayonespoon.domain.dto.response.GoalResponseDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.repository.GoalRepository;
 import com.sparta.perdayonespoon.util.GenerateMsg;
-import com.sparta.perdayonespoon.util.Time;
 import lombok.RequiredArgsConstructor;
-import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
