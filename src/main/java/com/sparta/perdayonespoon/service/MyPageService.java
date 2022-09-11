@@ -66,17 +66,6 @@ public class MyPageService {
                 .queryParam("client_id", KAKAO_SNS_CLIENT_ID)
                 .queryParam("logout_redirect_uri", "http:localhost:8080/delete/user/logout")
                 .build();
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-//
-//        //(4)
-//        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-//        params.add("client_id", KAKAO_SNS_CLIENT_ID);
-//        params.add("logout_redirect_uri", "http:localhost:8080/delete/user/logout");
-//
-//        //(5)
-//        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest =
-//                new HttpEntity<>(params, headers);
         try {
             URL url = new URL(builder.toUriString());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -88,15 +77,9 @@ public class MyPageService {
         } catch (IOException e){
             throw new IllegalArgumentException("제대로 해주세요");
         }
-        // 밑에 바꾼거 때매 그런가?
-//        URI location = restTemplate.get(builder.toUri());
-//        System.out.println("-------------------3--------------");
-//        System.out.println(location);
-//        System.out.println("-------------------3--------------");
         //(6)
         return ResponseEntity.ok(GenerateMsg.getMsg(HttpServletResponse.SC_OK,principaldetail.getMember().getNickname()+"님 로그아웃에 성공하셨습니다."));
     }
-
     public ResponseEntity deleteMember(Principaldetail principaldetail) {
         refreshTokenRepository.findByKey(principaldetail.getMember().getSocialId())
                 .map(this::delete)
@@ -111,12 +94,10 @@ public class MyPageService {
         refreshTokenRepository.delete(refreshToken);
         return true;
     }
-
     private boolean deleteDb(Member member){
         memberRepository.delete(member);
         return true;
     }
-
 
     public ResponseEntity changeImage(Principaldetail principaldetail, MultipartFile multipartFile) throws IOException {
         if(multipartFile.isEmpty()){
@@ -152,24 +133,6 @@ public class MyPageService {
         memberResponseDto.setTwoField(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"성공하셨습니다."));
         return ResponseEntity.ok(memberResponseDto);
     }
-
-//    public ResponseEntity changeStatus(Principaldetail principaldetail, StatusDto statusDto) {
-//        Optional<Member> member = memberRepository.findBySocialId(principaldetail.getMember().getSocialId());
-//        if(statusDto.getStatus() != null && statusDto.getNickname() !=null){
-//            member.orElseThrow(() -> new IllegalArgumentException("사용자가 없습니다.")).SetTwoColumn(statusDto);
-////            member.get().SetTwoColumn(statusDto.getNickname(),statusDto.getStatus());
-//        }else if (statusDto.getNickname() != null){
-//            member.orElseThrow(()-> new IllegalArgumentException("사용자가 없습니다.")).Setname(statusDto.getNickname());
-//        }else if (statusDto.getStatus() != null) {
-//            member.orElseThrow(()-> new IllegalArgumentException("사용자가 없습니다.")).SetStatus(statusDto.getStatus());
-//        }else if(statusDto.getStatus() == null && statusDto.getNickname() == null){
-//            throw new IllegalArgumentException("입력을 받지 못했습니다.");
-//        }
-//        memberRepository.save(member.get());
-//        MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member.get());
-//        memberResponseDto.setTwoField(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"성공하셨습니다."));
-//        return ResponseEntity.ok(memberResponseDto);
-//    }
 
     public void removeS3Image() {
         List<DeletedUrlPath> deletedUrlPaths = deletedUrlPathRepository.findAll();

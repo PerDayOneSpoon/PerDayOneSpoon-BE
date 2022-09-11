@@ -26,15 +26,15 @@ import java.util.stream.Collectors;
 @Service
 public class MainService {
 
-    private static Stack<Integer> socialst = new Stack<>();
+    private static Stack<String> socialst = new Stack<>();
 
     private static Stack<Boolean> goalst = new Stack<>();
 
     private static long i = 0;
 
-    private static double totalcount = 0F;
+    private static double totalcount = 0;
 
-    private static double truecount = 0F;
+    private static double truecount = 0;
 
     private static long period=0;
 
@@ -58,6 +58,10 @@ public class MainService {
             goalRateDtos = goalRepository.getRateGoal(sunday,saturday,principaldetail.getMember().getSocialId());
             goalRateDtos.forEach(this::setRate);
         }
+        if(!socialst.isEmpty() && goalst.isEmpty() ){
+            socialst.pop();
+            goalst.pop();
+        }
         List<GoalRateDto> goalRateDtoList = goalRateDtos.stream().filter(GoalRateDto::isCheckGoal).collect(Collectors.toList());
         return ResponseEntity.ok(goalRateDtoList);
     }
@@ -65,31 +69,45 @@ public class MainService {
     // 0 2 4 6 8 10 완료한 개수
     // 1 3 5 7 9 11 실패한 개수
     // 0+1 전체개수 0 완료한개수
+    //Todo: true false가 다 존재할땐 기능하지만 개별적으로 존재할때 기능이 동작할지 의문?
     private void setRate(GoalRateDto goalRateDto) {
-        goalRateDto.SetTwoField(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"주간 통계 조회에 성공하셨습니다."));
-        if(socialst.isEmpty() && goalst.isEmpty()) {
-            socialst.push(0);
+        goalRateDto.SetTwoField(GenerateMsg.getMsg(HttpServletResponse.SC_OK, "주간 통계 조회에 성공하셨습니다."));
+        if (socialst.isEmpty() && goalst.isEmpty()) {
+            socialst.push(goalRateDto.getDayString());
             goalst.push(goalRateDto.isCheckGoal());
             totalcount = goalRateDto.getTotalcount();
-            if(goalRateDto.isCheckGoal()) {
+            if (goalRateDto.isCheckGoal()) {
                 truecount = goalRateDto.getTotalcount();
-                goalRateDto.setRate(Math.round((truecount/totalcount)*100));
+                goalRateDto.setTotalcount((long) totalcount);
+                goalRateDto.setRate(Math.round((truecount / totalcount) * 100));
             }
-        }
-        else if(socialst.peek() ==0 && goalst.peek() == !goalRateDto.isCheckGoal()){
+        } else if (socialst.peek().equals(goalRateDto.getDayString()) && goalst.peek() == !goalRateDto.isCheckGoal()) {
             socialst.pop();
             goalst.pop();
             totalcount += goalRateDto.getTotalcount();
-            goalRateDto.setRate(Math.round((truecount/totalcount)*100));
-        } else if(socialst.peek() == 0 && goalst.peek() == goalRateDto.isCheckGoal()){
+            if (goalRateDto.isCheckGoal()) {
+                truecount = goalRateDto.getTotalcount();
+                goalRateDto.setTotalcount((long) totalcount);
+                goalRateDto.setRate(Math.round((truecount / totalcount) * 100));
+            }
+        } else if (!socialst.peek().equals(goalRateDto.getDayString()) && goalst.peek() == goalRateDto.isCheckGoal()) {
             socialst.pop();
             goalst.pop();
             totalcount = goalRateDto.getTotalcount();
-            if(goalRateDto.isCheckGoal()){
+            if (goalRateDto.isCheckGoal()) {
                 truecount = goalRateDto.getTotalcount();
-                goalRateDto.setRate(Math.round((truecount/totalcount)*100));
-            }
-        }
+                goalRateDto.setRate(Math.round((truecount / totalcount) * 100));
+//            } else if (socialst.peek().equals("토")) {
+//                socialst.pop();
+//                goalst.pop();
+//                totalcount = goalRateDto.getTotalcount();
+//                if (goalRateDto.isCheckGoal()) {
+//                    truecount = goalRateDto.getTotalcount();
+//                    goalRateDto.setRate(Math.round((truecount / totalcount) * 100));
+//                }
+//                socialst.push(goalRateDto.getDayString());
+//                goalst.push(goalRateDto.isCheckGoal());
+//            }
 //        if(goalRateDto.isCheckGoal()){
 //            truecount = goalRateDto.getTotalcount();
 //            goalRateDto.setRate(Math.round((truecount/totalcount)*100));
@@ -115,6 +133,8 @@ public class MainService {
 //            }
 //            i--;
 //        }
+            }
+        }
     }
 
     // TODO : 달력 날짜 받기X 주간 달성도 리턴하기
