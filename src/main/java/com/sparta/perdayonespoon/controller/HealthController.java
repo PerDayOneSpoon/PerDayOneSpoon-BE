@@ -5,10 +5,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequiredArgsConstructor
 public class HealthController {
     @GetMapping("/health")
     public String healthcheck(){
-        return "ssss";
+        return "2ds222";
     }
 }
