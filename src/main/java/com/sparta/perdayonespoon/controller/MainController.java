@@ -46,4 +46,16 @@ public class MainController {
     public ResponseEntity CreateGoal(@ApiParam @RequestBody GoalDto goalDto, @ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail) {
         return mainService.CreateGoal(goalDto,principaldetail);
     }
+
+//    @ApiOperation(value = "메인페이지 목표 완료 여부 수정 API ", notes = "토큰검사 후 해당 목표 완료 여부 수정 후 응답")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름"),
+//    })
+//    @ApiResponses({
+//            @ApiResponse(code = 200, message = "API 정상 작동",response = GoalDto.class)
+//    })
+//    @PatchMapping("/change/{goalId}")
+//    public ResponseEntity ChangeGoal(@PathVariable long goalId, @ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail) {
+//        return mainService.ChangeGoal(goalId,principaldetail);
+//    }
 }
