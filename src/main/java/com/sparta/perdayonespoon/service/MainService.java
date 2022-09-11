@@ -30,8 +30,6 @@ public class MainService {
 
     private static Stack<Boolean> goalst = new Stack<>();
 
-    private static long i = 0;
-
     private static double totalcount = 0;
 
     private static double truecount = 0;
@@ -59,16 +57,18 @@ public class MainService {
             goalRateDtos.forEach(this::setRate);
         }
         if(!socialst.isEmpty() && goalst.isEmpty() ){
-            socialst.pop();
-            goalst.pop();
+            socialst.clear();
+            goalst.clear();
         }
         List<GoalRateDto> goalRateDtoList = goalRateDtos.stream().filter(GoalRateDto::isCheckGoal).collect(Collectors.toList());
         return ResponseEntity.ok(goalRateDtoList);
     }
-
-    // 0 2 4 6 8 10 완료한 개수
+    // 0 1 2 0 -1 0 1 1 0 -1 0  3 4 5 6
+    // 0 2 4 6 8 10 완료한 개수 //엿보기한다~ false false ture  {} {}    dfs -> 깊이 우선 알고리즘 bfs -> 너비 우선 알고리즘
     // 1 3 5 7 9 11 실패한 개수
     // 0+1 전체개수 0 완료한개수
+    // LIFO LAST IN FIRST OUT -> STACK -> 구멍이 하나 -> dfs -> stack 재귀알고리즘 최단거리 bfs -> queue
+    // FIFO FIRST IN FIRST OUT -> QUEUE -> 입구랑 출구
     //Todo: true false가 다 존재할땐 기능하지만 개별적으로 존재할때 기능이 동작할지 의문?
     private void setRate(GoalRateDto goalRateDto) {
         goalRateDto.SetTwoField(GenerateMsg.getMsg(HttpServletResponse.SC_OK, "주간 통계 조회에 성공하셨습니다."));
@@ -90,7 +90,7 @@ public class MainService {
                 goalRateDto.setTotalcount((long) totalcount);
                 goalRateDto.setRate(Math.round((truecount / totalcount) * 100));
             }
-        } else if (!socialst.peek().equals(goalRateDto.getDayString()) && goalst.peek() == goalRateDto.isCheckGoal()) {
+        } else if (!socialst.peek().equals(goalRateDto.getDayString())) {
             socialst.pop();
             goalst.pop();
             totalcount = goalRateDto.getTotalcount();
@@ -206,4 +206,13 @@ public class MainService {
         else
             throw new IllegalArgumentException("금일을 넘는 목표는 생성할 수 없습니다. 다시 생성해 주세요");
     }
+
+//    public ResponseEntity ChangeGoal(long goalId, Principaldetail principaldetail) {
+//        Goal goal = goalRepository.findById(goalId).orElseGet(this::error);
+//    }
+
+//    private Goal error() {
+//    }
+//
+//    private void error(Optional<Goal> goal)
 }

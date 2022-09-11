@@ -6,11 +6,11 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@Builder
-public class CalenderResponseDto {
-
-    List<GoalResponseDto> goalResponseDtoList = new ArrayList<>();
-
-    List<MonthResponseDto> monthResponseDtos = new ArrayList<>();
-}
+//@Data
+//@Builder
+//public class CalenderResponseDto {
+//
+//    List<GoalResponseDto> goalResponseDtoList = new ArrayList<>();
+//
+//    List<MonthResponseDto> monthResponseDtos = new ArrayList<>();
+//}
