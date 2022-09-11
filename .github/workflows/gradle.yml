@@ -30,7 +30,7 @@ jobs:
         working-directory: ${{env.working-directory}}
 
       - name: Build with Gradle
-        run: ./gradlew build 
+        run: ./gradlew build -xtest
         shell: bash
         working-directory: ${{env.working-directory}}
 
