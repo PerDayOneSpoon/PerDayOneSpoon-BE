@@ -34,7 +34,7 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
                 .select(new QGoalRateDto(goal.socialId,goal.currentdate.stringValue().substring(0,10), goal.achievementCheck,goal.count()))
                 .from(goal)
                 .where(goal.currentdate.dayOfMonth().between(sunday.getDayOfMonth(),saturday.getDayOfMonth()),GoalSocialEq(socialid))
-                .groupBy(goal.achievementCheck,goal.currentdate.stringValue().substring(0,10),goal.socialId)
+                .groupBy(goal.currentdate.stringValue().substring(0,10),goal.achievementCheck,goal.socialId)
                 .fetch();
     }
 
