@@ -21,7 +21,7 @@ public class MemberResponseDto {
     private String socialEmail;
 
     @ApiModelProperty(example = "소셜 로그인시 가져온 nickname")
-    private String nickname;
+    private String nickName;
 
     @ApiModelProperty(example = "소셜 로그인시 가져온 socialId")
     private String socialId;
@@ -51,11 +51,11 @@ public class MemberResponseDto {
     }
 
     @Builder
-    public MemberResponseDto(Long id, String socialEmail,String nickname, String socialId, String socialCode, Authority authority
+    public MemberResponseDto(Long id, String socialEmail,String nickName, String socialId, String socialCode, Authority authority
     ,String status, String profileImage){
         this.id = id;
         this.socialEmail = socialEmail;
-        this.nickname = nickname;
+        this.nickName = nickName;
         this.socialId=socialId;
         this.socialCode=socialCode;
         this.status=status;

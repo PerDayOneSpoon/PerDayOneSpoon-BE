@@ -25,7 +25,7 @@ public class Member extends  Timestamped {
 
     @ApiModelProperty(example = "소셜 로그인한 사용자의 이메일 , 없을수도 있음")
     @Column
-    private String Email;
+    private String email;
 
     @JsonIgnore
     @Column(nullable = false)
@@ -33,7 +33,7 @@ public class Member extends  Timestamped {
 
     @ApiModelProperty(example = "소셜 로그인에서 사용하는 유저의 닉네임")
     @Column(nullable = false)
-    private String nickname;
+    private String nickName;
 
     @ApiModelProperty(example = "소셜로그인시 발급되는 소셜 ID")
     @Column(nullable = false, unique = true)
@@ -55,23 +55,23 @@ public class Member extends  Timestamped {
     private Image image;
 
     @Builder
-    public Member(String email, String password,String socialCode, String nickname, String socialId, Authority authority,Image image) {
-        this.Email = email;
+    public Member(String email, String password,String socialCode, String nickName, String socialId, Authority authority,Image image) {
+        this.email = email;
         this.password = password;
         this.socialCode = socialCode;
-        this.nickname = nickname;
+        this.nickName = nickName;
         this.socialId = socialId;
         this.authority = authority;
         this.image = image;
     }
 
     public void SetTwoColumn(StatusDto statusDto){
-        this.nickname = statusDto.getNickname();
+        this.nickName = statusDto.getNickname();
         this.status = statusDto.getStatus();
     }
 
-    public void Setname(String nickname){
-        this.nickname = nickname;
+    public void Setname(String nickName){
+        this.nickName = nickName;
     }
     public void SetStatus(String status){
         this.status = status;

@@ -4,71 +4,103 @@ import com.sparta.perdayonespoon.domain.Goal;
 import com.sparta.perdayonespoon.domain.MsgCollector;
 import com.sparta.perdayonespoon.domain.dto.CountDto;
 import com.sparta.perdayonespoon.domain.dto.request.GoalDto;
-import com.sparta.perdayonespoon.domain.dto.response.GoalRateDto;
-import com.sparta.perdayonespoon.domain.dto.response.GoalResponseDto;
+import com.sparta.perdayonespoon.domain.dto.response.CalenderResponseDto;
+import com.sparta.perdayonespoon.domain.dto.response.Goal.TodayGoalsDto;
+import com.sparta.perdayonespoon.domain.dto.response.rate.GoalRateDto;
+import com.sparta.perdayonespoon.domain.dto.response.Goal.GoalResponseDto;
+import com.sparta.perdayonespoon.domain.dto.response.rate.WeekRateDto;
+import com.sparta.perdayonespoon.exception.CustomException;
+import com.sparta.perdayonespoon.exception.ErrorCode;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.repository.GoalRepository;
 import com.sparta.perdayonespoon.util.GenerateMsg;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import javax.servlet.http.HttpServletResponse;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class MainService {
-
     private static Stack<String> socialst = new Stack<>();
-
+    private static Set<Integer> daylist = new HashSet<>();
     private static Stack<Boolean> goalst = new Stack<>();
-
     private static double totalcount = 0;
-
-    private static double truecount = 0;
-
     private static long period=0;
-
     private final GoalRepository goalRepository;
     public ResponseEntity getGoal(Principaldetail principaldetail) {
+        LocalDateTime sunday;
+        LocalDateTime saturday;
         int day = LocalDate.now().getDayOfWeek().getValue();
         List<GoalRateDto> goalRateDtos;
         if(day != 6 && day != 7) {
-            LocalDateTime sunday = LocalDateTime.now().minusDays(day);
-            LocalDateTime saturday = LocalDateTime.now().plusDays(6-day);
+            sunday = LocalDateTime.now().minusDays(day);
+            saturday = LocalDateTime.now().plusDays(6-day);
             goalRateDtos = goalRepository.getRateGoal(sunday,saturday,principaldetail.getMember().getSocialId());
             goalRateDtos.forEach(this::setRate);
         }else if(day == 6){
-            LocalDateTime sunday = LocalDateTime.now().minusDays(day);
-            LocalDateTime saturday = LocalDateTime.now();
+            sunday = LocalDateTime.now().minusDays(day);
+            saturday = LocalDateTime.now();
             goalRateDtos = goalRepository.getRateGoal(sunday,saturday,principaldetail.getMember().getSocialId());
             goalRateDtos.forEach(this::setRate);
         }else {
-            LocalDateTime sunday = LocalDateTime.now();
-            LocalDateTime saturday = LocalDateTime.now().plusDays(6);
+            sunday = LocalDateTime.now();
+            saturday = LocalDateTime.now().plusDays(6);
             goalRateDtos = goalRepository.getRateGoal(sunday,saturday,principaldetail.getMember().getSocialId());
             goalRateDtos.forEach(this::setRate);
         }
-        if(!socialst.isEmpty() && goalst.isEmpty() ){
+        if(!socialst.isEmpty() && !goalst.isEmpty()){
             socialst.clear();
             goalst.clear();
         }
-        List<GoalRateDto> goalRateDtoList = goalRateDtos.stream().filter(GoalRateDto::isCheckGoal).collect(Collectors.toList());
-        return ResponseEntity.ok(goalRateDtoList);
+        List<WeekRateDto> weekRateDtoList ;
+        weekRateDtoList = goalRateDtos.stream().filter(this::checkgoalgetday).map(GoalRateDto::getWeekRateDto).collect(Collectors.toList());
+        if(weekRateDtoList.isEmpty())
+            weekRateDtoList = new ArrayList<>();
+        for(int y=1; y<=7; y++){
+            if(!daylist.isEmpty()) {
+                if (!daylist.contains(y)) {
+                    if(y == 7){
+                        weekRateDtoList.add(0,WeekRateDto.builder().rate(0).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());
+                    }
+                    else weekRateDtoList.add(y-1,WeekRateDto.builder().rate(0).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());
+                }
+            }
+            else {
+                if(y == 7){
+                    weekRateDtoList.add(0,WeekRateDto.builder().rate(0).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());
+                }
+                else weekRateDtoList.add(WeekRateDto.builder().rate(0).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());}
+        }
+        if(!daylist.isEmpty()){
+            daylist.clear();
+        }
+        List<TodayGoalsDto> todayGoalsDtoList = goalRepository.getTodayGoal(LocalDateTime.now());
+        CalenderResponseDto calenderResponseDto = CalenderResponseDto.builder()
+                .weekRateDtoList(weekRateDtoList)
+                .todayGoalsDtoList(todayGoalsDtoList)
+                .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"주간 습관 확인에 성공하셨습니다. 힘내세요!"))
+                .weekStartDate(sunday.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
+                .weekEndDate(saturday.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
+                .currentDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
+                .build();
+        return ResponseEntity.ok(calenderResponseDto);
     }
-    // 0 1 2 0 -1 0 1 1 0 -1 0  3 4 5 6
-    // 0 2 4 6 8 10 완료한 개수 //엿보기한다~ false false ture  {} {}    dfs -> 깊이 우선 알고리즘 bfs -> 너비 우선 알고리즘
-    // 1 3 5 7 9 11 실패한 개수
-    // 0+1 전체개수 0 완료한개수
-    // LIFO LAST IN FIRST OUT -> STACK -> 구멍이 하나 -> dfs -> stack 재귀알고리즘 최단거리 bfs -> queue
-    // FIFO FIRST IN FIRST OUT -> QUEUE -> 입구랑 출구
+    private boolean checkgoalgetday(GoalRateDto goalRateDto){
+        if(goalRateDto.isCheckGoal()){
+            daylist.add(goalRateDto.getWhatsDay());
+            return true;
+        }
+        return false;
+    }
     //Todo: true false가 다 존재할땐 기능하지만 개별적으로 존재할때 기능이 동작할지 의문?
     private void setRate(GoalRateDto goalRateDto) {
-        goalRateDto.SetTwoField(GenerateMsg.getMsg(HttpServletResponse.SC_OK, "주간 통계 조회에 성공하셨습니다."));
+        double truecount = 0;
         if (socialst.isEmpty() && goalst.isEmpty()) {
             socialst.push(goalRateDto.getDayString());
             goalst.push(goalRateDto.isCheckGoal());
@@ -90,50 +122,16 @@ public class MainService {
         } else if (!socialst.peek().equals(goalRateDto.getDayString())) {
             socialst.pop();
             goalst.pop();
+            socialst.add(goalRateDto.getDayString());
+            goalst.add(goalRateDto.isCheckGoal());
             totalcount = goalRateDto.getTotalcount();
             if (goalRateDto.isCheckGoal()) {
                 truecount = goalRateDto.getTotalcount();
+                goalRateDto.setTotalcount((long) totalcount);
                 goalRateDto.setRate(Math.round((truecount / totalcount) * 100));
-//            } else if (socialst.peek().equals("토")) {
-//                socialst.pop();
-//                goalst.pop();
-//                totalcount = goalRateDto.getTotalcount();
-//                if (goalRateDto.isCheckGoal()) {
-//                    truecount = goalRateDto.getTotalcount();
-//                    goalRateDto.setRate(Math.round((truecount / totalcount) * 100));
-//                }
-//                socialst.push(goalRateDto.getDayString());
-//                goalst.push(goalRateDto.isCheckGoal());
-//            }
-//        if(goalRateDto.isCheckGoal()){
-//            truecount = goalRateDto.getTotalcount();
-//            goalRateDto.setRate(Math.round((truecount/totalcount)*100));
-//            totalcount =0;
-//            truecount =0;
-//        }
-//        if(i != 1) {
-//            totalcount += goalRateDto.getTotalcount();
-//            if(goalRateDto.isCheckGoal()){
-//                truecount = goalRateDto.getTotalcount();
-//                goalRateDto.setRate(Math.round((truecount/totalcount)*100));
-//                totalcount=0;
-//                truecount=0;
-//            }
-//            i++;
-//        } else if(i == 1){
-//            totalcount += goalRateDto.getTotalcount();
-//            if(goalRateDto.isCheckGoal()){
-//                truecount = goalRateDto.getTotalcount();
-//                goalRateDto.setRate(Math.round((truecount/totalcount)*100));
-//                totalcount=0;
-//                truecount=0;
-//            }
-//            i--;
-//        }
             }
         }
     }
-
     // TODO : 달력 날짜 받기X 주간 달성도 리턴하기
     public ResponseEntity CreateGoal(GoalDto goalDto, Principaldetail principaldetail) {
         if(goalDto.getTitle() == null){
@@ -145,32 +143,31 @@ public class MainService {
         List<Goal> goalList = new ArrayList<>();
         if(checkdate(LocalTime.parse(goalDto.time),goalDto.category)){
             while(period -->0){
-                goalList.add(Goal.builder()
-                        .achievementCheck(goalDto.achievementCheck)
-                        .start_date(LocalDateTime.now())
-                        .currentdate(LocalDateTime.now().plusDays(x))
-                        .end_date(LocalDateTime.now().plusDays(goalDto.category))
-                        .privateCheck(goalDto.privateCheck)
-                        .socialId(principaldetail.getMember().getSocialId())
-                        .time(goalDto.time)
-                        .category(goalDto.category)
-                        .characterId(goalDto.characterId)
-                        .title(goalDto.title)
-                        .build());
+                    goalList.add(Goal.builder()
+                    .achievementCheck(goalDto.achievementCheck)
+                    .startDate(LocalDateTime.now())
+                    .currentDate(LocalDateTime.now().plusDays(x))
+                    .endDate(LocalDateTime.now().plusDays(goalDto.category))
+                    .privateCheck(goalDto.privateCheck)
+                    .socialId(principaldetail.getMember().getSocialId())
+                    .time(goalDto.time + ":00")
+                    .category(goalDto.category)
+                    .characterId(goalDto.characterId)
+                    .title(goalDto.title)
+                    .build());
                 x++;
             }
             goalRepository.saveAll(goalList);
             List<GoalResponseDto> goalResponseDtoList = new ArrayList<>();
             goalList.forEach(Goal -> goalResponseDtoList.add(GoalResponseDto.builder()
-                    .currentdate(Goal.getCurrentdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")).substring(0,10))
+                    .currentdate(Goal.getCurrentDate().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
                     .achievementCheck(Goal.isAchievementCheck())
                     .id(Goal.getId())
                     .socialId(Goal.getSocialId())
                     .title(Goal.getTitle())
-                    .category(Goal.getCategory())
                     .characterId(Goal.getCharacterId())
-                    .end_date(Goal.getEnd_date().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")).substring(0,10))
-                    .start_date(Goal.getStart_date().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")).substring(0,10))
+                    .endDate(Goal.getEndDate().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
+                    .startDate(Goal.getStartDate().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
                     .privateCheck(Goal.isPrivateCheck())
                     .time(Goal.getTime())
                     .msgDto(GenerateMsg.getMsg(MsgCollector.CREATE_GOALS.getCode(), MsgCollector.CREATE_GOALS.getMsg()))
@@ -182,11 +179,11 @@ public class MainService {
 
     private boolean checkdate (LocalTime time, long category){
         LocalDateTime localDateTime = LocalDateTime.now();
-        LocalDateTime end_date = localDateTime.plusDays(category);
-        period = Period.between(localDateTime.toLocalDate(),end_date.toLocalDate()).getDays()+1;
+        LocalDateTime endDate = localDateTime.plusDays(category);
+        period = Period.between(localDateTime.toLocalDate(),endDate.toLocalDate()).getDays()+1;
         Optional<CountDto> countDto = goalRepository.getCountGoal(localDateTime);
         if(countDto.isPresent()) {
-            if (countDto.get().getTotalcount() >= 5) {
+            if (countDto.get().getTotalCount() >= 5) {
                 throw new IllegalArgumentException("하루의 습관은 최대 5개까지만 가능합니다. 다시 확인해주세요");
             }
         }
@@ -203,13 +200,26 @@ public class MainService {
         else
             throw new IllegalArgumentException("금일을 넘는 목표는 생성할 수 없습니다. 다시 생성해 주세요");
     }
-
-//    public ResponseEntity ChangeGoal(long goalId, Principaldetail principaldetail) {
-//        Goal goal = goalRepository.findById(goalId).orElseGet(this::error);
-//    }
-
-//    private Goal error() {
-//    }
-//
-//    private void error(Optional<Goal> goal)
+    public ResponseEntity<GoalResponseDto> ChangeGoal(long goalId,boolean achivement) {
+        return goalRepository.findById(goalId)
+                .map(g -> changeCheckGoal(g,achivement))
+                .orElseThrow(() -> new IllegalArgumentException("해당 습관이 존재하지 않습니다."));
+    }
+    private ResponseEntity<GoalResponseDto> changeCheckGoal(Goal goal,boolean achivement) {
+        goal.SetAchivementCheck(achivement);
+        goalRepository.save(goal);
+        return ResponseEntity.ok(GoalResponseDto.builder()
+                .currentdate(goal.getCurrentDate().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
+                .startDate(goal.getStartDate().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
+                .endDate(goal.getEndDate().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
+                .title(goal.getTitle())
+                .achievementCheck(goal.isAchievementCheck())
+                .id(goal.getId())
+                .privateCheck(goal.isPrivateCheck())
+                .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"습관 달성 축하드립니다.!!! 고생 많으셨어요"))
+                .socialId(goal.getSocialId())
+                .characterId(goal.getCharacterId())
+                .time(goal.getTime())
+                .build());
+    }
 }

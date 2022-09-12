@@ -10,13 +10,13 @@ import java.util.Locale;
 @Data
 public class CountDto {
 
-    private String currentdate;
+    private String currentDate;
 
-    private long totalcount;
+    private long totalCount;
 
     @QueryProjection
-    public CountDto(String currentdate, long totalcount){
-        this.currentdate=currentdate;
-        this.totalcount=totalcount;
+    public CountDto(String currentDate, long totalCount){
+        this.currentDate=currentDate;
+        this.totalCount=totalCount;
     }
 }
