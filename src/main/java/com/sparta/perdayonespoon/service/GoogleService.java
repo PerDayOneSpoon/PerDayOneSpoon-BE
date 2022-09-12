@@ -122,7 +122,7 @@ public class GoogleService {
             Member member = Member.builder()
                     .socialId(profile.getSub())
                     .socialCode(profile.getSub().substring(0,5)+UUID.randomUUID().toString().charAt(0))
-                    .nickname(profile.getName())
+                    .nickName(profile.getName())
                     .email(profile.getEmail())
                     .authority(Authority.ROLE_USER)
                     .password(passwordEncoder.encode(UUID.randomUUID().toString()))
@@ -170,7 +170,6 @@ public class GoogleService {
         refreshTokenRepository.save(refreshToken);
         return tokenDto;
     }
-
     public ResponseEntity regenerateToken(TokenSearchCondition condition){
         if(tokenProvider.validateToken(condition.getRefreshtoken())){
             TwoFieldDto twoFieldDto = refreshTokenRepository.getMember(condition);

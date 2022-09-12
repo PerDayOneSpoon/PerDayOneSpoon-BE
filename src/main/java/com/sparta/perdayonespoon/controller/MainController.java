@@ -3,6 +3,7 @@ package com.sparta.perdayonespoon.controller;
 import com.sparta.perdayonespoon.domain.dto.request.GoalDto;
 //import com.sparta.perdayonespoon.domain.dto.response.CalenderResponseDto;
 //import com.sparta.perdayonespoon.domain.dto.response.MsgDto;
+import com.sparta.perdayonespoon.domain.dto.response.Goal.GoalResponseDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.service.MainService;
 import io.swagger.annotations.*;
@@ -42,15 +43,15 @@ public class MainController {
         return mainService.CreateGoal(goalDto,principaldetail);
     }
 
-//    @ApiOperation(value = "메인페이지 목표 완료 여부 수정 API ", notes = "토큰검사 후 해당 목표 완료 여부 수정 후 응답")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름"),
-//    })
-//    @ApiResponses({
-//            @ApiResponse(code = 200, message = "API 정상 작동",response = GoalDto.class)
-//    })
-//    @PatchMapping("/change/{goalId}")
-//    public ResponseEntity ChangeGoal(@PathVariable long goalId, @ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail) {
-//        return mainService.ChangeGoal(goalId,principaldetail);
-//    }
+    @ApiOperation(value = "메인페이지 목표 완료 여부 수정 API ", notes = "토큰검사 후 해당 목표 완료 여부 수정 후 응답")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름"),
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "API 정상 작동",response = GoalResponseDto.class)
+    })
+    @PatchMapping("/change/{goalId}")
+    public ResponseEntity<GoalResponseDto> ChangeGoal(@PathVariable long goalId, @RequestParam("achivement") boolean achivement) {
+        return mainService.ChangeGoal(goalId,achivement);
+    }
 }

@@ -116,7 +116,7 @@ public class NaverService {
             Member member = Member.builder()
                     .socialCode(UUID.randomUUID().toString().substring(0,5))
                     .socialId(profile.getResponse().getId())
-                    .nickname(profile.getResponse().getName())
+                    .nickName(profile.getResponse().getName())
                     .email(profile.getResponse().getEmail())
                     .authority(Authority.ROLE_USER)
                     .password(passwordEncoder.encode(UUID.randomUUID().toString()))

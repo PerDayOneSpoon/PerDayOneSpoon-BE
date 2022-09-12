@@ -16,7 +16,7 @@ public class MonthResponseDto {
 
     private String endDate;
 
-    private LocalDateTime CreatedAt;
+    private LocalDateTime createdAt;
 
-    private LocalDateTime ModifiedAt;
+    private LocalDateTime modifiedAt;
 }
