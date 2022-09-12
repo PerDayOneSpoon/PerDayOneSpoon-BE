@@ -1,16 +1,9 @@
-//buildscript { // 이놈
-//	ext {
-//		queryDslVersion = "5.0.0"
-//	}
-//}
-
 plugins {
     id 'org.springframework.boot' version '2.5.3'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id "com.ewerk.gradle.plugins.querydsl" version "1.0.10" // QueryDSL 플러그인
     id 'java'
 }
-
 group = 'com.sparta'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = "11"
@@ -32,8 +25,6 @@ dependencies {
     // lombok 에서 mapstruct binding 해주는 기능이 추가되었습니다.!
     annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
     // querydsl 추가 시작
-//	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
-//	implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
 
     implementation 'com.querydsl:querydsl-jpa'
     implementation 'com.querydsl:querydsl-apt'
@@ -92,17 +83,12 @@ dependencies {
     implementation 'org.webjars:sockjs-client:1.1.2'
     implementation 'org.webjars:stomp-websocket:2.3.3-1'
 
-
     // scalr 라이브러리
     implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
     implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.17'
 
-
     //aws 의존성
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.0.1.RELEASE'
-
-//    implementation "com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.6.1"
-
 
     //Redis 의존성
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
@@ -113,19 +99,17 @@ dependencies {
 
     // 자바 암호화 Jasypt
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
+
 //	//엘라스틱서치
 //	implementation 'org.springframework.data:spring-data-elasticsearch:4.2.2'
 //
 //	//elasticsearch
 //	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
-
 }
-
 test {
     useJUnitPlatform()
     systemProperty "jasypt.encryptor.password", System.getProperties().get("jasypt.encryptor.password")
 }
-
 //이놈
 def querydslDir = "$buildDir/generated/querydsl"
 
@@ -137,41 +121,19 @@ querydsl { //이놈
 sourceSets { //이놈
     main.java.srcDir querydslDir
 }
-
 configurations { // 이놈
     compileOnly {
         extendsFrom annotationProcessor
     }
     querydsl.extendsFrom compileClasspath
 }
-
 compileQuerydsl { // 이놈
     options.annotationProcessorPath = configurations.querydsl
 }
-
 // log42 랑 겹치는 것들 제외
 configurations {
     all {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
     }
 }
-
-
-//
-//// QueryDsl 관련 의존성 추가
-//def querydslDir = "$buildDir/generated/querydsl"
-//querydsl {
-//	jpa = true
-//	querydslSourcesDir = querydslDir
-//}
-//sourceSets {
-//	main.java.srcDir querydslDir
-//}
-//configurations {
-//	querydsl.extendsFrom compileClasspath
-//}
-//compileQuerydsl {
-//	options.annotationProcessorPath = configurations.querydsl
-//}
-// querydsl 설정 추가 끝
 targetCompatibility = JavaVersion.VERSION_11
