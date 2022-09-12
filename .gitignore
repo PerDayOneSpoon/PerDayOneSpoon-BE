@@ -146,4 +146,4 @@ replay_pid*
 # Java heap dump
 *.hprof
 
-# End of https://www.toptal.com/developers/gitignore/api/database,java,gradle,intellij+all
+# End of https://www.toptal.com/developers/gitignore/api/database,j,gradle,intellij+all
