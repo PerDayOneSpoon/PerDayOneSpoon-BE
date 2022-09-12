@@ -21,10 +21,10 @@ public class Image extends  Timestamped{
         private Long id;
 
         @Column
-        private String ImgUrl;
+        private String imgUrl;
 
         @Column
-        private String ImgName;
+        private String imgName;
 
         @OneToOne
         @JsonBackReference
@@ -32,13 +32,13 @@ public class Image extends  Timestamped{
 
         @Builder
         public Image(String ImgUrl, String ImgName, Member member){
-            this.ImgUrl=ImgUrl;
-            this.ImgName=ImgName;
+            this.imgUrl=ImgUrl;
+            this.imgName=ImgName;
             this.member=member;
         }
         public void SetTwoField(S3Dto s3DTO){
-            this.ImgName = s3DTO.getFileName();
-            this.ImgUrl = s3DTO.getUploadImageUrl();
+            this.imgName = s3DTO.getFileName();
+            this.imgUrl = s3DTO.getUploadImageUrl();
         }
 
         public void setMember(Member member){

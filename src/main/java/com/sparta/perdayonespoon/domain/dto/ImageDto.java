@@ -11,7 +11,7 @@ public class ImageDto {
     private String uploadImageUrl;
     private String imageName;
 
-    private String Msg;
+    private String msg;
     private long code;
 
 
@@ -22,7 +22,7 @@ public class ImageDto {
     }
 
     public void SetTwoproperties(MsgDto msgDto){
-        this.Msg = msgDto.getMsg();
+        this.msg = msgDto.getMsg();
         this.code = msgDto.getCode();
     }
 }

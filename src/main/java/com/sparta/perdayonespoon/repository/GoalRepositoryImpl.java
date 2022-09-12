@@ -1,16 +1,14 @@
 package com.sparta.perdayonespoon.repository;
 
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sparta.perdayonespoon.domain.Goal;
-//import com.sparta.perdayonespoon.domain.dto.CountDto;
 import com.sparta.perdayonespoon.domain.dto.CountDto;
 import com.sparta.perdayonespoon.domain.dto.QCountDto;
-import com.sparta.perdayonespoon.domain.dto.response.GoalRateDto;
-import com.sparta.perdayonespoon.domain.dto.response.QGoalRateDto;
-//import com.sparta.perdayonespoon.domain.dto.response.GoalRateDto;
-//import com.sparta.perdayonespoon.domain.dto.response.MemberSearchDto;
+import com.sparta.perdayonespoon.domain.dto.response.Goal.QTodayGoalsDto;
+import com.sparta.perdayonespoon.domain.dto.response.Goal.TodayGoalsDto;
+import com.sparta.perdayonespoon.domain.dto.response.rate.GoalRateDto;
+import com.sparta.perdayonespoon.domain.dto.response.rate.QGoalRateDto;
+import lombok.RequiredArgsConstructor;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
@@ -20,7 +18,10 @@ import java.util.Optional;
 import static com.sparta.perdayonespoon.domain.QGoal.goal;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
+//@RequiredArgsConstructor
 public class GoalRepositoryImpl implements GoalRepositoryCustom{
+
+//    private final JPAQueryFactory queryFactory;
 
     private final JPAQueryFactory queryFactory;
 
@@ -31,28 +32,38 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
     @Override
     public List<GoalRateDto> getRateGoal(LocalDateTime sunday, LocalDateTime saturday, String socialid){
         return queryFactory
-                .select(new QGoalRateDto(goal.socialId,goal.currentdate.stringValue().substring(0,10), goal.achievementCheck,goal.count()))
+                .select(new QGoalRateDto(goal.currentDate.stringValue().substring(0,10), goal.achievementCheck,goal.count()))
                 .from(goal)
-                .where(goal.currentdate.dayOfMonth().between(sunday.getDayOfMonth(),saturday.getDayOfMonth()),GoalSocialEq(socialid))
-                .groupBy(goal.currentdate.stringValue().substring(0,10),goal.achievementCheck,goal.socialId)
+                .where(goal.currentDate.dayOfMonth().between(sunday.getDayOfMonth(),saturday.getDayOfMonth()),GoalSocialEq(socialid))
+                .groupBy(goal.currentDate.stringValue().substring(0,10),goal.achievementCheck)
                 .fetch();
     }
 
     @Override
-    public Optional<CountDto> getCountGoal(LocalDateTime currentdate){
+    public Optional<CountDto> getCountGoal(LocalDateTime currentDate){
         return Optional.ofNullable(queryFactory
-                .select(new QCountDto(goal.currentdate.stringValue().substring(0, 10), goal.count()))
+                .select(new QCountDto(goal.currentDate.stringValue().substring(0,10), goal.count()))
                 .from(goal)
-                .where(GoalCurrentEq(currentdate.getDayOfMonth()))
-                .groupBy(goal.currentdate.stringValue().substring(0, 10))
+                .where(GoalCurrentEq(currentDate.getDayOfMonth()))
+                .groupBy(goal.currentDate.stringValue().substring(0,10))
                 .fetchOne());
+    }
+    @Override
+    public List<TodayGoalsDto> getTodayGoal(LocalDateTime currentDate){
+        return queryFactory.select(new QTodayGoalsDto(goal.title,goal.startDate
+                ,goal.endDate,goal.time,goal.characterId,goal.id,goal.privateCheck, goal.socialId
+                ,goal.currentDate,goal.achievementCheck))
+                .from(goal)
+                .where(GoalCurrentEq(currentDate.getDayOfMonth()))
+                .fetch();
+
     }
 
     private BooleanExpression GoalSocialEq(String socialId) {
         return isEmpty(socialId) ? null : goal.socialId.eq(socialId);
     }
 
-    private BooleanExpression GoalCurrentEq(int currentdate) {
-        return isEmpty(currentdate) ? null : goal.currentdate.dayOfMonth().eq(currentdate);
+    private BooleanExpression GoalCurrentEq(int currentDate) {
+        return isEmpty(currentDate) ? null : goal.currentDate.dayOfMonth().eq(currentDate);
     }
 }

@@ -1,5 +1,6 @@
 package com.sparta.perdayonespoon.domain;
 
+import com.sparta.perdayonespoon.domain.dto.response.rate.WeekRateDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @NoArgsConstructor
-public class Goal extends Timestamped{
+public class Goal{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,13 +19,13 @@ public class Goal extends Timestamped{
     @Column
     private String title;
     @Column
-    private LocalDateTime start_date;
+    private LocalDateTime startDate;
 
     @Column
-    private LocalDateTime currentdate;
+    private LocalDateTime currentDate;
 
     @Column
-    private LocalDateTime end_date;
+    private LocalDateTime endDate;
 
     @Column
     private String time;
@@ -45,17 +46,21 @@ public class Goal extends Timestamped{
     private boolean achievementCheck;
 
     @Builder
-    public Goal(String title, LocalDateTime start_date,LocalDateTime currentdate,LocalDateTime end_date, String time, long category,
+    public Goal(String title, LocalDateTime startDate,LocalDateTime currentDate,LocalDateTime endDate, String time, long category,
                 long characterId, boolean privateCheck, String socialId,boolean achievementCheck){
         this.title = title;
         this.category = category;
-        this.start_date = start_date;
-        this.currentdate = currentdate;
-        this.end_date = end_date;
+        this.startDate = startDate;
+        this.currentDate = currentDate;
+        this.endDate = endDate;
         this.characterId = characterId;
         this.privateCheck = privateCheck;
-        this.time = time;
+        this.time=time;
         this.socialId=socialId;
         this.achievementCheck=achievementCheck;
+    }
+
+    public void SetAchivementCheck(boolean achievementCheck){
+        this.achievementCheck = achievementCheck;
     }
 }
