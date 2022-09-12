@@ -10,7 +10,6 @@ import com.sparta.perdayonespoon.domain.dto.response.rate.GoalRateDto;
 import com.sparta.perdayonespoon.domain.dto.response.rate.QGoalRateDto;
 import lombok.RequiredArgsConstructor;
 
-import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -18,16 +17,10 @@ import java.util.Optional;
 import static com.sparta.perdayonespoon.domain.QGoal.goal;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class GoalRepositoryImpl implements GoalRepositoryCustom{
 
-//    private final JPAQueryFactory queryFactory;
-
     private final JPAQueryFactory queryFactory;
-
-    public GoalRepositoryImpl(EntityManager em) {
-        this.queryFactory = new JPAQueryFactory(em);
-    }
 
     @Override
     public List<GoalRateDto> getRateGoal(LocalDateTime sunday, LocalDateTime saturday, String socialid){

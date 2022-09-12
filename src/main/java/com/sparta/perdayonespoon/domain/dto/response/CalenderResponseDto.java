@@ -6,12 +6,15 @@ import com.sparta.perdayonespoon.domain.dto.response.rate.WeekRateDto;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 public class CalenderResponseDto {
 
+    @Builder.Default
     private List<WeekRateDto> weekRateDtoList;
+    @Builder.Default
     private List<TodayGoalsDto> todayGoalsDtoList;
 
     private String weekStartDate;
