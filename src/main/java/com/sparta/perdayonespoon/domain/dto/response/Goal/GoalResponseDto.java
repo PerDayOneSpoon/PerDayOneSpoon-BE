@@ -7,7 +7,6 @@ import lombok.Data;
 
 @Data
 public class GoalResponseDto {
-
     private Long id;
     private String title;
     private String startDate;
@@ -20,7 +19,6 @@ public class GoalResponseDto {
     private long code;
     private String msg;
     private String socialId;
-
     @Builder
     public GoalResponseDto(String title, String startDate, String endDate, String time, long characterId,
                            Long id, boolean privateCheck, MsgDto msgDto, String socialId,

@@ -23,9 +23,9 @@ spring:
 #    properties:
 #      hibernate:
 #   redis 설정 기본 6379로 작동
-  redis:
-    host: 127.0.0.1
-    port: 6379
+#  redis:
+#    host: 127.0.0.1
+#    port: 6379
 #
 #  datasource:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
@@ -139,11 +139,11 @@ jasypt:
     salt-generator-classname: org.jasypt.salt.RandomSaltGenerator
     password: ${JASYPT_PASSWORD}
 
-logging:
-  level:
-    org.hibernate.sql: debug
-    org.hibernate.type: trace
-    com.tutorial: debug
+#logging:
+#  level:
+#    org.hibernate.sql: debug
+#    org.hibernate.type: trace
+#    com.tutorial: debug
 
 # HS512 ????? ??? ??? ??? 512bit, ? 64byte ??? secret key? ???? ??.
 # Secret ?? ?? ???? Base64 ? ???? ? ?? (?? ???? ???? ??? ??? ??)
