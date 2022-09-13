@@ -20,9 +20,9 @@ public class GoalDto {
     @ApiModelProperty(notes = "목표 생성시 선택한 시간",example = "사용자가 입력한 목표달성 시간")
     public String time;
     @ApiModelProperty(name= "characterId", value = "캐릭터의 Id" , example = "6")
-    public long characterId;
+    public int characterId;
     @ApiModelProperty(notes = "목표 생성시 선택한 일수", example = "6")
-    public long category;
+    public int category;
 
     @ApiModelProperty(name= "privateCheck" ,dataType = "boolean" , notes = "목표 생성시 공개설정,비공개 설정 입력한 것", example = "true")
     public boolean privateCheck;

@@ -3,6 +3,7 @@ package com.sparta.perdayonespoon.domain.dto.response.Goal;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.querydsl.core.annotations.QueryProjection;
 
+import com.sparta.perdayonespoon.util.GetCharacterUrl;
 import lombok.Builder;
 import lombok.Data;
 
@@ -18,20 +19,20 @@ public class TodayGoalsDto {
     private String endDate;
     private String currentDate;
     private String time;
-    private long CharacterId;
+    private String characterUrl;
     private boolean privateCheck;
     private boolean achievementCheck;
     private String socialId;
 
     @Builder
     @QueryProjection
-    public TodayGoalsDto(String title, LocalDateTime startDate, LocalDateTime endDate, String time, long characterId,
+    public TodayGoalsDto(String title, LocalDateTime startDate, LocalDateTime endDate, String time, int characterUrl,
                          Long id, boolean privateCheck, String socialId, LocalDateTime currentDate, boolean achievementCheck){
         this.title=title;
         this.startDate= startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13);
         this.endDate= endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13);
         this.time=time;
-        this.CharacterId=characterId;
+        this.characterUrl= GetCharacterUrl.getMandooUrl(characterUrl);
         this.id=id;
         this.privateCheck=privateCheck;
         this.socialId = socialId;

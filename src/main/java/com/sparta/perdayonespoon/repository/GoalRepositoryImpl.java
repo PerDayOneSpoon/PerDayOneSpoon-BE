@@ -4,12 +4,16 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.perdayonespoon.domain.dto.CountDto;
 import com.sparta.perdayonespoon.domain.dto.QCountDto;
+import com.sparta.perdayonespoon.domain.dto.response.Goal.MonthGoalsDto;
+import com.sparta.perdayonespoon.domain.dto.response.Goal.QMonthGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.QTodayGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.TodayGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.rate.GoalRateDto;
 import com.sparta.perdayonespoon.domain.dto.response.rate.QGoalRateDto;
+import com.sparta.perdayonespoon.util.GetCharacterUrl;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +23,6 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 
 @RequiredArgsConstructor
 public class GoalRepositoryImpl implements GoalRepositoryCustom{
-
     private final JPAQueryFactory queryFactory;
 
     @Override
@@ -41,15 +44,24 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
                 .groupBy(goal.currentDate.stringValue().substring(0,10))
                 .fetchOne());
     }
+
     @Override
     public List<TodayGoalsDto> getTodayGoal(LocalDateTime currentDate,String socialId){
         return queryFactory.select(new QTodayGoalsDto(goal.title,goal.startDate
-                ,goal.endDate,goal.time,goal.characterId,goal.id,goal.privateCheck, goal.socialId
+                ,goal.endDate,goal.time, goal.characterId,goal.id,goal.privateCheck, goal.socialId
                 ,goal.currentDate,goal.achievementCheck))
                 .from(goal)
                 .where(GoalCurrentEq(currentDate.getDayOfMonth()),GoalSocialEq(socialId))
                 .fetch();
+    }
 
+    @Override
+    public List<MonthGoalsDto> getMonthGoal(LocalDate startDate, LocalDate endDate,
+                                            String socialId){
+        return queryFactory.select(new QMonthGoalsDto(goal.currentDate,goal.endDate))
+                .from(goal)
+                .where(goal.currentDate.dayOfMonth().between(startDate.getDayOfMonth(),endDate.getDayOfMonth()))
+                .fetch();
     }
 
     private BooleanExpression GoalSocialEq(String socialId) {

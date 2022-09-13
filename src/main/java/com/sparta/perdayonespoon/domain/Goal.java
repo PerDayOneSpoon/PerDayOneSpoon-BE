@@ -31,10 +31,10 @@ public class Goal{
     private String time;
 
     @Column
-    private long category;
+    private int category;
 
     @Column
-    private long characterId;
+    private int characterId;
 
     @Column
     private boolean privateCheck;
@@ -46,8 +46,8 @@ public class Goal{
     private boolean achievementCheck;
 
     @Builder
-    public Goal(String title, LocalDateTime startDate,LocalDateTime currentDate,LocalDateTime endDate, String time, long category,
-                long characterId, boolean privateCheck, String socialId,boolean achievementCheck){
+    public Goal(String title, LocalDateTime startDate,LocalDateTime currentDate,LocalDateTime endDate, String time, int category,
+                int characterId, boolean privateCheck, String socialId,boolean achievementCheck){
         this.title = title;
         this.category = category;
         this.startDate = startDate;
