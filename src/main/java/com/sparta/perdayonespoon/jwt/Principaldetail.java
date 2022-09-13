@@ -40,7 +40,7 @@ public class Principaldetail implements UserDetails {
     }
     @Override
     public String getUsername(){
-        return this.member.getNickName();
+        return this.member.getNickname();
     }
 
     @Override

@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 @Component
 public class TokenProvider {
 
+
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_TYPE = "bearer";
 
@@ -35,9 +36,9 @@ public class TokenProvider {
 
     private static final String SOCIAL_ID = "socialid";
 
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30000;            // 20일
+//    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30000;            // 20일
 
-//    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;            // 30분
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;            // 30분
 
 //    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 20;            // 20초
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // 7일
@@ -64,7 +65,7 @@ public class TokenProvider {
         String accessToken = Jwts.builder()
                 .setSubject(member.getEmail())       // payload "sub": "name"
                 .claim(SOCIAL_ID,member.getSocialId())
-                .claim(MEMBER_KEY,member.getNickName())      // payload "member" : "member.getUserNic"
+                .claim(MEMBER_KEY,member.getNickname())      // payload "member" : "member.getUserNic"
                 .claim(AUTHORITIES_KEY, authorities)        // payload "auth": "ROLE_USER"
                 .setExpiration(accessTokenExpiresIn)        // payload "exp": 1516239022 (예시)
                 .signWith(key, SignatureAlgorithm.HS512)    // header "alg": "HS512"
@@ -117,7 +118,7 @@ public class TokenProvider {
         Member member = Member.builder()
                 .authority(authority)
                 .email(claims.getSubject())
-                .nickName(claims.get(MEMBER_KEY).toString())
+                .nickname(claims.get(MEMBER_KEY).toString())
                 .socialId(claims.get(SOCIAL_ID).toString())
                 .build();
 

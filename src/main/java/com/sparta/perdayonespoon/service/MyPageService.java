@@ -38,8 +38,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class MyPageService {
-
-    private final RestTemplate restTemplate;
     @Value("${spring.security.oauth2.client.registration.kakao.clientId}")
     private String KAKAO_SNS_CLIENT_ID;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -53,7 +51,7 @@ public class MyPageService {
     public ResponseEntity getProfile(Principaldetail principaldetail) {
         Optional<Member> member = memberRepository.findBySocialId(principaldetail.getMember().getSocialId());
         MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member.orElseThrow(()-> new IllegalArgumentException("유저정보가 일치하지 않습니다.")));
-        memberResponseDto.setTwoField(GenerateMsg.getMsg(HttpServletResponse.SC_OK,memberResponseDto.getNickName()+"프로필 조회에 성공하셨습니다."));
+        memberResponseDto.setTwoField(GenerateMsg.getMsg(HttpServletResponse.SC_OK,memberResponseDto.getNickname()+"프로필 조회에 성공하셨습니다."));
         return ResponseEntity.ok(memberResponseDto);
     }
 
@@ -78,7 +76,7 @@ public class MyPageService {
             throw new IllegalArgumentException("제대로 해주세요");
         }
         //(6)
-        return ResponseEntity.ok(GenerateMsg.getMsg(HttpServletResponse.SC_OK,principaldetail.getMember().getNickName()+"님 로그아웃에 성공하셨습니다."));
+        return ResponseEntity.ok(GenerateMsg.getMsg(HttpServletResponse.SC_OK,principaldetail.getMember().getNickname()+"님 로그아웃에 성공하셨습니다."));
     }
     public ResponseEntity deleteMember(Principaldetail principaldetail) {
         refreshTokenRepository.findByKey(principaldetail.getMember().getSocialId())
@@ -87,7 +85,7 @@ public class MyPageService {
         memberRepository.findBySocialId(principaldetail.getMember().getSocialId())
                 .map(this::deleteDb)
                 .orElseThrow(() -> new IllegalArgumentException("이미 탈퇴한 회원입니다."));
-        return ResponseEntity.ok(GenerateMsg.getMsg(HttpServletResponse.SC_OK,principaldetail.getMember().getNickName()+"님 회원탈퇴 성공하셨습니다."));
+        return ResponseEntity.ok(GenerateMsg.getMsg(HttpServletResponse.SC_OK,principaldetail.getMember().getNickname()+"님 회원탈퇴 성공하셨습니다."));
     }
 
     private boolean delete(RefreshToken refreshToken){

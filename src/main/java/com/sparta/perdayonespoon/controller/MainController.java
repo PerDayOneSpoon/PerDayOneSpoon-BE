@@ -4,6 +4,7 @@ import com.sparta.perdayonespoon.domain.dto.request.GoalDto;
 //import com.sparta.perdayonespoon.domain.dto.response.CalenderResponseDto;
 //import com.sparta.perdayonespoon.domain.dto.response.MsgDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.GoalResponseDto;
+import com.sparta.perdayonespoon.domain.dto.response.Goal.RequestBooleanDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.service.MainService;
 import io.swagger.annotations.*;
@@ -51,7 +52,7 @@ public class MainController {
             @ApiResponse(code = 200, message = "API 정상 작동",response = GoalResponseDto.class)
     })
     @PatchMapping("/change/{goalId}")
-    public ResponseEntity<GoalResponseDto> ChangeGoal(@PathVariable long goalId, @RequestParam("achivement") boolean achivement) {
-        return mainService.ChangeGoal(goalId,achivement);
+    public ResponseEntity<GoalResponseDto> ChangeGoal(@PathVariable long goalId, @RequestBody RequestBooleanDto requestBooleanDto, @ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail) {
+        return mainService.ChangeGoal(goalId,requestBooleanDto.getAchivement(),principaldetail);
     }
 }

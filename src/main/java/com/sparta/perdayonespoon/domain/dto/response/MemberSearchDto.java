@@ -10,7 +10,7 @@ import lombok.Data;
 public class MemberSearchDto {
 
     @ApiModelProperty(example = "사용자의 닉네임")
-    private String nickName;
+    private String nickname;
     @ApiModelProperty(example = "사용자의 상태 메세지")
     private String status;
     @ApiModelProperty(example = "사용자의 프로필 이미지")
@@ -21,8 +21,8 @@ public class MemberSearchDto {
     private String Email;
 
     @QueryProjection
-    public MemberSearchDto(String nickName, String status, String ImgUrl, String socialCode, String Email){
-        this.nickName=nickName;
+    public MemberSearchDto(String nickname, String status, String ImgUrl, String socialCode, String Email){
+        this.nickname=nickname;
         this.status=status;
         this.ImgUrl=ImgUrl;
         this.socialCode=socialCode;

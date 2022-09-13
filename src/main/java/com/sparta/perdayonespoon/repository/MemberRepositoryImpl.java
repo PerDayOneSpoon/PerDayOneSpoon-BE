@@ -23,14 +23,14 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
 
     @Override
     public List<MemberSearchDto> getMember(MemberSearchCondition condition){
-        return queryFactory.select(new QMemberSearchDto(member.nickName,member.status,member.image.imgUrl,member.socialCode,member.email))
+        return queryFactory.select(new QMemberSearchDto(member.nickname,member.status,member.image.imgUrl,member.socialCode,member.email))
                 .from(member)
                 .where(memberEmailEq(condition.getThreeToOne()).or(memberCodeEq(condition.getThreeToOne())).or(memberNickEq(condition.getThreeToOne())))
                 .fetch();
     }
 
     private BooleanExpression memberNickEq(String MemberNick) {
-        return isEmpty(MemberNick) ? null : member.nickName.contains(MemberNick);
+        return isEmpty(MemberNick) ? null : member.nickname.contains(MemberNick);
     }
     private BooleanExpression memberCodeEq(String MemberCode) {
         return isEmpty(MemberCode) ? null : member.socialCode.contains(MemberCode);

@@ -122,7 +122,7 @@ public class GoogleService {
             Member member = Member.builder()
                     .socialId(profile.getSub())
                     .socialCode(profile.getSub().substring(0,5)+UUID.randomUUID().toString().charAt(0))
-                    .nickName(profile.getName())
+                    .nickname(profile.getName())
                     .email(profile.getEmail())
                     .authority(Authority.ROLE_USER)
                     .password(passwordEncoder.encode(UUID.randomUUID().toString()))

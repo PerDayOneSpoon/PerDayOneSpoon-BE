@@ -12,7 +12,7 @@ public interface GoalRepositoryCustom  {
 
     List<GoalRateDto> getRateGoal(LocalDateTime sunday, LocalDateTime saturday, String socialId);
 
-    Optional<CountDto> getCountGoal(LocalDateTime currentdate);
+    Optional<CountDto> getCountGoal(LocalDateTime currentdate,String socialId);
 
-    List<TodayGoalsDto> getTodayGoal(LocalDateTime currentdate);
+    List<TodayGoalsDto> getTodayGoal(LocalDateTime currentdate,String socialId);
 }
