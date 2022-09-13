@@ -16,7 +16,7 @@ public class TodayGoalsDto {
     private String title;
     private String startDate;
     private String endDate;
-    private String currentdate;
+    private String currentDate;
     private String time;
     private long CharacterId;
     private boolean privateCheck;
@@ -26,7 +26,7 @@ public class TodayGoalsDto {
     @Builder
     @QueryProjection
     public TodayGoalsDto(String title, LocalDateTime startDate, LocalDateTime endDate, String time, long characterId,
-                         Long id, boolean privateCheck, String socialId, LocalDateTime currentdate, boolean achievementCheck){
+                         Long id, boolean privateCheck, String socialId, LocalDateTime currentDate, boolean achievementCheck){
         this.title=title;
         this.startDate= startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13);
         this.endDate= endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13);
@@ -35,7 +35,7 @@ public class TodayGoalsDto {
         this.id=id;
         this.privateCheck=privateCheck;
         this.socialId = socialId;
-        this.currentdate= currentdate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13);
+        this.currentDate= currentDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13);
         this.achievementCheck=achievementCheck;
     }
 }

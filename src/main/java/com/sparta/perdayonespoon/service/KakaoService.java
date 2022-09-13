@@ -131,7 +131,7 @@ public class KakaoService {
         if(checkmember.isEmpty()) {
             Member member = Member.builder()
                     .socialId(profile.getId())
-                    .nickName(profile.getKakao_account().getProfile().getNickname())
+                    .nickname(profile.getKakao_account().getProfile().getNickname())
                     .socialCode(profile.getId().substring(0,5)+UUID.randomUUID().toString().charAt(0))
                     .email(profile.getKakao_account().getEmail())
                     .authority(Authority.ROLE_USER)

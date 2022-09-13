@@ -33,21 +33,21 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
     }
 
     @Override
-    public Optional<CountDto> getCountGoal(LocalDateTime currentDate){
+    public Optional<CountDto> getCountGoal(LocalDateTime currentDate,String socialId){
         return Optional.ofNullable(queryFactory
                 .select(new QCountDto(goal.currentDate.stringValue().substring(0,10), goal.count()))
                 .from(goal)
-                .where(GoalCurrentEq(currentDate.getDayOfMonth()))
+                .where(GoalCurrentEq(currentDate.getDayOfMonth()),GoalSocialEq(socialId))
                 .groupBy(goal.currentDate.stringValue().substring(0,10))
                 .fetchOne());
     }
     @Override
-    public List<TodayGoalsDto> getTodayGoal(LocalDateTime currentDate){
+    public List<TodayGoalsDto> getTodayGoal(LocalDateTime currentDate,String socialId){
         return queryFactory.select(new QTodayGoalsDto(goal.title,goal.startDate
                 ,goal.endDate,goal.time,goal.characterId,goal.id,goal.privateCheck, goal.socialId
                 ,goal.currentDate,goal.achievementCheck))
                 .from(goal)
-                .where(GoalCurrentEq(currentDate.getDayOfMonth()))
+                .where(GoalCurrentEq(currentDate.getDayOfMonth()),GoalSocialEq(socialId))
                 .fetch();
 
     }

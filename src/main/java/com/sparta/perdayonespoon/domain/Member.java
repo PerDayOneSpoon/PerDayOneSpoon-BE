@@ -33,7 +33,7 @@ public class Member extends  Timestamped {
 
     @ApiModelProperty(example = "소셜 로그인에서 사용하는 유저의 닉네임")
     @Column(nullable = false)
-    private String nickName;
+    private String nickname;
 
     @ApiModelProperty(example = "소셜로그인시 발급되는 소셜 ID")
     @Column(nullable = false, unique = true)
@@ -55,23 +55,23 @@ public class Member extends  Timestamped {
     private Image image;
 
     @Builder
-    public Member(String email, String password,String socialCode, String nickName, String socialId, Authority authority,Image image) {
+    public Member(String email, String password,String socialCode, String nickname, String socialId, Authority authority,Image image) {
         this.email = email;
         this.password = password;
         this.socialCode = socialCode;
-        this.nickName = nickName;
+        this.nickname = nickname;
         this.socialId = socialId;
         this.authority = authority;
         this.image = image;
     }
 
     public void SetTwoColumn(StatusDto statusDto){
-        this.nickName = statusDto.getNickname();
+        this.nickname = statusDto.getNickname();
         this.status = statusDto.getStatus();
     }
 
-    public void Setname(String nickName){
-        this.nickName = nickName;
+    public void Setname(String nickname){
+        this.nickname = nickname;
     }
     public void SetStatus(String status){
         this.status = status;

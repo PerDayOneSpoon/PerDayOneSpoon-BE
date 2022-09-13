@@ -44,12 +44,12 @@ spring:
 
 
   jpa:
-#    database-platform : org.hibernate.dialect.MySQL5Dialect
+    database-platform : org.hibernate.dialect.MySQL5Dialect
 #    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-#    database: mysql
+    database: mysql
     generate-ddl: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     defer-datasource-initialization: true

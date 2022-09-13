@@ -41,6 +41,12 @@ public class GoalRateDto {
     }
 
     public WeekRateDto getWeekRateDto(){
-        return WeekRateDto.builder().rate(rate).dayString(dayString).build();
+        if(whatsDay == 7)
+            whatsDay =0;
+        return WeekRateDto.builder()
+                .id(whatsDay)
+                .rate(rate)
+                .dayString(dayString)
+                .build();
     }
 }
