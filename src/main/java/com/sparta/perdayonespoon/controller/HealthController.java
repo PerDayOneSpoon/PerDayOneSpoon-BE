@@ -13,21 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 
 public class HealthController {
-    private final Environment env;
 
-
-
-    @GetMapping("/profile")
-    public String gyunny() {
-        List<String> profile = Arrays.asList(env.getActiveProfiles());
-        List<String> realProfiles = Arrays.asList("real1", "real2");
-        String defaultProfile = profile.isEmpty() ? "default" : profile.get(0);
-
-        return profile.stream()
-                .filter(realProfiles::contains)
-                .findAny()
-                .orElse(defaultProfile);
-    }
     @GetMapping("/health")
     public ResponseEntity<String> healthcheck(){
         return ResponseEntity.ok("POOR");
