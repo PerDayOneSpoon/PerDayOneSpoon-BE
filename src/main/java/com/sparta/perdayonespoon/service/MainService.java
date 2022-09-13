@@ -12,6 +12,7 @@ import com.sparta.perdayonespoon.domain.dto.response.rate.WeekRateDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.repository.GoalRepository;
 import com.sparta.perdayonespoon.util.GenerateMsg;
+import com.sparta.perdayonespoon.util.GetCharacterUrl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -164,7 +165,7 @@ public class MainService {
                     .id(Goal.getId())
                     .socialId(Goal.getSocialId())
                     .title(Goal.getTitle())
-                    .characterId(Goal.getCharacterId())
+                    .characterUrl(GetCharacterUrl.getMandooUrl(Goal.getCharacterId()))
                     .endDate(Goal.getEndDate().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
                     .startDate(Goal.getStartDate().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
                     .privateCheck(Goal.isPrivateCheck())

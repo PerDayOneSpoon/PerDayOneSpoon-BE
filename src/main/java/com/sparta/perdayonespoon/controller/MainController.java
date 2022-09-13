@@ -1,8 +1,6 @@
 package com.sparta.perdayonespoon.controller;
 
 import com.sparta.perdayonespoon.domain.dto.request.GoalDto;
-//import com.sparta.perdayonespoon.domain.dto.response.CalenderResponseDto;
-//import com.sparta.perdayonespoon.domain.dto.response.MsgDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.GoalResponseDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.RequestBooleanDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;

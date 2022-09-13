@@ -19,17 +19,19 @@ public class GoalResponseDto {
     private long code;
     private String msg;
     private String socialId;
+
+    private String characterUrl;
     @Builder
     public GoalResponseDto(String title, String startDate, String endDate, String time, long characterId,
                            Long id, boolean privateCheck, MsgDto msgDto, String socialId,
-                           String currentdate, boolean achievementCheck){
+                           String currentdate, String characterUrl,boolean achievementCheck){
         this.title = title;
         this.startDate = startDate;
         this.currentdate = currentdate;
         this.endDate = endDate;
         this.time = time;
-        this.CharacterId = characterId;
         this.privateCheck = privateCheck;
+        this.characterUrl=characterUrl;
         this.msg = msgDto.getMsg();
         this.code = msgDto.getCode();
         this.socialId = socialId;
