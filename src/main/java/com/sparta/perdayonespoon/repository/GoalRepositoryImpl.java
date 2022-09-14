@@ -4,13 +4,12 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.perdayonespoon.domain.dto.CountDto;
 import com.sparta.perdayonespoon.domain.dto.QCountDto;
-import com.sparta.perdayonespoon.domain.dto.response.Goal.MonthGoalsDto;
-import com.sparta.perdayonespoon.domain.dto.response.Goal.QMonthGoalsDto;
+import com.sparta.perdayonespoon.domain.dto.response.calender.CalenderGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.QTodayGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.TodayGoalsDto;
+import com.sparta.perdayonespoon.domain.dto.response.calender.QCalenderGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.rate.GoalRateDto;
 import com.sparta.perdayonespoon.domain.dto.response.rate.QGoalRateDto;
-import com.sparta.perdayonespoon.util.GetCharacterUrl;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
@@ -48,19 +47,20 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
     @Override
     public List<TodayGoalsDto> getTodayGoal(LocalDateTime currentDate,String socialId){
         return queryFactory.select(new QTodayGoalsDto(goal.title,goal.startDate
-                ,goal.endDate,goal.time, goal.characterId,goal.id,goal.privateCheck, goal.socialId
-                ,goal.currentDate,goal.achievementCheck))
+                ,goal.endDate,goal.time, goal.characterId,goal.id,goal.privateCheck,
+                goal.currentDate,goal.achievementCheck))
                 .from(goal)
                 .where(GoalCurrentEq(currentDate.getDayOfMonth()),GoalSocialEq(socialId))
                 .fetch();
     }
 
     @Override
-    public List<MonthGoalsDto> getMonthGoal(LocalDate startDate, LocalDate endDate,
-                                            String socialId){
-        return queryFactory.select(new QMonthGoalsDto(goal.currentDate,goal.endDate))
+    public List<CalenderGoalsDto> getMonthGoal(LocalDate startDate, LocalDate endDate, boolean privateCheck,
+                                               String socialId){
+        return queryFactory.select(new QCalenderGoalsDto(goal.id,goal.title,goal.startDate, goal.endDate, goal.currentDate,goal.time,goal.characterId,goal.privateCheck,goal.achievementCheck))
                 .from(goal)
-                .where(goal.currentDate.dayOfMonth().between(startDate.getDayOfMonth(),endDate.getDayOfMonth()))
+                .where(goal.currentDate.dayOfMonth().between(startDate.getDayOfMonth(),endDate.getDayOfMonth()),GoalSocialEq(socialId),GoalPrivateEq(privateCheck))
+                .orderBy(goal.currentDate.asc())
                 .fetch();
     }
 
@@ -70,5 +70,9 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
 
     private BooleanExpression GoalCurrentEq(int currentDate) {
         return isEmpty(currentDate) ? null : goal.currentDate.dayOfMonth().eq(currentDate);
+    }
+
+    private BooleanExpression GoalPrivateEq(boolean privateCheck) {
+        return isEmpty(privateCheck) ? null : goal.privateCheck.eq(privateCheck);
     }
 }

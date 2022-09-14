@@ -23,14 +23,14 @@ import java.util.Calendar;
 public class CalenderController {
     private final CalenderService calenderService;
     @ApiOperation(value = "캘린더 데이터 조회 API", notes = "캘린더 페이지에서 전체 정보를 보여주는 api ")
-    @ApiImplicitParam(name = "code", value = "서버로 넘겨주는 인가코드")  // Swagger에 사용하는 파라미터에 대해 설명
+    @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름")
     @ApiResponses({
             @ApiResponse(code = 200, message = "API 정상 작동",response = MemberResponseDto.class,
                     responseHeaders = {@ResponseHeader(name = "Authorization", description = "accesstoken이 담기는 헤더의 이름", response = TokenDto.class),
                                        @ResponseHeader(name = "refreshtoken", description = "refreshtoken이 담기는 헤더의 이름", response = TokenDto.class)}),
     })
     @GetMapping("/confirm/calender")
-    public ResponseEntity getPrincipal(@AuthenticationPrincipal Principaldetail principaldetail){
+    public ResponseEntity getPrincipal(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
         return calenderService.getAlldate(principaldetail);
     }
 }

@@ -6,15 +6,12 @@ import com.sparta.perdayonespoon.domain.dto.response.rate.WeekRateDto;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class CalenderResponseDto {
+public class AchivementResponseDto {
 
-    @Builder.Default
     private List<WeekRateDto> weekRateDtoList;
-    @Builder.Default
     private List<TodayGoalsDto> todayGoalsDtoList;
 
     private String weekStartDate;
@@ -25,7 +22,7 @@ public class CalenderResponseDto {
     private String msg;
 
     @Builder
-    public CalenderResponseDto(List<WeekRateDto>weekRateDtoList, List<TodayGoalsDto> todayGoalsDtoList , MsgDto msgDto
+    public AchivementResponseDto(List<WeekRateDto>weekRateDtoList, List<TodayGoalsDto> todayGoalsDtoList , MsgDto msgDto
                                , String weekStartDate, String weekEndDate, String currentDate){
         this.weekRateDtoList = weekRateDtoList;
         this.todayGoalsDtoList = todayGoalsDtoList;
