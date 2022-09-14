@@ -14,8 +14,8 @@ public class GetCharacterUrl {
     private static final String greenMandoo = "https://perday-onespoon.s3.ap-northeast-2.amazonaws.com/character/perday-green.png";
 
     private static final String yellowMandooColor = "#fbe5a5";
-    private static final String pinkMandooColor = "#f29bca";
-    private static final String blueMandooColor = "#dbb4f4";
+    private static final String pinkMandooColor =  "#f29bca";
+    private static final String blueMandooColor =  "#dbb4f4";
     private static final String purpleMandooColor = "#bbdcad";
     private static final String greenMandooColor = "#b4d7fc";
 

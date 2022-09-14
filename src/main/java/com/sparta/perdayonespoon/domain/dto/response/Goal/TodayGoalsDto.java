@@ -22,12 +22,10 @@ public class TodayGoalsDto {
     private String characterUrl;
     private boolean privateCheck;
     private boolean achievementCheck;
-    private String socialId;
 
-    @Builder
     @QueryProjection
     public TodayGoalsDto(String title, LocalDateTime startDate, LocalDateTime endDate, String time, int characterUrl,
-                         Long id, boolean privateCheck, String socialId, LocalDateTime currentDate, boolean achievementCheck){
+                         Long id, boolean privateCheck, LocalDateTime currentDate, boolean achievementCheck){
         this.title=title;
         this.startDate= startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13);
         this.endDate= endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13);
@@ -35,8 +33,20 @@ public class TodayGoalsDto {
         this.characterUrl= GetCharacterUrl.getMandooUrl(characterUrl);
         this.id=id;
         this.privateCheck=privateCheck;
-        this.socialId = socialId;
         this.currentDate= currentDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13);
+        this.achievementCheck=achievementCheck;
+    }
+    @Builder
+    public TodayGoalsDto(String title, LocalDateTime startDate, LocalDateTime endDate, String time, int characterUrl,
+                         Long id, boolean privateCheck, String currentDate, boolean achievementCheck){
+        this.title=title;
+        this.startDate= startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13);
+        this.endDate= endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13);
+        this.time=time;
+        this.characterUrl= GetCharacterUrl.getMandooUrl(characterUrl);
+        this.id=id;
+        this.privateCheck=privateCheck;
+        this.currentDate= currentDate;
         this.achievementCheck=achievementCheck;
     }
 }

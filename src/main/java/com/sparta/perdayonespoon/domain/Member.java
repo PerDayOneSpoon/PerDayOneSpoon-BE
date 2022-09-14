@@ -50,7 +50,7 @@ public class Member extends  Timestamped {
     @Column
     private String status;
 
-    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "member")
     @JsonManagedReference
     private Image image;
 

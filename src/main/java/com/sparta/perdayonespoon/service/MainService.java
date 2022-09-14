@@ -4,7 +4,7 @@ import com.sparta.perdayonespoon.domain.Goal;
 import com.sparta.perdayonespoon.domain.MsgCollector;
 import com.sparta.perdayonespoon.domain.dto.CountDto;
 import com.sparta.perdayonespoon.domain.dto.request.GoalDto;
-import com.sparta.perdayonespoon.domain.dto.response.CalenderResponseDto;
+import com.sparta.perdayonespoon.domain.dto.response.AchivementResponseDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.TodayGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.rate.GoalRateDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.GoalResponseDto;
@@ -82,7 +82,7 @@ public class MainService {
             daylist.clear();
         }
         List<TodayGoalsDto> todayGoalsDtoList = goalRepository.getTodayGoal(LocalDateTime.now(),principaldetail.getMember().getSocialId());
-        CalenderResponseDto calenderResponseDto = CalenderResponseDto.builder()
+        AchivementResponseDto achivementResponseDto = AchivementResponseDto.builder()
                 .weekRateDtoList(weekRateDtoList)
                 .todayGoalsDtoList(todayGoalsDtoList)
                 .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"주간 습관 확인에 성공하셨습니다. 힘내세요!"))
@@ -90,7 +90,7 @@ public class MainService {
                 .weekEndDate(saturday.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
                 .currentDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
                 .build();
-        return ResponseEntity.ok(calenderResponseDto);
+        return ResponseEntity.ok(achivementResponseDto);
     }
     private boolean checkgoalgetday(GoalRateDto goalRateDto){
         if(goalRateDto.isCheckGoal()){
