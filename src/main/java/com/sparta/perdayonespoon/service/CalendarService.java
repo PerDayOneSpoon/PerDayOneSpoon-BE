@@ -1,9 +1,9 @@
 package com.sparta.perdayonespoon.service;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.TodayGoalsDto;
-import com.sparta.perdayonespoon.domain.dto.response.calender.CalenderFriendUniteDto;
-import com.sparta.perdayonespoon.domain.dto.response.calender.CalenderGoalsDto;
-import com.sparta.perdayonespoon.domain.dto.response.calender.CalenderUniteDto;
-import com.sparta.perdayonespoon.domain.dto.response.calender.MonthCalenderDto;
+import com.sparta.perdayonespoon.domain.dto.response.calendar.CalendarFriendUniteDto;
+import com.sparta.perdayonespoon.domain.dto.response.calendar.CalendarGoalsDto;
+import com.sparta.perdayonespoon.domain.dto.response.calendar.CalendarUniteDto;
+import com.sparta.perdayonespoon.domain.dto.response.calendar.MonthCalendarDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.repository.GoalRepository;
 import com.sparta.perdayonespoon.util.GenerateMsg;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class CalenderService {
+public class CalendarService {
 //    private List<String> charactorColorList = new ArrayList<>(); //  주소값 참조해서 데이터를 가져다 쓰는거라
 //    private HashMap<String, List<String>> twolist = new LinkedHashMap<>(); // -> 새로운걸 만들어주는줄알았음
 //    private List<MonthCalenderDto> monthGoalsDtoList = new ArrayList<>(); //
@@ -98,19 +98,19 @@ public class CalenderService {
 
     public ResponseEntity getAlldate(Principaldetail principaldetail) {
         HashMap<String, List<String>> twolist = new LinkedHashMap<>();
-        List<MonthCalenderDto> monthGoalsDtoList = new ArrayList<>();
+        List<MonthCalendarDto> monthGoalsDtoList = new ArrayList<>();
         Stack<String> dayCheck = new Stack<>();
         Stack<Long> id = new Stack<>();
         LocalDate today = LocalDate.now();
         LocalDate startDate = today.with(TemporalAdjusters.firstDayOfMonth());
         LocalDate endDate = today.with(TemporalAdjusters.lastDayOfMonth());
-        List<CalenderGoalsDto> calenderGoalsDtoList = goalRepository.getMyCalender(startDate, endDate,principaldetail.getMember().getSocialId());
-        calenderGoalsDtoList.forEach(calenderGoalsDto->CollectSameDate(calenderGoalsDto,twolist,dayCheck,monthGoalsDtoList,id));
-        List<TodayGoalsDto> todayGoalsDtoList = calenderGoalsDtoList.stream().filter(c->c.getCurrentDate().equals(today.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))).map(CalenderGoalsDto::getTodayGoalsDto).collect(Collectors.toList());
+        List<CalendarGoalsDto> calendarGoalsDtoList = goalRepository.getMyCalendar(startDate, endDate,principaldetail.getMember().getSocialId());
+        calendarGoalsDtoList.forEach(calendarGoalsDto->CollectSameDate(calendarGoalsDto,twolist,dayCheck,monthGoalsDtoList,id));
+        List<TodayGoalsDto> todayGoalsDtoList = calendarGoalsDtoList.stream().filter(c->c.getCurrentDate().equals(today.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))).map(CalendarGoalsDto::getTodayGoalsDto).collect(Collectors.toList());
         if(!dayCheck.isEmpty()) {
-            monthGoalsDtoList.add(MonthCalenderDto.builder().id(id.pop()).currentDate(dayCheck.peek()).charactorColorlist(twolist.get(dayCheck.pop())).build());
+            monthGoalsDtoList.add(MonthCalendarDto.builder().id(id.pop()).currentDate(dayCheck.peek()).charactorColorlist(twolist.get(dayCheck.pop())).build());
         }
-        CalenderUniteDto calenderUniteDto = CalenderUniteDto.builder().startDate(startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
+        CalendarUniteDto calenderUniteDto = CalendarUniteDto.builder().startDate(startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                 .myProfileImage(principaldetail.getMember().getImage().getImgUrl())
                 .mySocialId(principaldetail.getMember().getSocialId())
                 .endDate(endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
@@ -121,7 +121,7 @@ public class CalenderService {
         return ResponseEntity.ok().body(calenderUniteDto);
     }
 
-    private void CollectSameDate(CalenderGoalsDto calenderGoalsDtoList,Map<String,List<String>> twolist, Stack<String> daycheck, List<MonthCalenderDto> monthCalenderDtoList,Stack<Long> id) {
+    private void CollectSameDate(CalendarGoalsDto calenderGoalsDtoList,Map<String,List<String>> twolist, Stack<String> daycheck, List<MonthCalendarDto> monthCalenderDtoList,Stack<Long> id) {
         if(twolist.containsKey(calenderGoalsDtoList.getCurrentDate())) {
             twolist.get(calenderGoalsDtoList.getCurrentDate()).add(calenderGoalsDtoList.getCharactorColor());
         }
@@ -135,7 +135,7 @@ public class CalenderService {
             }
             else
             {
-                monthCalenderDtoList.add(MonthCalenderDto.builder().id(id.pop()).currentDate(daycheck.peek()).charactorColorlist(twolist.get(daycheck.pop())).build());
+                monthCalenderDtoList.add(MonthCalendarDto.builder().id(id.pop()).currentDate(daycheck.peek()).charactorColorlist(twolist.get(daycheck.pop())).build());
                 daycheck.push(calenderGoalsDtoList.getCurrentDate());
                 id.push(calenderGoalsDtoList.getId());
                 List<String> charactorColors = new ArrayList<>();
@@ -154,21 +154,24 @@ public class CalenderService {
         return ResponseEntity.ok().body(todayGoalsDtoList);
     }
 
-    public ResponseEntity getFriendCalender(String friendId) {
+    public ResponseEntity getFriendCalendar(String friendId, Principaldetail principaldetail) {
         HashMap<String, List<String>> twolist = new LinkedHashMap<>();
-        List<MonthCalenderDto> monthGoalsDtoList = new ArrayList<>();
+        List<MonthCalendarDto> monthGoalsDtoList = new ArrayList<>();
         Stack<String> dayCheck = new Stack<>();
         Stack<Long> id = new Stack<>();
         LocalDate today = LocalDate.now();
         LocalDate startDate = today.with(TemporalAdjusters.firstDayOfMonth());
         LocalDate endDate = today.with(TemporalAdjusters.lastDayOfMonth());
-        List<CalenderGoalsDto> calenderGoalsDtoList = goalRepository.getFriendCalender(startDate, endDate,false, friendId);
-        calenderGoalsDtoList.forEach(calenderGoalsDto->CollectSameDate(calenderGoalsDto,twolist,dayCheck,monthGoalsDtoList,id));
-        List<TodayGoalsDto> todayGoalsDtoList = calenderGoalsDtoList.stream().filter(c->c.getCurrentDate().equals(today.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))).map(CalenderGoalsDto::getTodayGoalsDto).collect(Collectors.toList());
+        List<CalendarGoalsDto> calendarGoalsDtoList;
+        if(friendId != null) {
+            calendarGoalsDtoList = goalRepository.getFriendCalendar(startDate, endDate, false, friendId);
+        } else calendarGoalsDtoList = goalRepository.getMyCalendar(startDate, endDate,principaldetail.getMember().getSocialId());
+        calendarGoalsDtoList.forEach(calendarGoalsDto->CollectSameDate(calendarGoalsDto,twolist,dayCheck,monthGoalsDtoList,id));
+        List<TodayGoalsDto> todayGoalsDtoList = calendarGoalsDtoList.stream().filter(c->c.getCurrentDate().equals(today.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))).map(CalendarGoalsDto::getTodayGoalsDto).collect(Collectors.toList());
         if(!dayCheck.isEmpty()) {
-            monthGoalsDtoList.add(MonthCalenderDto.builder().id(id.pop()).currentDate(dayCheck.peek()).charactorColorlist(twolist.get(dayCheck.pop())).build());
+            monthGoalsDtoList.add(MonthCalendarDto.builder().id(id.pop()).currentDate(dayCheck.peek()).charactorColorlist(twolist.get(dayCheck.pop())).build());
         }
-        CalenderFriendUniteDto calenderFriendUniteDto = CalenderFriendUniteDto.builder().startDate(startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
+        CalendarFriendUniteDto calenderFriendUniteDto = CalendarFriendUniteDto.builder().startDate(startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                 .endDate(endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                 .monthCalenderDtoList(monthGoalsDtoList)
                 .todayGoalsDtoList(todayGoalsDtoList)

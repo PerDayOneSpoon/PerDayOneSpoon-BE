@@ -4,10 +4,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 
+@RequiredArgsConstructor
 @Getter
 public class RedisUtil {
     private final RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();

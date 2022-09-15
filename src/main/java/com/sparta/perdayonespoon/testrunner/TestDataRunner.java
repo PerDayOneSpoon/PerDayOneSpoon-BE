@@ -1,16 +1,17 @@
 package com.sparta.perdayonespoon.testrunner;
 
-//import com.sparta.perdayonespoon.domain.Authority;
-//import com.sparta.perdayonespoon.domain.Image;
-//import com.sparta.perdayonespoon.domain.Member;
-//import com.sparta.perdayonespoon.repository.MemberRepository;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.ApplicationArguments;
-//import org.springframework.boot.ApplicationRunner;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-//import org.springframework.stereotype.Component;
-//
-//import java.util.*;
+import com.sparta.perdayonespoon.domain.Authority;
+import com.sparta.perdayonespoon.domain.Image;
+import com.sparta.perdayonespoon.domain.Member;
+import com.sparta.perdayonespoon.repository.MemberRepository;
+import com.sparta.perdayonespoon.util.GetCharacterUrl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+import java.util.*;
 //
 //@Component
 //public class TestDataRunner implements ApplicationRunner {
@@ -55,19 +56,81 @@ package com.sparta.perdayonespoon.testrunner;
 //                        .build());
 //                image.setMember(memberList.get(i));
 //            }
-//            Image image = Image.builder()
-//                    .ImgUrl("fksjfdsklfj.png")
-//                    .ImgName("이거잖아~")
-//                    .build();
-//            memberList.add(Member.builder()
-//                    .socialId(UUID.randomUUID().toString())
-//                    .authority(Authority.ROLE_USER)
-//                    .nickname(randomHangulName())
-//                    .socialCode(UUID.randomUUID().toString().substring(0,5))
-//                    .email(UUID.randomUUID().toString().substring(0,5) + "@naver.com")
-//                    .password(passwordEncoder.encode(UUID.randomUUID().toString()))
-//                    .build());
-//            image.setMember(memberList.get(i));
+//            else if(i % 5 == 1) {
+//                Image image = Image.builder()
+//                        .ImgUrl(GetCharacterUrl.getMandooUrl(1))
+//                        .ImgName("이거잖아~")
+//                        .build();
+//                memberList.add(Member.builder()
+//                        .socialId(UUID.randomUUID().toString())
+//                        .authority(Authority.ROLE_USER)
+//                        .nickname(randomHangulName())
+//                        .socialCode(UUID.randomUUID().toString().substring(0, 5))
+//                        .email(UUID.randomUUID().toString().substring(0, 5) + "@naver.com")
+//                        .password(passwordEncoder.encode(UUID.randomUUID().toString()))
+//                        .build());
+//                image.setMember(memberList.get(i));
+//            }
+//            else if (i % 5 == 2){
+//                Image image = Image.builder()
+//                        .ImgUrl(GetCharacterUrl.getMandooUrl(2))
+//                        .ImgName("이거잖아~")
+//                        .build();
+//                memberList.add(Member.builder()
+//                        .socialId(UUID.randomUUID().toString())
+//                        .authority(Authority.ROLE_USER)
+//                        .nickname(randomHangulName())
+//                        .socialCode(UUID.randomUUID().toString().substring(0, 5))
+//                        .email(UUID.randomUUID().toString().substring(0, 5) + "@naver.com")
+//                        .password(passwordEncoder.encode(UUID.randomUUID().toString()))
+//                        .build());
+//                image.setMember(memberList.get(i));
+//            }
+//            else if(i % 5 == 3){
+//                Image image = Image.builder()
+//                        .ImgUrl(GetCharacterUrl.getMandooUrl(3))
+//                        .ImgName("이거잖아~")
+//                        .build();
+//                memberList.add(Member.builder()
+//                        .socialId(UUID.randomUUID().toString())
+//                        .authority(Authority.ROLE_USER)
+//                        .nickname(randomHangulName())
+//                        .socialCode(UUID.randomUUID().toString().substring(0, 5))
+//                        .email(UUID.randomUUID().toString().substring(0, 5) + "@naver.com")
+//                        .password(passwordEncoder.encode(UUID.randomUUID().toString()))
+//                        .build());
+//                image.setMember(memberList.get(i));
+//            }
+//            else if(i % 5 == 4){
+//                Image image = Image.builder()
+//                        .ImgUrl(GetCharacterUrl.getMandooUrl(4))
+//                        .ImgName("이거잖아~")
+//                        .build();
+//                memberList.add(Member.builder()
+//                        .socialId(UUID.randomUUID().toString())
+//                        .authority(Authority.ROLE_USER)
+//                        .nickname(randomHangulName())
+//                        .socialCode(UUID.randomUUID().toString().substring(0, 5))
+//                        .email(UUID.randomUUID().toString().substring(0, 5) + "@naver.com")
+//                        .password(passwordEncoder.encode(UUID.randomUUID().toString()))
+//                        .build());
+//                image.setMember(memberList.get(i));
+//            }
+//            else if(i % 5 == 0){
+//                Image image = Image.builder()
+//                        .ImgUrl(GetCharacterUrl.getMandooUrl(5))
+//                        .ImgName("이거잖아~")
+//                        .build();
+//                memberList.add(Member.builder()
+//                        .socialId(UUID.randomUUID().toString())
+//                        .authority(Authority.ROLE_USER)
+//                        .nickname(randomHangulName())
+//                        .socialCode(UUID.randomUUID().toString().substring(0, 5))
+//                        .email(UUID.randomUUID().toString().substring(0, 5) + "@naver.com")
+//                        .password(passwordEncoder.encode(UUID.randomUUID().toString()))
+//                        .build());
+//                image.setMember(memberList.get(i));
+//            }
 //        }
 //        memberRepository.saveAll(memberList);
 //    }

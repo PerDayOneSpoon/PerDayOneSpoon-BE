@@ -2,14 +2,7 @@ package com.sparta.perdayonespoon.domain.dto.request;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.Extension;
-import io.swagger.annotations.ExtensionProperty;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import javax.annotation.Nullable;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @ApiModel(description = "목표를 만들당시 입력한 변수를 감싼 객체명")
 @Data

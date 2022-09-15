@@ -1,14 +1,11 @@
 package com.sparta.perdayonespoon.util;
 
 
-import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.sparta.perdayonespoon.domain.Member;
 import com.sparta.perdayonespoon.domain.dto.S3Dto;
-import com.sparta.perdayonespoon.jwt.Principaldetail;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.imgscalr.Scalr;
@@ -17,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageOutputStream;
 import javax.transaction.Transactional;
 import java.awt.image.BufferedImage;
 import java.io.File;
