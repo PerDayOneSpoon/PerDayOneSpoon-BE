@@ -78,9 +78,12 @@ public class MainService {
                 }
                 else weekRateDtoList.add(WeekRateDto.builder().rate(0).id(y).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());}
         }
+
         if(!daylist.isEmpty()){
             daylist.clear();
         }
+
+        // 레디스랑 sse SMTP -> 회원가입했을때 메일보내주는거
         List<TodayGoalsDto> todayGoalsDtoList = goalRepository.getTodayGoal(LocalDateTime.now(),principaldetail.getMember().getSocialId());
         AchivementResponseDto achivementResponseDto = AchivementResponseDto.builder()
                 .weekRateDtoList(weekRateDtoList)

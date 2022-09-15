@@ -16,7 +16,11 @@ public interface GoalRepositoryCustom  {
 
     Optional<CountDto> getCountGoal(LocalDateTime currentdate,String socialId);
 
-    List<TodayGoalsDto> getTodayGoal(LocalDateTime currentdate,String socialId);
+    List<TodayGoalsDto> getTodayGoal(LocalDateTime currentdate, String socialId);
 
-    List<CalenderGoalsDto> getMonthGoal(LocalDate startDate, LocalDate endDate, boolean privateCheck, String socialId);
+    List<TodayGoalsDto> getFriendTodayGoal(LocalDateTime currentdate, String socialId, boolean privateCheck);
+
+    List<CalenderGoalsDto> getMyCalender(LocalDate startDate, LocalDate endDate, String socialId);
+
+    List<CalenderGoalsDto> getFriendCalender(LocalDate startDate, LocalDate endDate, boolean privateCheck, String socialId);
 }

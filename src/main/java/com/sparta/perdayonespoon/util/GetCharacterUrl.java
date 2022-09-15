@@ -15,9 +15,9 @@ public class GetCharacterUrl {
 
     private static final String yellowMandooColor = "#fbe5a5";
     private static final String pinkMandooColor =  "#f29bca";
-    private static final String blueMandooColor =  "#dbb4f4";
-    private static final String purpleMandooColor = "#bbdcad";
-    private static final String greenMandooColor = "#b4d7fc";
+    private static final String purpleMandooColor = "#dbb4f4";
+    private static final String blueMandooColor = "#b4d7fc";
+    private static final String greenMandooColor = "#bbdcad";
 
     public static String getMandooUrl(int characterId){
         switch (characterId){
