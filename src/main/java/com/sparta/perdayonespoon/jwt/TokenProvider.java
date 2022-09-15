@@ -2,6 +2,7 @@ package com.sparta.perdayonespoon.jwt;
 
 
 import com.sparta.perdayonespoon.domain.Authority;
+import com.sparta.perdayonespoon.domain.Image;
 import com.sparta.perdayonespoon.domain.Member;
 import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
 import io.jsonwebtoken.*;
@@ -30,6 +31,8 @@ public class TokenProvider {
     private static final String BEARER_TYPE = "bearer";
 
     private static final String MEMBER_KEY = "member";
+
+    private static final String MEMBER_IMAGE = "image";
 
     private static final String SOCIAL_ID = "socialid";
 
@@ -60,9 +63,10 @@ public class TokenProvider {
         // Access Token 생성
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         String accessToken = Jwts.builder()
-                .setSubject(member.getEmail())       // payload "sub": "name"
+                .setSubject(String.valueOf(member.getId()))       // payload "sub": "name"
                 .claim(SOCIAL_ID,member.getSocialId())
                 .claim(MEMBER_KEY,member.getNickname())      // payload "member" : "member.getUserNic"
+                .claim(MEMBER_IMAGE,member.getImage().getImgUrl())
                 .claim(AUTHORITIES_KEY, authorities)        // payload "auth": "ROLE_USER"
                 .setExpiration(accessTokenExpiresIn)        // payload "exp": 1516239022 (예시)
                 .signWith(key, SignatureAlgorithm.HS512)    // header "alg": "HS512"
@@ -112,12 +116,15 @@ public class TokenProvider {
         if(Authority.ROLE_USER.equals(claims.get(AUTHORITIES_KEY))){
             authority = Authority.ROLE_USER;
         } else {authority = Authority.ROLE_ADMIN;}
+        Image image = Image.builder().ImgUrl(claims.get(MEMBER_IMAGE).toString()).build();
         Member member = Member.builder()
                 .authority(authority)
-                .email(claims.getSubject())
+                .id(Long.parseLong(claims.getSubject()))
+                .image(image)
                 .nickname(claims.get(MEMBER_KEY).toString())
                 .socialId(claims.get(SOCIAL_ID).toString())
                 .build();
+
 
         Principaldetail principaldetail = new Principaldetail(member);
         return new UsernamePasswordAuthenticationToken(principaldetail, "", authorities);

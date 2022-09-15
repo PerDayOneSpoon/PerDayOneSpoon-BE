@@ -20,6 +20,8 @@ public class RestApiExceptionHandler {
                 .body(new ErrorResponse(e.getErrorCode()));
     }
 
+
+
     @ExceptionHandler(value = { IllegalArgumentException.class })
     public ResponseEntity<Object> handleApiRequestException(IllegalArgumentException ex) {
         RestApiException restApiException = new RestApiException();

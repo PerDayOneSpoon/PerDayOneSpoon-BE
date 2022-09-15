@@ -55,7 +55,8 @@ public class Member extends  Timestamped {
     private Image image;
 
     @Builder
-    public Member(String email, String password,String socialCode, String nickname, String socialId, Authority authority,Image image) {
+    public Member(Long id,String email, String password,String socialCode, String nickname, String socialId, Authority authority,Image image) {
+        this.id=id;
         this.email = email;
         this.password = password;
         this.socialCode = socialCode;

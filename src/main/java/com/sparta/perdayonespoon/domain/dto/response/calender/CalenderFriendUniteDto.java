@@ -8,10 +8,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class CalenderUniteDto {
-
-    private String mySocialId;
-    private String myProfileImage;
+public class CalenderFriendUniteDto {
     private String startDate;
 
     private String endDate;
@@ -24,12 +21,10 @@ public class CalenderUniteDto {
 
     private String msg;
     @Builder
-    public CalenderUniteDto(String startDate, String endDate, List<MonthCalenderDto> monthCalenderDtoList,
-                            String myProfileImage,String mySocialId,List<TodayGoalsDto> todayGoalsDtoList, MsgDto msgDto){
+    public CalenderFriendUniteDto(String startDate, String endDate, List<MonthCalenderDto> monthCalenderDtoList,
+                            List<TodayGoalsDto> todayGoalsDtoList, MsgDto msgDto){
         this.startDate =startDate;
         this.endDate=endDate;
-        this.myProfileImage=myProfileImage;
-        this.mySocialId=mySocialId;
         this.monthCalenderDtoList = monthCalenderDtoList;
         this.todayGoalsDtoList =todayGoalsDtoList;
         this.code = msgDto.getCode();

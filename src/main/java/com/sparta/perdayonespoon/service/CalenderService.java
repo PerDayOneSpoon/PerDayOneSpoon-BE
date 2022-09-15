@@ -1,6 +1,6 @@
 package com.sparta.perdayonespoon.service;
-
 import com.sparta.perdayonespoon.domain.dto.response.Goal.TodayGoalsDto;
+import com.sparta.perdayonespoon.domain.dto.response.calender.CalenderFriendUniteDto;
 import com.sparta.perdayonespoon.domain.dto.response.calender.CalenderGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.calender.CalenderUniteDto;
 import com.sparta.perdayonespoon.domain.dto.response.calender.MonthCalenderDto;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
@@ -103,14 +104,15 @@ public class CalenderService {
         LocalDate today = LocalDate.now();
         LocalDate startDate = today.with(TemporalAdjusters.firstDayOfMonth());
         LocalDate endDate = today.with(TemporalAdjusters.lastDayOfMonth());
-        List<CalenderGoalsDto> calenderGoalsDtoList = goalRepository.getMonthGoal(startDate, endDate,false,
-                principaldetail.getMember().getSocialId());
+        List<CalenderGoalsDto> calenderGoalsDtoList = goalRepository.getMyCalender(startDate, endDate,principaldetail.getMember().getSocialId());
         calenderGoalsDtoList.forEach(calenderGoalsDto->CollectSameDate(calenderGoalsDto,twolist,dayCheck,monthGoalsDtoList,id));
         List<TodayGoalsDto> todayGoalsDtoList = calenderGoalsDtoList.stream().filter(c->c.getCurrentDate().equals(today.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))).map(CalenderGoalsDto::getTodayGoalsDto).collect(Collectors.toList());
         if(!dayCheck.isEmpty()) {
             monthGoalsDtoList.add(MonthCalenderDto.builder().id(id.pop()).currentDate(dayCheck.peek()).charactorColorlist(twolist.get(dayCheck.pop())).build());
         }
         CalenderUniteDto calenderUniteDto = CalenderUniteDto.builder().startDate(startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
+                .myProfileImage(principaldetail.getMember().getImage().getImgUrl())
+                .mySocialId(principaldetail.getMember().getSocialId())
                 .endDate(endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                 .monthCalenderDtoList(monthGoalsDtoList)
                 .todayGoalsDtoList(todayGoalsDtoList)
@@ -118,6 +120,7 @@ public class CalenderService {
                 .build();
         return ResponseEntity.ok().body(calenderUniteDto);
     }
+
     private void CollectSameDate(CalenderGoalsDto calenderGoalsDtoList,Map<String,List<String>> twolist, Stack<String> daycheck, List<MonthCalenderDto> monthCalenderDtoList,Stack<Long> id) {
         if(twolist.containsKey(calenderGoalsDtoList.getCurrentDate())) {
             twolist.get(calenderGoalsDtoList.getCurrentDate()).add(calenderGoalsDtoList.getCharactorColor());
@@ -140,5 +143,44 @@ public class CalenderService {
                 twolist.put(calenderGoalsDtoList.getCurrentDate(), charactorColors);
             }
         }
+    }
+
+    public ResponseEntity getSpecipicdate(String calenderDate, Principaldetail principaldetail) {
+        LocalDate localDate = LocalDate.parse(calenderDate);
+        LocalDateTime localDateTime = LocalDateTime.of(localDate.getYear(),localDate.getMonth(),localDate.getDayOfMonth(),0,0,0);
+//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneId.of("Asia/Seoul"));
+//        System.out.println(LocalDateTime.parse(calenderDate,dateTimeFormatter).toLocalDate().atStartOfDay());
+        List<TodayGoalsDto> todayGoalsDtoList = goalRepository.getTodayGoal(localDateTime,principaldetail.getMember().getSocialId());
+        return ResponseEntity.ok().body(todayGoalsDtoList);
+    }
+
+    public ResponseEntity getFriendCalender(String friendId) {
+        HashMap<String, List<String>> twolist = new LinkedHashMap<>();
+        List<MonthCalenderDto> monthGoalsDtoList = new ArrayList<>();
+        Stack<String> dayCheck = new Stack<>();
+        Stack<Long> id = new Stack<>();
+        LocalDate today = LocalDate.now();
+        LocalDate startDate = today.with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate endDate = today.with(TemporalAdjusters.lastDayOfMonth());
+        List<CalenderGoalsDto> calenderGoalsDtoList = goalRepository.getFriendCalender(startDate, endDate,false, friendId);
+        calenderGoalsDtoList.forEach(calenderGoalsDto->CollectSameDate(calenderGoalsDto,twolist,dayCheck,monthGoalsDtoList,id));
+        List<TodayGoalsDto> todayGoalsDtoList = calenderGoalsDtoList.stream().filter(c->c.getCurrentDate().equals(today.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))).map(CalenderGoalsDto::getTodayGoalsDto).collect(Collectors.toList());
+        if(!dayCheck.isEmpty()) {
+            monthGoalsDtoList.add(MonthCalenderDto.builder().id(id.pop()).currentDate(dayCheck.peek()).charactorColorlist(twolist.get(dayCheck.pop())).build());
+        }
+        CalenderFriendUniteDto calenderFriendUniteDto = CalenderFriendUniteDto.builder().startDate(startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
+                .endDate(endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
+                .monthCalenderDtoList(monthGoalsDtoList)
+                .todayGoalsDtoList(todayGoalsDtoList)
+                .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"친구 캘린더 조회에 성공하셨습니다.!"))
+                .build();
+        return ResponseEntity.ok().body(calenderFriendUniteDto);
+    }
+
+    public ResponseEntity getFriendSpecific(String friendId, String specificDate) {
+        LocalDate localDate = LocalDate.parse(specificDate);
+        LocalDateTime localDateTime = LocalDateTime.of(localDate.getYear(),localDate.getMonth(),localDate.getDayOfMonth(),0,0,0);
+        List<TodayGoalsDto> todayGoalsDtoList = goalRepository.getFriendTodayGoal(localDateTime,friendId,false);
+        return ResponseEntity.ok().body(todayGoalsDtoList);
     }
 }
