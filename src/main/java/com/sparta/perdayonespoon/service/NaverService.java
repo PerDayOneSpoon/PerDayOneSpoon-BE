@@ -3,10 +3,7 @@ package com.sparta.perdayonespoon.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.perdayonespoon.domain.Authority;
-import com.sparta.perdayonespoon.domain.Image;
-import com.sparta.perdayonespoon.domain.Member;
-import com.sparta.perdayonespoon.domain.RefreshToken;
+import com.sparta.perdayonespoon.domain.*;
 import com.sparta.perdayonespoon.auth.NaverProfile;
 import com.sparta.perdayonespoon.domain.dto.OauthToken;
 import com.sparta.perdayonespoon.domain.dto.response.MemberResponseDto;
@@ -23,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -80,7 +76,7 @@ public class NaverService {
         MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member);
 
         //리턴 바디 상태 코드 및 메세지 넣기
-        memberResponseDto.setTwoField(GenerateMsg.getMsg(HttpStatus.OK.value(),"로그인이 성공하셨습니다."));
+        memberResponseDto.setTwoField(GenerateMsg.getMsg(SuccessMsg.LOGIN_SUCCESS.getCode(), SuccessMsg.LOGIN_SUCCESS.getMsg()));
 
         return ResponseEntity.ok().headers(httpHeaders).body(memberResponseDto);
     }

@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2022-09-03T23:31:38+0900",
-    comments = "version: 1.4.2.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-7.5.jar, environment: Java 11.0.16 (Amazon.com Inc.)"
+    date = "2022-09-14T15:42:57+0900",
+    comments = "version: 1.4.2.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-7.5.jar, environment: Java 11.0.15 (Azul Systems, Inc.)"
 )
 @Component
 public class MemberMapperImpl implements MemberMapper {
@@ -25,10 +25,11 @@ public class MemberMapperImpl implements MemberMapper {
         memberResponseDto.id( member.getId() );
         memberResponseDto.nickname( member.getNickname() );
         memberResponseDto.socialId( member.getSocialId() );
-        memberResponseDto.profileImage( member.getProfileImage() );
         memberResponseDto.authority( member.getAuthority() );
+        memberResponseDto.status( member.getStatus() );
 
-        memberResponseDto.socialCode( member.getSocialCode()+member.getId() );
+        memberResponseDto.socialCode( member.getSocialCode() );
+        memberResponseDto.profileImage( member.getImage().getImgUrl() );
 
         return memberResponseDto.build();
     }

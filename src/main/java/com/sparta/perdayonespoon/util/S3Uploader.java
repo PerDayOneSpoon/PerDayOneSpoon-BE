@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.sparta.perdayonespoon.domain.ExceptionMsg;
 import com.sparta.perdayonespoon.domain.dto.S3Dto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,7 @@ public class S3Uploader {
 
     public S3Dto upload(MultipartFile multipartFile) throws IOException {
         File uploadFile = convert(multipartFile)  // 파일 변환할 수 없으면 에러
-                .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> 파일 변환 실패"));
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMsg.FAIL_TO_CONVERT_FILE.getMsg()));
         return uploadToS3(uploadFile);
     }
 

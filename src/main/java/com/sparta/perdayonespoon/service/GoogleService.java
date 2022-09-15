@@ -22,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -78,7 +77,7 @@ public class GoogleService {
         // 리턴할 바디 제작
         MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member);
         //리턴 바디 상태 코드 및 메세지 넣기
-        memberResponseDto.setTwoField(GenerateMsg.getMsg(HttpStatus.OK.value(),"로그인이 성공하셨습니다."));
+        memberResponseDto.setTwoField(GenerateMsg.getMsg(SuccessMsg.LOGIN_SUCCESS.getCode(), SuccessMsg.LOGIN_SUCCESS.getMsg()));
 
         return ResponseEntity.ok().headers(httpHeaders).body(memberResponseDto);
     }
@@ -178,9 +177,9 @@ public class GoogleService {
             headers.set("Authorization", "Bearer " + tokenDto.getAccessToken());
             headers.set("RefreshToken", twoFieldDto.getRefreshToken().getValue());
             headers.set("Access-Token-Expire-Time", String.valueOf(tokenDto.getAccessTokenExpiresIn()));
-            return ResponseEntity.ok().headers(headers).body(GenerateMsg.getMsg(MsgCollector.RE_GENERATE_TOKEN.getCode(), MsgCollector.RE_GENERATE_TOKEN.getMsg()));
+            return ResponseEntity.ok().headers(headers).body(GenerateMsg.getMsg(SuccessMsg.RE_GENERATE_TOKEN.getCode(), SuccessMsg.RE_GENERATE_TOKEN.getMsg()));
         }
         else
-            throw new IllegalArgumentException("리프레쉬 토큰이 유효하지 않습니다.");
+            throw new IllegalArgumentException(ExceptionMsg.INVALID_REFRESH_TOKEN.getMsg());
     }
 }

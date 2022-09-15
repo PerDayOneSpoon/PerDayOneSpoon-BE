@@ -1,7 +1,8 @@
 package com.sparta.perdayonespoon.service;
 
+import com.sparta.perdayonespoon.domain.ExceptionMsg;
 import com.sparta.perdayonespoon.domain.Goal;
-import com.sparta.perdayonespoon.domain.MsgCollector;
+import com.sparta.perdayonespoon.domain.SuccessMsg;
 import com.sparta.perdayonespoon.domain.dto.CountDto;
 import com.sparta.perdayonespoon.domain.dto.request.GoalDto;
 import com.sparta.perdayonespoon.domain.dto.response.AchivementResponseDto;
@@ -16,7 +17,7 @@ import com.sparta.perdayonespoon.util.GetCharacterUrl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import javax.servlet.http.HttpServletResponse;
+
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
@@ -85,7 +86,7 @@ public class MainService {
         AchivementResponseDto achivementResponseDto = AchivementResponseDto.builder()
                 .weekRateDtoList(weekRateDtoList)
                 .todayGoalsDtoList(todayGoalsDtoList)
-                .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"주간 습관 확인에 성공하셨습니다. 힘내세요!"))
+                .msgDto(GenerateMsg.getMsg(SuccessMsg.CHECK_WEEKLY_HABIT.getCode(), SuccessMsg.CHECK_WEEKLY_HABIT.getMsg()))
                 .weekStartDate(sunday.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
                 .weekEndDate(saturday.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
                 .currentDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
@@ -135,9 +136,9 @@ public class MainService {
     // TODO : 달력 날짜 받기X 주간 달성도 리턴하기
     public ResponseEntity CreateGoal(GoalDto goalDto, Principaldetail principaldetail) {
         if(goalDto.getTitle() == null){
-            throw new IllegalArgumentException("제목을 입력해주세요");
+            throw new IllegalArgumentException(ExceptionMsg.SET_NAME.getMsg());
         } else if (goalDto.getCharacterId() == 0){
-            throw new IllegalArgumentException("캐릭터를 선택해 주세요");
+            throw new IllegalArgumentException(ExceptionMsg.CHOOSE_CHARACTER.getMsg());
         }
         int x=0;
         List<Goal> goalList = new ArrayList<>();
@@ -170,11 +171,11 @@ public class MainService {
                     .startDate(Goal.getStartDate().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
                     .privateCheck(Goal.isPrivateCheck())
                     .time(Goal.getTime())
-                    .msgDto(GenerateMsg.getMsg(MsgCollector.CREATE_GOALS.getCode(), MsgCollector.CREATE_GOALS.getMsg()))
+                    .msgDto(GenerateMsg.getMsg(SuccessMsg.CREATE_GOALS.getCode(), SuccessMsg.CREATE_GOALS.getMsg()))
                     .build()));
             return ResponseEntity.ok(goalResponseDtoList);
         }
-            throw new IllegalArgumentException("하루에 최대 5개까지만 습관 생성이 가능합니다.");
+            throw new IllegalArgumentException(ExceptionMsg.MAX_AMOUNT_OF_GOALS.getMsg());
     }
 
     private boolean checkdate (LocalTime time, long category,String socialId){
@@ -184,29 +185,29 @@ public class MainService {
         Optional<CountDto> countDto = goalRepository.getCountGoal(localDateTime,socialId);
         if(countDto.isPresent()) {
             if (countDto.get().getTotalCount() >= 5) {
-                throw new IllegalArgumentException("하루의 습관은 최대 5개까지만 가능합니다. 다시 확인해주세요");
+                throw new IllegalArgumentException(ExceptionMsg.MAX_AMOUNT_OF_GOALS.getMsg());
             }
         }
         if(time.getHour() == 0 && time.getMinute() == 0){
-            throw new IllegalArgumentException("설정한 습관의 타이머를 유효한 값으로 수정해주세요");
+            throw new IllegalArgumentException(ExceptionMsg.INCORRECT_TIMER.getMsg());
         }
         if(localDateTime.getDayOfMonth() == localDateTime.plusHours(time.getHour()).getDayOfMonth()) {
             LocalDateTime localDateTime1 = localDateTime.plusHours(time.getHour());
             if (localDateTime.getDayOfMonth() == localDateTime1.plusMinutes(time.getMinute()).getDayOfMonth()) {
                 return true;
             } else
-                throw new IllegalArgumentException("금일을 넘는 목표는 생성할 수 없습니다. 다시 생성해 주세요");
+                throw new IllegalArgumentException(ExceptionMsg.INCORRECT_GOAL.getMsg());
         }
         else
-            throw new IllegalArgumentException("금일을 넘는 목표는 생성할 수 없습니다. 다시 생성해 주세요");
+            throw new IllegalArgumentException(ExceptionMsg.INCORRECT_GOAL.getMsg());
     }
     public ResponseEntity<GoalResponseDto> ChangeGoal(long goalId,Boolean achivement,Principaldetail principaldetail) {
         if(achivement == null){
-            throw new IllegalArgumentException("통신시 달성여부가 보내져야 합니다.");
+            throw new IllegalArgumentException(ExceptionMsg.ACHIEVED_OR_NOT.getMsg());
         }
         return goalRepository.findByIdAndSocialId(goalId,principaldetail.getMember().getSocialId())
                 .map(g -> changeCheckGoal(g,achivement))
-                .orElseThrow(() -> new IllegalArgumentException("해당 습관이 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMsg.NOT_EXISTED_HABIT.getMsg()));
     }
     private ResponseEntity<GoalResponseDto> changeCheckGoal(Goal goal,boolean achivement) {
         goal.SetAchivementCheck(achivement);
@@ -219,7 +220,7 @@ public class MainService {
                 .achievementCheck(goal.isAchievementCheck())
                 .id(goal.getId())
                 .privateCheck(goal.isPrivateCheck())
-                .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"습관 달성 축하드립니다.!!! 고생 많으셨어요"))
+                .msgDto(GenerateMsg.getMsg(SuccessMsg.ACHIEVE_GOAL.getCode(), SuccessMsg.ACHIEVE_GOAL.getMsg()))
                 .socialId(goal.getSocialId())
                 .characterId(goal.getCharacterId())
                 .time(goal.getTime())

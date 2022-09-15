@@ -1,8 +1,6 @@
 package com.sparta.perdayonespoon.service;
 
-import com.sparta.perdayonespoon.domain.DeletedUrlPath;
-import com.sparta.perdayonespoon.domain.Member;
-import com.sparta.perdayonespoon.domain.RefreshToken;
+import com.sparta.perdayonespoon.domain.*;
 import com.sparta.perdayonespoon.domain.dto.ImageDto;
 import com.sparta.perdayonespoon.domain.dto.S3Dto;
 import com.sparta.perdayonespoon.domain.dto.request.StatusDto;
@@ -22,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -44,15 +41,15 @@ public class MyPageService {
 
     public ResponseEntity getProfile(Principaldetail principaldetail) {
         Optional<Member> member = memberRepository.findBySocialId(principaldetail.getMember().getSocialId());
-        MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member.orElseThrow(()-> new IllegalArgumentException("유저정보가 일치하지 않습니다.")));
-        memberResponseDto.setTwoField(GenerateMsg.getMsg(HttpServletResponse.SC_OK,memberResponseDto.getNickname()+"프로필 조회에 성공하셨습니다."));
+        MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member.orElseThrow(()-> new IllegalArgumentException(ExceptionMsg.NOT_MATCHED_USER_INFO.getMsg())));
+        memberResponseDto.setTwoField(GenerateMsg.getMsg(SuccessMsg.GET_PROFILE.getCode(), SuccessMsg.GET_PROFILE.getMsg()));
         return ResponseEntity.ok(memberResponseDto);
     }
 
     public ResponseEntity deleteToken(Principaldetail principaldetail){
         refreshTokenRepository.findByKey(principaldetail.getMember().getSocialId())
                 .map(this::delete)
-                .orElseThrow(() -> new IllegalArgumentException("이미 로그아웃한 사용자입니다."));
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMsg.ALREADY_LOGGED_OUT.getMsg()));
 
         UriComponents builder = UriComponentsBuilder.fromHttpUrl("https://kauth.kakao.com/oauth/logout")
                 .queryParam("client_id", KAKAO_SNS_CLIENT_ID)
@@ -65,21 +62,21 @@ public class MyPageService {
             int responsecode = conn.getResponseCode();
             System.out.println(responsecode);
         } catch (MalformedURLException e){
-            throw new IllegalArgumentException("형식을 맞춰주세요");
+            throw new IllegalArgumentException(ExceptionMsg.INCORRECT_FORM.getMsg());
         } catch (IOException e){
-            throw new IllegalArgumentException("제대로 해주세요");
+            throw new IllegalArgumentException(ExceptionMsg.DO_IT_PROPERLY.getMsg());
         }
         //(6)
-        return ResponseEntity.ok(GenerateMsg.getMsg(HttpServletResponse.SC_OK,principaldetail.getMember().getNickname()+"님 로그아웃에 성공하셨습니다."));
+        return ResponseEntity.ok(GenerateMsg.getMsg(SuccessMsg.LOGOUT_SUCCESS.getCode(), SuccessMsg.LOGOUT_SUCCESS.getMsg()));
     }
     public ResponseEntity deleteMember(Principaldetail principaldetail) {
         refreshTokenRepository.findByKey(principaldetail.getMember().getSocialId())
                 .map(this::delete)
-                .orElseThrow(() -> new IllegalArgumentException("이미 로그아웃한 사용자입니다."));
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMsg.ALREADY_LOGGED_OUT.getMsg()));
         memberRepository.findBySocialId(principaldetail.getMember().getSocialId())
                 .map(this::deleteDb)
-                .orElseThrow(() -> new IllegalArgumentException("이미 탈퇴한 회원입니다."));
-        return ResponseEntity.ok(GenerateMsg.getMsg(HttpServletResponse.SC_OK,principaldetail.getMember().getNickname()+"님 회원탈퇴 성공하셨습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMsg.ALREADY_CANCELED_MEMBERSHIP.getMsg()));
+        return ResponseEntity.ok(GenerateMsg.getMsg(SuccessMsg.CANCEL_MEMBERSHIP.getCode(), SuccessMsg.CANCEL_MEMBERSHIP.getMsg()));
     }
 
     private boolean delete(RefreshToken refreshToken){
@@ -93,7 +90,7 @@ public class MyPageService {
 
     public ResponseEntity changeImage(Principaldetail principaldetail, MultipartFile multipartFile) throws IOException {
         if(multipartFile.isEmpty()){
-            throw new IllegalArgumentException("게시글 작성시 이미지 파일이 필요합니다.");
+            throw new IllegalArgumentException(ExceptionMsg.NO_IMAGE_FILE.getMsg());
         }
         Member member = memberRepository.findBySocialId(principaldetail.getMember().getSocialId()).orElseThrow(IllegalArgumentException::new);
         S3Dto s3Dto = scalr_resize_s3Uploader.uploadImage(multipartFile);
@@ -105,7 +102,7 @@ public class MyPageService {
                 .imageName(member.getImage().getImgName())
                 .uploadImageUrl(member.getImage().getImgUrl())
                 .build();
-        imageDto.SetTwoproperties(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"이미지 변경에 성공하셨습니다."));
+        imageDto.SetTwoproperties(GenerateMsg.getMsg(SuccessMsg.CHANGE_IMAGE.getCode(), SuccessMsg.CHANGE_IMAGE.getMsg()));
         return ResponseEntity.ok(imageDto);
     }
 
@@ -118,11 +115,11 @@ public class MyPageService {
         }else if (statusDto.getStatus() != null) {
             member.SetStatus(statusDto.getStatus());
         }else if(statusDto.getStatus() == null && statusDto.getNickname() == null){
-            throw new IllegalArgumentException("입력을 받지 못했습니다.");
+            throw new IllegalArgumentException(ExceptionMsg.NO_CONTENTS.getMsg());
         }
         memberRepository.save(member);
         MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member);
-        memberResponseDto.setTwoField(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"성공하셨습니다."));
+        memberResponseDto.setTwoField(GenerateMsg.getMsg(SuccessMsg.CHANGE_STATUS.getCode(), SuccessMsg.CHANGE_STATUS.getMsg()));
         return ResponseEntity.ok(memberResponseDto);
     }
 

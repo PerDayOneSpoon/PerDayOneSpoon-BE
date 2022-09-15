@@ -1,5 +1,6 @@
 package com.sparta.perdayonespoon.service;
 
+import com.sparta.perdayonespoon.domain.SuccessMsg;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.TodayGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.calender.CalenderGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.calender.CalenderUniteDto;
@@ -11,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
@@ -114,7 +114,7 @@ public class CalenderService {
                 .endDate(endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                 .monthCalenderDtoList(monthGoalsDtoList)
                 .todayGoalsDtoList(todayGoalsDtoList)
-                .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"금일 캘린더 조회에 성공하셨습니다.!"))
+                .msgDto(GenerateMsg.getMsg(SuccessMsg.GET_CALENDER.getCode(), SuccessMsg.GET_CALENDER.getMsg()))
                 .build();
         return ResponseEntity.ok().body(calenderUniteDto);
     }

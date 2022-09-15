@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.sparta.perdayonespoon.domain.ExceptionMsg;
 import com.sparta.perdayonespoon.domain.Member;
 import com.sparta.perdayonespoon.domain.dto.S3Dto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
@@ -45,7 +46,7 @@ public class Scalr_Resize_S3Uploader {
         String directory = "spoon/" + fileName;   // profile/ 은 버킷 내 디렉토리 이름
 
         File newFile = resizeImage(multipartFile, fileName, fileFormatName)
-                .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> 파일 변환 실패"));
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMsg.FAIL_TO_CONVERT_FILE.getMsg()));
 
         return uploadToS3(newFile,directory);
 //        String uploadImgUrl = putS3(newFile, directory);
