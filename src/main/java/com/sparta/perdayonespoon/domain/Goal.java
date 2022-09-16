@@ -1,15 +1,19 @@
 package com.sparta.perdayonespoon.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
 @NoArgsConstructor
+@Table(name="goal")
 public class Goal{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,6 +48,10 @@ public class Goal{
     @Column
     private boolean achievementCheck;
 
+    @OneToMany(mappedBy = "goal",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Heart> heartList = new ArrayList<>();
+
     @Builder
     public Goal(String title, LocalDateTime startDate,LocalDateTime currentDate,LocalDateTime endDate, String time, int category,
                 int characterId, boolean privateCheck, String socialId,boolean achievementCheck){
@@ -62,4 +70,6 @@ public class Goal{
     public void SetAchivementCheck(boolean achievementCheck){
         this.achievementCheck = achievementCheck;
     }
+
+    public void SetPrivateCheck(boolean privateCheck){this.privateCheck = privateCheck;}
 }

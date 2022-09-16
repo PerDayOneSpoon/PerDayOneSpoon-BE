@@ -83,7 +83,6 @@ public class MainService {
             daylist.clear();
         }
 
-        // 레디스랑 sse SMTP -> 회원가입했을때 메일보내주는거
         List<TodayGoalsDto> todayGoalsDtoList = goalRepository.getTodayGoal(LocalDateTime.now(),principaldetail.getMember().getSocialId());
         AchivementResponseDto achivementResponseDto = AchivementResponseDto.builder()
                 .weekRateDtoList(weekRateDtoList)
@@ -150,7 +149,7 @@ public class MainService {
                     .achievementCheck(goalDto.achievementCheck)
                     .startDate(LocalDateTime.now())
                     .currentDate(LocalDateTime.now().plusDays(x))
-                    .endDate(LocalDateTime.now().plusDays(goalDto.category))
+                    .endDate(LocalDateTime.now().plusDays(goalDto.category-1))
                     .privateCheck(goalDto.privateCheck)
                     .socialId(principaldetail.getMember().getSocialId())
                     .time(goalDto.time + ":00")
@@ -183,7 +182,7 @@ public class MainService {
     private boolean checkdate (LocalTime time, long category,String socialId){
         LocalDateTime localDateTime = LocalDateTime.now();
         LocalDateTime endDate = localDateTime.plusDays(category);
-        period = Period.between(localDateTime.toLocalDate(),endDate.toLocalDate()).getDays()+1;
+        period = Period.between(localDateTime.toLocalDate(),endDate.toLocalDate()).getDays();
         Optional<CountDto> countDto = goalRepository.getCountGoal(localDateTime,socialId);
         if(countDto.isPresent()) {
             if (countDto.get().getTotalCount() >= 5) {

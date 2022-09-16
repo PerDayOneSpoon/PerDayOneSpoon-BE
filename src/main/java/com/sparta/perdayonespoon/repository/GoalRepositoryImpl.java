@@ -25,11 +25,11 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<GoalRateDto> getRateGoal(LocalDateTime sunday, LocalDateTime saturday, String socialid){
+    public List<GoalRateDto> getRateGoal(LocalDateTime sunday, LocalDateTime saturday, String socialId){
         return queryFactory
                 .select(new QGoalRateDto(goal.currentDate.stringValue().substring(0,10), goal.achievementCheck,goal.count()))
                 .from(goal)
-                .where(goal.currentDate.dayOfMonth().between(sunday.getDayOfMonth(),saturday.getDayOfMonth()),GoalSocialEq(socialid))
+                .where(goal.currentDate.dayOfMonth().between(sunday.getDayOfMonth(),saturday.getDayOfMonth()),GoalSocialEq(socialId))
                 .groupBy(goal.currentDate.stringValue().substring(0,10),goal.achievementCheck)
                 .fetch();
     }
@@ -48,7 +48,7 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
     public List<TodayGoalsDto> getTodayGoal(LocalDateTime currentDate,String socialId){
         return queryFactory.select(new QTodayGoalsDto(goal.title,goal.startDate
                 ,goal.endDate,goal.time, goal.characterId,goal.id,goal.privateCheck,
-                goal.currentDate,goal.achievementCheck))
+                goal.currentDate,goal.achievementCheck,goal.heartList.size()))
                 .from(goal)
                 .where(GoalCurrentEq(currentDate.getDayOfMonth()),GoalSocialEq(socialId))
                 .fetch();
@@ -58,7 +58,7 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
     public List<TodayGoalsDto> getFriendTodayGoal(LocalDateTime currentDate,String socialId,boolean privateCheck){
         return queryFactory.select(new QTodayGoalsDto(goal.title,goal.startDate
                         ,goal.endDate,goal.time, goal.characterId,goal.id,goal.privateCheck,
-                        goal.currentDate,goal.achievementCheck))
+                        goal.currentDate,goal.achievementCheck,goal.heartList.size()))
                 .from(goal)
                 .where(GoalCurrentEq(currentDate.getDayOfMonth()),GoalSocialEq(socialId),GoalPrivateEq(privateCheck))
                 .fetch();
