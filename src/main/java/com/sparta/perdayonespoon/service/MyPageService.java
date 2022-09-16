@@ -7,6 +7,8 @@ import com.sparta.perdayonespoon.domain.dto.ImageDto;
 import com.sparta.perdayonespoon.domain.dto.S3Dto;
 import com.sparta.perdayonespoon.domain.dto.request.StatusDto;
 import com.sparta.perdayonespoon.domain.dto.response.MemberResponseDto;
+import com.sparta.perdayonespoon.domain.dto.response.MsgDto;
+import com.sparta.perdayonespoon.domain.dto.response.MyPageCollectDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.mapper.MemberMapper;
 import com.sparta.perdayonespoon.repository.DeletedUrlPathRepository;
@@ -43,32 +45,16 @@ public class MyPageService {
     private final Scalr_Resize_S3Uploader scalr_resize_s3Uploader;
 
     public ResponseEntity getProfile(Principaldetail principaldetail) {
-        Optional<Member> member = memberRepository.findBySocialId(principaldetail.getMember().getSocialId());
-        MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member.orElseThrow(()-> new IllegalArgumentException("유저정보가 일치하지 않습니다.")));
-        memberResponseDto.setTwoField(GenerateMsg.getMsg(HttpServletResponse.SC_OK,memberResponseDto.getNickname()+"프로필 조회에 성공하셨습니다."));
-        return ResponseEntity.ok(memberResponseDto);
+        // 이룬 목표 개수 , 팔로워한 친구 수 , 팔로우한 친구 수 3개가 가야함 추후엔 뱃지까지
+        MyPageCollectDto myPageCollectDto = memberRepository.getMypageData(principaldetail.getMember().getSocialId());
+        myPageCollectDto.SetCodeMsg(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"프로필 조회에 성공하셨습니다."));
+        return ResponseEntity.ok(myPageCollectDto);
     }
 
     public ResponseEntity deleteToken(Principaldetail principaldetail){
         refreshTokenRepository.findByKey(principaldetail.getMember().getSocialId())
                 .map(this::delete)
                 .orElseThrow(() -> new IllegalArgumentException("이미 로그아웃한 사용자입니다."));
-
-        UriComponents builder = UriComponentsBuilder.fromHttpUrl("https://kauth.kakao.com/oauth/logout")
-                .queryParam("client_id", KAKAO_SNS_CLIENT_ID)
-                .queryParam("logout_redirect_uri", "http:localhost:8080/delete/user/logout")
-                .build();
-        try {
-            URL url = new URL(builder.toUriString());
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            int responsecode = conn.getResponseCode();
-            System.out.println(responsecode);
-        } catch (MalformedURLException e){
-            throw new IllegalArgumentException("형식을 맞춰주세요");
-        } catch (IOException e){
-            throw new IllegalArgumentException("제대로 해주세요");
-        }
         //(6)
         return ResponseEntity.ok(GenerateMsg.getMsg(HttpServletResponse.SC_OK,principaldetail.getMember().getNickname()+"님 로그아웃에 성공하셨습니다."));
     }

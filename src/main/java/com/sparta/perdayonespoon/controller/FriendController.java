@@ -35,18 +35,40 @@ public class FriendController {
         return ResponseEntity.ok().body(memberRepository.getMember(memberSearchCondition));
     }
 
-    @ApiOperation(value = "친구 추가 API", notes = "토큰검사 후 친구를 추가")
-    @ApiImplicitParam(name = "friendsId", required = false,  dataType = "string", paramType = "path", value = "추가할때 요청하는 친구의 Id")
+    @ApiOperation(value = "마이페이지 팔로우 한 유저 검색 API", notes = "토큰검사 후 팔로우 한 유저 리스트 응답")
+    @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름")
     @ApiResponses({
             @ApiResponse(code = 200, message = "API 정상 작동" , response = MemberSearchDto.class)
     })
-    @PostMapping("/friends/{friendsId}")
-    public ResponseEntity addFriend(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail, @PathVariable String friendsId){
-        return friendService.addFriend(principaldetail,friendsId);
+    @GetMapping("/search/friends/follower")
+    public ResponseEntity getFollowerList(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
+        return friendService.getFollowerList(principaldetail);
+    }
+
+    @ApiOperation(value = "마이페이지 팔로워 한 유저 검색 API", notes = "토큰검사 후 팔로워 한 유저 리스트 응답")
+    @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "API 정상 작동" , response = MemberSearchDto.class)
+    })
+    @GetMapping("/search/friends/following")
+    public ResponseEntity getFollowingList(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
+        return friendService.getFollowingList(principaldetail);
+    }
+
+
+
+    @ApiOperation(value = "친구 추가 API", notes = "토큰검사 후 친구를 추가")
+    @ApiImplicitParam(name = "friendId", required = false,  dataType = "string", paramType = "path", value = "추가할때 요청하는 친구의 Id")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "API 정상 작동" , response = MemberSearchDto.class)
+    })
+    @PostMapping("/friends/{friendId}")
+    public ResponseEntity addFriend(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail, @PathVariable String friendId){
+        return friendService.addFriend(principaldetail,friendId);
     }
 
     @ApiOperation(value = "친구 삭제 API", notes = "토큰검사 후 친구를 삭제")
-    @ApiImplicitParam(name = "friendsId", required = false,  dataType = "string", paramType = "path", value = "추가할때 요청하는 친구의 Id")
+    @ApiImplicitParam(name = "friendId", required = false,  dataType = "string", paramType = "path", value = "추가할때 요청하는 친구의 Id")
     @ApiResponses({
             @ApiResponse(code = 200, message = "API 정상 작동" , response = MemberSearchDto.class)
     })

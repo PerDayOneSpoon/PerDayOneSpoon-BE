@@ -16,17 +16,14 @@ public class Friend {
     private Long id;
 
     @Column
-    private String followId;
+    private String followerId;
 
     @Column
     private String followingId;
 
-    @Column
-    private boolean follow;
-
     @Builder
-    public Friend(String followId, String followingId){
-        this.followId = followId;
+    public Friend(String followerId, String followingId){
+        this.followerId = followerId;
         this.followingId =followingId;
     }
 }

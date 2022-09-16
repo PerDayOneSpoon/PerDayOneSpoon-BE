@@ -4,7 +4,9 @@ import com.sparta.perdayonespoon.domain.dto.response.calendar.CalendarFriendUnit
 import com.sparta.perdayonespoon.domain.dto.response.calendar.CalendarGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.calendar.CalendarUniteDto;
 import com.sparta.perdayonespoon.domain.dto.response.calendar.MonthCalendarDto;
+import com.sparta.perdayonespoon.domain.follow.FriendDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
+import com.sparta.perdayonespoon.repository.FriendRepository;
 import com.sparta.perdayonespoon.repository.GoalRepository;
 import com.sparta.perdayonespoon.util.GenerateMsg;
 import lombok.RequiredArgsConstructor;
@@ -94,6 +96,7 @@ public class CalendarService {
 //        }
 //    }
 
+    private final FriendRepository friendRepository;
     private final GoalRepository goalRepository;
 
     public ResponseEntity getAlldate(Principaldetail principaldetail) {
@@ -110,12 +113,13 @@ public class CalendarService {
         if(!dayCheck.isEmpty()) {
             monthGoalsDtoList.add(MonthCalendarDto.builder().id(id.pop()).currentDate(dayCheck.peek()).charactorColorlist(twolist.get(dayCheck.pop())).build());
         }
+        List<FriendDto> peopleList = friendRepository.getFollowerList(principaldetail.getMember().getSocialId());
+        peopleList.add(0,FriendDto.builder().id(principaldetail.getMember().getId()).nickname(principaldetail.getMember().getNickname()).profileImage(principaldetail.getMember().getImage().getImgUrl()).build());
         CalendarUniteDto calenderUniteDto = CalendarUniteDto.builder().startDate(startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
-                .myProfileImage(principaldetail.getMember().getImage().getImgUrl())
-                .mySocialId(principaldetail.getMember().getSocialId())
                 .endDate(endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                 .monthCalenderDtoList(monthGoalsDtoList)
                 .todayGoalsDtoList(todayGoalsDtoList)
+                .peopleList(peopleList)
                 .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"금일 캘린더 조회에 성공하셨습니다.!"))
                 .build();
         return ResponseEntity.ok().body(calenderUniteDto);

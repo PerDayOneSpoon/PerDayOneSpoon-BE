@@ -1,10 +1,15 @@
 package com.sparta.perdayonespoon.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sparta.perdayonespoon.domain.QFriend;
+import com.sparta.perdayonespoon.domain.QGoal;
 import com.sparta.perdayonespoon.domain.dto.request.MemberSearchCondition;
 import com.sparta.perdayonespoon.domain.dto.response.MemberSearchDto;
+import com.sparta.perdayonespoon.domain.dto.response.MyPageCollectDto;
 import com.sparta.perdayonespoon.domain.dto.response.QMemberSearchDto;
+import com.sparta.perdayonespoon.domain.dto.response.QMyPageCollectDto;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.SelectBeforeUpdate;
 
@@ -12,6 +17,8 @@ import javax.persistence.EntityManager;
 
 import java.util.List;
 
+import static com.sparta.perdayonespoon.domain.QFriend.friend;
+import static com.sparta.perdayonespoon.domain.QGoal.goal;
 import static com.sparta.perdayonespoon.domain.QMember.member;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
@@ -28,6 +35,18 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .where(memberEmailEq(condition.getThreeToOne()).or(memberCodeEq(condition.getThreeToOne())).or(memberNickEq(condition.getThreeToOne())))
                 .fetch();
     }
+
+    @Override
+    public MyPageCollectDto getMypageData(String socialId){
+        return queryFactory.select(new QMyPageCollectDto(member,
+                        JPAExpressions.select(goal.count()).from(goal).where(goal.socialId.eq(socialId)).groupBy(goal.socialId,goal.achievementCheck).having(goal.achievementCheck.eq(true)),
+                        JPAExpressions.select(friend.count()).from(friend).where(friend.followingId.eq(socialId)).groupBy(friend.followingId),
+                        JPAExpressions.select(friend.count()).from(friend).where(friend.followerId.eq(socialId)).groupBy(friend.followerId)))
+                .from(member)
+                .where(member.socialId.eq(socialId))
+                .fetchOne();
+    }
+
 
     private BooleanExpression memberNickEq(String MemberNick) {
         return isEmpty(MemberNick) ? null : member.nickname.contains(MemberNick);

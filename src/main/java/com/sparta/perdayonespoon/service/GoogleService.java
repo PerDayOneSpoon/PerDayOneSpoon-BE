@@ -42,13 +42,10 @@ import java.util.UUID;
 public class GoogleService {
 
     private final RefreshTokenRepository refreshTokenRepository;
-
     private final TokenProvider tokenProvider;
-
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final RestTemplate restTemplate;
-
     private final ImageRepository imageRepository;
 
     @Value("${spring.security.oauth2.client.provider.google.tokenUri}")
