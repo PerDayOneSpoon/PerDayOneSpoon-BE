@@ -1,6 +1,5 @@
 package com.sparta.perdayonespoon.domain.dto.response.Goal;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.querydsl.core.annotations.QueryProjection;
 
 import com.sparta.perdayonespoon.util.GetCharacterUrl;

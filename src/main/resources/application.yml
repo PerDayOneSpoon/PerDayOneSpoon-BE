@@ -24,7 +24,7 @@ spring:
 #      hibernate:
 ##   redis 설정 기본 6379로 작동
 #  redis:
-#    host: 127.0.0.1
+#    host: ENC(LY/fQOcSgwDyQHb4+WqSRXETqOMDOZQD)
 #    port: 6379
 #
 #  datasource:
@@ -66,13 +66,13 @@ spring:
       username: ${spring.datasource.username}
       password: ${spring.datasource.password}
       driver-class-name: ${spring.datasource.driver-class-name}
-      data-source-properties:
-        rewriteBatchedStatements: true
+#      data-source-properties:
+#        rewriteBatchedStatements: true
 
 
   jpa:
-      #    database-platform : org.hibernate.dialect.MySQL5Dialect
-      #    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+#    database-platform : org.hibernate.dialect.MySQL5Dialect
+#    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     database: mysql
     generate-ddl: true
     hibernate:

@@ -1,16 +1,15 @@
-package com.sparta.perdayonespoon.domain.dto.response.calender;
+package com.sparta.perdayonespoon.domain.dto.response.calendar;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.TodayGoalsDto;
 import com.sparta.perdayonespoon.util.GetCharacterUrl;
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Data
-public class CalenderGoalsDto {
+public class CalendarGoalsDto {
 
     private Long id;
 
@@ -25,7 +24,7 @@ public class CalenderGoalsDto {
     private boolean achievementCheck;
 
     @QueryProjection
-    public CalenderGoalsDto(Long id,String title, LocalDateTime startDate, LocalDateTime endDate, LocalDateTime currentDate, String time,int characterId,boolean privateCheck,boolean achievementCheck){
+    public CalendarGoalsDto(Long id,String title, LocalDateTime startDate, LocalDateTime endDate, LocalDateTime currentDate, String time,int characterId,boolean privateCheck,boolean achievementCheck){
         this.id = id;
         this.title = title;
         this.startDate = startDate;

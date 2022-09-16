@@ -1,6 +1,5 @@
 package com.sparta.perdayonespoon.domain.dto.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

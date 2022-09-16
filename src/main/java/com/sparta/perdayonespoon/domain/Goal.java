@@ -1,6 +1,5 @@
 package com.sparta.perdayonespoon.domain;
 
-import com.sparta.perdayonespoon.domain.dto.response.rate.WeekRateDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

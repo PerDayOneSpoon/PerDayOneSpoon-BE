@@ -1,4 +1,4 @@
-package com.sparta.perdayonespoon.domain.dto.response.calender;
+package com.sparta.perdayonespoon.domain.dto.response.calendar;
 
 import lombok.Builder;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class MonthCalenderDto {
+public class MonthCalendarDto {
 
     private Long id;
     private String currentDate;
@@ -14,7 +14,7 @@ public class MonthCalenderDto {
     private List<String> charactorColorlist;
 
     @Builder
-    public MonthCalenderDto(Long id, String currentDate, List<String> charactorColorlist){
+    public MonthCalendarDto(Long id, String currentDate, List<String> charactorColorlist){
         this.id= id;
         this.currentDate = currentDate;
         this.charactorColorlist =charactorColorlist;

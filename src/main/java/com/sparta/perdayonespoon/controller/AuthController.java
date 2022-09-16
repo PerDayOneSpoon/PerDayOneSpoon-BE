@@ -4,15 +4,12 @@ import com.sparta.perdayonespoon.domain.dto.request.TokenSearchCondition;
 import com.sparta.perdayonespoon.domain.dto.response.MemberResponseDto;
 import com.sparta.perdayonespoon.domain.dto.response.MsgDto;
 import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
-import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.service.GoogleService;
 import com.sparta.perdayonespoon.service.KakaoService;
 import com.sparta.perdayonespoon.service.NaverService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
