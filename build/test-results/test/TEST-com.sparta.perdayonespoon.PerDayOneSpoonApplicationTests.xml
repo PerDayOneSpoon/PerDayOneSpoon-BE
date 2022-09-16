@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.sparta.perdayonespoon.PerDayOneSpoonApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-09-14T06:53:02" hostname="Rolivias-MacBook-Pro.local" time="0.209">
+<testsuite name="com.sparta.perdayonespoon.PerDayOneSpoonApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-09-16T17:46:18" hostname="Rolivias-MacBook-Pro.local" time="0.209">
   <properties/>
   <testcase name="contextLoads()" classname="com.sparta.perdayonespoon.PerDayOneSpoonApplicationTests" time="0.209"/>
   <system-out><![CDATA[
@@ -14,7 +14,7 @@
  ░  ░  ░      ░  ░   ░        ░         ░  ░  ░      ░  ░         ░   ░ ░        ░ ░      ░ ░         ░
                                                                     ░
 
-2022-09-14 15:52:41.992  WARN 28276 --- [    Test worker] ory$DuplicateJsonObjectContextCustomizer : 
+2022-09-17 02:46:03.079  WARN 8583 --- [    Test worker] ory$DuplicateJsonObjectContextCustomizer : 
 
 Found multiple occurrences of org.json.JSONObject on the class path:
 
@@ -23,86 +23,86 @@ Found multiple occurrences of org.json.JSONObject on the class path:
 
 You may wish to exclude one of them to ensure predictable runtime behavior
 
-2022-09-14 15:52:42.025  INFO 28276 --- [    Test worker] c.s.p.PerDayOneSpoonApplicationTests     : Starting PerDayOneSpoonApplicationTests using Java 11.0.15 on Rolivias-MacBook-Pro.local with PID 28276 (started by rolivia in /Users/rolivia/Desktop/PerDayOneSpoon-BE)
-2022-09-14 15:52:42.032  INFO 28276 --- [    Test worker] c.s.p.PerDayOneSpoonApplicationTests     : The following profiles are active: aws,credentials
-2022-09-14 15:52:47.926  INFO 28276 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
-2022-09-14 15:52:47.930  INFO 28276 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2022-09-14 15:52:48.421  INFO 28276 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 479 ms. Found 5 JPA repository interfaces.
-2022-09-14 15:52:48.467  INFO 28276 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
-2022-09-14 15:52:48.471  INFO 28276 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
-2022-09-14 15:52:48.525  INFO 28276 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.sparta.perdayonespoon.repository.DeletedUrlPathRepository. If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository.
-2022-09-14 15:52:48.527  INFO 28276 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.sparta.perdayonespoon.repository.GoalRepository. If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository.
-2022-09-14 15:52:48.536  INFO 28276 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.sparta.perdayonespoon.repository.ImageRepository. If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository.
-2022-09-14 15:52:48.541  INFO 28276 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.sparta.perdayonespoon.repository.MemberRepository. If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository.
-2022-09-14 15:52:48.543  INFO 28276 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.sparta.perdayonespoon.repository.RefreshTokenRepository. If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository.
-2022-09-14 15:52:48.546  INFO 28276 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 53 ms. Found 0 Redis repository interfaces.
-2022-09-14 15:52:49.735  INFO 28276 --- [    Test worker] ptablePropertiesBeanFactoryPostProcessor : Post-processing PropertySource instances
-2022-09-14 15:52:49.741  INFO 28276 --- [    Test worker] c.u.j.EncryptablePropertySourceConverter : Skipping PropertySource configurationProperties [class org.springframework.boot.context.properties.source.ConfigurationPropertySourcesPropertySource
-2022-09-14 15:52:49.743  INFO 28276 --- [    Test worker] c.u.j.EncryptablePropertySourceConverter : Converting PropertySource test [org.springframework.core.env.MapPropertySource] to EncryptableMapPropertySourceWrapper
-2022-09-14 15:52:49.744  INFO 28276 --- [    Test worker] c.u.j.EncryptablePropertySourceConverter : Converting PropertySource Inlined Test Properties [org.springframework.core.env.MapPropertySource] to EncryptableMapPropertySourceWrapper
-2022-09-14 15:52:49.744  INFO 28276 --- [    Test worker] c.u.j.EncryptablePropertySourceConverter : Converting PropertySource systemProperties [org.springframework.core.env.PropertiesPropertySource] to EncryptableMapPropertySourceWrapper
-2022-09-14 15:52:49.744  INFO 28276 --- [    Test worker] c.u.j.EncryptablePropertySourceConverter : Converting PropertySource systemEnvironment [org.springframework.boot.env.SystemEnvironmentPropertySourceEnvironmentPostProcessor$OriginAwareSystemEnvironmentPropertySource] to EncryptableSystemEnvironmentPropertySourceWrapper
-2022-09-14 15:52:49.745  INFO 28276 --- [    Test worker] c.u.j.EncryptablePropertySourceConverter : Converting PropertySource random [org.springframework.boot.env.RandomValuePropertySource] to EncryptablePropertySourceWrapper
-2022-09-14 15:52:49.745  INFO 28276 --- [    Test worker] c.u.j.EncryptablePropertySourceConverter : Converting PropertySource Config resource 'class path resource [application.yml]' via location 'optional:classpath:/' [org.springframework.boot.env.OriginTrackedMapPropertySource] to EncryptableMapPropertySourceWrapper
-2022-09-14 15:52:50.322  INFO 28276 --- [    Test worker] c.u.j.f.DefaultLazyPropertyFilter        : Property Filter custom Bean not found with name 'encryptablePropertyFilter'. Initializing Default Property Filter
-2022-09-14 15:52:50.348  INFO 28276 --- [    Test worker] c.u.j.r.DefaultLazyPropertyResolver      : Property Resolver custom Bean not found with name 'encryptablePropertyResolver'. Initializing Default Property Resolver
-2022-09-14 15:52:50.352  INFO 28276 --- [    Test worker] c.u.j.d.DefaultLazyPropertyDetector      : Property Detector custom Bean not found with name 'encryptablePropertyDetector'. Initializing Default Property Detector
-2022-09-14 15:52:50.866  INFO 28276 --- [    Test worker] o.h.j.i.u.LogHelper                      : HHH000204: Processing PersistenceUnitInfo [name: default]
-2022-09-14 15:52:50.966  INFO 28276 --- [    Test worker] o.h.Version                              : HHH000412: Hibernate ORM core version 5.4.32.Final
-2022-09-14 15:52:51.323  INFO 28276 --- [    Test worker] o.h.a.c.Version                          : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
-2022-09-14 15:52:51.583  INFO 28276 --- [    Test worker] c.z.h.HikariDataSource                   : HikariPool-1 - Starting...
-2022-09-14 15:52:52.013  INFO 28276 --- [    Test worker] c.z.h.HikariDataSource                   : HikariPool-1 - Start completed.
-2022-09-14 15:52:52.074  INFO 28276 --- [    Test worker] o.h.d.Dialect                            : HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
-2022-09-14 15:52:53.847  INFO 28276 --- [    Test worker] p6spy                                    : #1663138373847 | took 1ms | statement | connection 1| url jdbc:h2:mem:testdb
+2022-09-17 02:46:03.110  INFO 8583 --- [    Test worker] c.s.p.PerDayOneSpoonApplicationTests     : Starting PerDayOneSpoonApplicationTests using Java 11.0.15 on Rolivias-MacBook-Pro.local with PID 8583 (started by rolivia in /Users/rolivia/Desktop/PerDayOneSpoon-BE)
+2022-09-17 02:46:03.116  INFO 8583 --- [    Test worker] c.s.p.PerDayOneSpoonApplicationTests     : The following profiles are active: aws,credentials
+2022-09-17 02:46:08.207  INFO 8583 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
+2022-09-17 02:46:08.213  INFO 8583 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2022-09-17 02:46:08.657  INFO 8583 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 419 ms. Found 5 JPA repository interfaces.
+2022-09-17 02:46:08.686  INFO 8583 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
+2022-09-17 02:46:08.688  INFO 8583 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2022-09-17 02:46:08.725  INFO 8583 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.sparta.perdayonespoon.repository.DeletedUrlPathRepository. If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository.
+2022-09-17 02:46:08.726  INFO 8583 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.sparta.perdayonespoon.repository.GoalRepository. If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository.
+2022-09-17 02:46:08.731  INFO 8583 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.sparta.perdayonespoon.repository.ImageRepository. If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository.
+2022-09-17 02:46:08.736  INFO 8583 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.sparta.perdayonespoon.repository.MemberRepository. If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository.
+2022-09-17 02:46:08.737  INFO 8583 --- [    Test worker] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.sparta.perdayonespoon.repository.RefreshTokenRepository. If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository.
+2022-09-17 02:46:08.738  INFO 8583 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 36 ms. Found 0 Redis repository interfaces.
+2022-09-17 02:46:09.457  INFO 8583 --- [    Test worker] ptablePropertiesBeanFactoryPostProcessor : Post-processing PropertySource instances
+2022-09-17 02:46:09.461  INFO 8583 --- [    Test worker] c.u.j.EncryptablePropertySourceConverter : Skipping PropertySource configurationProperties [class org.springframework.boot.context.properties.source.ConfigurationPropertySourcesPropertySource
+2022-09-17 02:46:09.463  INFO 8583 --- [    Test worker] c.u.j.EncryptablePropertySourceConverter : Converting PropertySource test [org.springframework.core.env.MapPropertySource] to EncryptableMapPropertySourceWrapper
+2022-09-17 02:46:09.464  INFO 8583 --- [    Test worker] c.u.j.EncryptablePropertySourceConverter : Converting PropertySource Inlined Test Properties [org.springframework.core.env.MapPropertySource] to EncryptableMapPropertySourceWrapper
+2022-09-17 02:46:09.464  INFO 8583 --- [    Test worker] c.u.j.EncryptablePropertySourceConverter : Converting PropertySource systemProperties [org.springframework.core.env.PropertiesPropertySource] to EncryptableMapPropertySourceWrapper
+2022-09-17 02:46:09.465  INFO 8583 --- [    Test worker] c.u.j.EncryptablePropertySourceConverter : Converting PropertySource systemEnvironment [org.springframework.boot.env.SystemEnvironmentPropertySourceEnvironmentPostProcessor$OriginAwareSystemEnvironmentPropertySource] to EncryptableSystemEnvironmentPropertySourceWrapper
+2022-09-17 02:46:09.465  INFO 8583 --- [    Test worker] c.u.j.EncryptablePropertySourceConverter : Converting PropertySource random [org.springframework.boot.env.RandomValuePropertySource] to EncryptablePropertySourceWrapper
+2022-09-17 02:46:09.465  INFO 8583 --- [    Test worker] c.u.j.EncryptablePropertySourceConverter : Converting PropertySource Config resource 'class path resource [application.yml]' via location 'optional:classpath:/' [org.springframework.boot.env.OriginTrackedMapPropertySource] to EncryptableMapPropertySourceWrapper
+2022-09-17 02:46:09.840  INFO 8583 --- [    Test worker] c.u.j.f.DefaultLazyPropertyFilter        : Property Filter custom Bean not found with name 'encryptablePropertyFilter'. Initializing Default Property Filter
+2022-09-17 02:46:09.858  INFO 8583 --- [    Test worker] c.u.j.r.DefaultLazyPropertyResolver      : Property Resolver custom Bean not found with name 'encryptablePropertyResolver'. Initializing Default Property Resolver
+2022-09-17 02:46:09.862  INFO 8583 --- [    Test worker] c.u.j.d.DefaultLazyPropertyDetector      : Property Detector custom Bean not found with name 'encryptablePropertyDetector'. Initializing Default Property Detector
+2022-09-17 02:46:10.221  INFO 8583 --- [    Test worker] o.h.j.i.u.LogHelper                      : HHH000204: Processing PersistenceUnitInfo [name: default]
+2022-09-17 02:46:10.339  INFO 8583 --- [    Test worker] o.h.Version                              : HHH000412: Hibernate ORM core version 5.4.32.Final
+2022-09-17 02:46:10.586  INFO 8583 --- [    Test worker] o.h.a.c.Version                          : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2022-09-17 02:46:10.804  INFO 8583 --- [    Test worker] c.z.h.HikariDataSource                   : HikariPool-1 - Starting...
+2022-09-17 02:46:11.105  INFO 8583 --- [    Test worker] c.z.h.HikariDataSource                   : HikariPool-1 - Start completed.
+2022-09-17 02:46:11.137  INFO 8583 --- [    Test worker] o.h.d.Dialect                            : HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+2022-09-17 02:46:12.446  INFO 8583 --- [    Test worker] p6spy                                    : #1663350372446 | took 1ms | statement | connection 1| url jdbc:h2:mem:testdb
 drop table if exists DeletedUrlPath CASCADE 
 drop table if exists DeletedUrlPath CASCADE ;
-2022-09-14 15:52:53.848  INFO 28276 --- [    Test worker] p6spy                                    : #1663138373848 | took 0ms | statement | connection 1| url jdbc:h2:mem:testdb
+2022-09-17 02:46:12.447  INFO 8583 --- [    Test worker] p6spy                                    : #1663350372447 | took 0ms | statement | connection 1| url jdbc:h2:mem:testdb
 drop table if exists Goal CASCADE 
 drop table if exists Goal CASCADE ;
-2022-09-14 15:52:53.849  INFO 28276 --- [    Test worker] p6spy                                    : #1663138373849 | took 0ms | statement | connection 1| url jdbc:h2:mem:testdb
+2022-09-17 02:46:12.447  INFO 8583 --- [    Test worker] p6spy                                    : #1663350372447 | took 0ms | statement | connection 1| url jdbc:h2:mem:testdb
 drop table if exists image CASCADE 
 drop table if exists image CASCADE ;
-2022-09-14 15:52:53.849  INFO 28276 --- [    Test worker] p6spy                                    : #1663138373849 | took 0ms | statement | connection 1| url jdbc:h2:mem:testdb
+2022-09-17 02:46:12.448  INFO 8583 --- [    Test worker] p6spy                                    : #1663350372448 | took 0ms | statement | connection 1| url jdbc:h2:mem:testdb
 drop table if exists member CASCADE 
 drop table if exists member CASCADE ;
-2022-09-14 15:52:53.850  INFO 28276 --- [    Test worker] p6spy                                    : #1663138373850 | took 0ms | statement | connection 1| url jdbc:h2:mem:testdb
+2022-09-17 02:46:12.449  INFO 8583 --- [    Test worker] p6spy                                    : #1663350372449 | took 0ms | statement | connection 1| url jdbc:h2:mem:testdb
 drop table if exists RefreshToken CASCADE 
 drop table if exists RefreshToken CASCADE ;
-2022-09-14 15:52:53.874  INFO 28276 --- [    Test worker] p6spy                                    : #1663138373874 | took 17ms | statement | connection 2| url jdbc:h2:mem:testdb
+2022-09-17 02:46:12.466  INFO 8583 --- [    Test worker] p6spy                                    : #1663350372466 | took 12ms | statement | connection 2| url jdbc:h2:mem:testdb
 create table DeletedUrlPath (id bigint generated by default as identity, deletedUrlPath varchar(255), primary key (id))
 create table DeletedUrlPath (id bigint generated by default as identity, deletedUrlPath varchar(255), primary key (id));
-2022-09-14 15:52:53.877  INFO 28276 --- [    Test worker] p6spy                                    : #1663138373877 | took 2ms | statement | connection 2| url jdbc:h2:mem:testdb
+2022-09-17 02:46:12.469  INFO 8583 --- [    Test worker] p6spy                                    : #1663350372469 | took 1ms | statement | connection 2| url jdbc:h2:mem:testdb
 create table Goal (id bigint generated by default as identity, achievementCheck boolean, category integer, characterId integer, currentDate timestamp, endDate timestamp, privateCheck boolean, socialId varchar(255), startDate timestamp, time varchar(255), title varchar(255), primary key (id))
 create table Goal (id bigint generated by default as identity, achievementCheck boolean, category integer, characterId integer, currentDate timestamp, endDate timestamp, privateCheck boolean, socialId varchar(255), startDate timestamp, time varchar(255), title varchar(255), primary key (id));
-2022-09-14 15:52:53.881  INFO 28276 --- [    Test worker] p6spy                                    : #1663138373880 | took 2ms | statement | connection 2| url jdbc:h2:mem:testdb
+2022-09-17 02:46:12.472  INFO 8583 --- [    Test worker] p6spy                                    : #1663350372472 | took 1ms | statement | connection 2| url jdbc:h2:mem:testdb
 create table image (id bigint generated by default as identity, createdAt timestamp, modifiedAt timestamp, imgName varchar(255), imgUrl varchar(255), member_id bigint, primary key (id))
 create table image (id bigint generated by default as identity, createdAt timestamp, modifiedAt timestamp, imgName varchar(255), imgUrl varchar(255), member_id bigint, primary key (id));
-2022-09-14 15:52:53.886  INFO 28276 --- [    Test worker] p6spy                                    : #1663138373886 | took 2ms | statement | connection 2| url jdbc:h2:mem:testdb
+2022-09-17 02:46:12.476  INFO 8583 --- [    Test worker] p6spy                                    : #1663350372476 | took 1ms | statement | connection 2| url jdbc:h2:mem:testdb
 create table member (id bigint generated by default as identity, createdAt timestamp, modifiedAt timestamp, authority varchar(255), email varchar(255), nickname varchar(255) not null, password varchar(255) not null, socialCode varchar(255), socialId varchar(255) not null, status varchar(255), primary key (id))
 create table member (id bigint generated by default as identity, createdAt timestamp, modifiedAt timestamp, authority varchar(255), email varchar(255), nickname varchar(255) not null, password varchar(255) not null, socialCode varchar(255), socialId varchar(255) not null, status varchar(255), primary key (id));
-2022-09-14 15:52:53.892  INFO 28276 --- [    Test worker] p6spy                                    : #1663138373892 | took 5ms | statement | connection 2| url jdbc:h2:mem:testdb
+2022-09-17 02:46:12.482  INFO 8583 --- [    Test worker] p6spy                                    : #1663350372482 | took 5ms | statement | connection 2| url jdbc:h2:mem:testdb
 create table RefreshToken (rt_key varchar(255) not null, rt_value varchar(255), primary key (rt_key))
 create table RefreshToken (rt_key varchar(255) not null, rt_value varchar(255), primary key (rt_key));
-2022-09-14 15:52:53.895  INFO 28276 --- [    Test worker] p6spy                                    : #1663138373895 | took 1ms | statement | connection 2| url jdbc:h2:mem:testdb
+2022-09-17 02:46:12.484  INFO 8583 --- [    Test worker] p6spy                                    : #1663350372484 | took 1ms | statement | connection 2| url jdbc:h2:mem:testdb
 alter table member add constraint UK_t3c26qklog0swasvd97t0ap71 unique (socialId)
 alter table member add constraint UK_t3c26qklog0swasvd97t0ap71 unique (socialId);
-2022-09-14 15:52:53.907  INFO 28276 --- [    Test worker] p6spy                                    : #1663138373907 | took 11ms | statement | connection 2| url jdbc:h2:mem:testdb
+2022-09-17 02:46:12.493  INFO 8583 --- [    Test worker] p6spy                                    : #1663350372493 | took 8ms | statement | connection 2| url jdbc:h2:mem:testdb
 alter table image add constraint FKnnvd0itj2hhoyuua7g3ive7vo foreign key (member_id) references member
 alter table image add constraint FKnnvd0itj2hhoyuua7g3ive7vo foreign key (member_id) references member;
-2022-09-14 15:52:53.910  INFO 28276 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
-2022-09-14 15:52:53.933  INFO 28276 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2022-09-14 15:52:53.995  INFO 28276 --- [    Test worker] c.u.j.e.DefaultLazyEncryptor             : Found Custom Encryptor Bean org.jasypt.encryption.pbe.PooledPBEStringEncryptor@3203ffa3 with name: jasyptStringEncryptor
-2022-09-14 15:52:54.536  WARN 28276 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2022-09-14 15:52:57.877  INFO 28276 --- [    Test worker] o.s.b.a.h.H2ConsoleAutoConfiguration     : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
-2022-09-14 15:52:58.691  INFO 28276 --- [    Test worker] o.s.s.w.DefaultSecurityFilterChain       : Will secure Ant [pattern='/h2-console/**'] with []
-2022-09-14 15:52:58.692  INFO 28276 --- [    Test worker] o.s.s.w.DefaultSecurityFilterChain       : Will secure Ant [pattern='/favicon.ico'] with []
-2022-09-14 15:52:58.943  INFO 28276 --- [    Test worker] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
-2022-09-14 15:52:59.337  INFO 28276 --- [    Test worker] o.s.s.w.DefaultSecurityFilterChain       : Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@304d6881, org.springframework.security.web.context.SecurityContextPersistenceFilter@7740028a, org.springframework.security.web.header.HeaderWriterFilter@470a2845, org.springframework.web.filter.CorsFilter@9af2a00, org.springframework.security.web.authentication.logout.LogoutFilter@1e23e1ef, com.sparta.perdayonespoon.jwt.JwtFilter@33684b87, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@1ab6a093, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@5e774546, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@50cdaf32, org.springframework.security.web.session.SessionManagementFilter@2258ca14, org.springframework.security.web.access.ExceptionTranslationFilter@3e93ee71, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@19544898]
-2022-09-14 15:53:00.237  WARN 28276 --- [    Test worker] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
-2022-09-14 15:53:01.988  INFO 28276 --- [    Test worker] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
-2022-09-14 15:53:02.032  INFO 28276 --- [    Test worker] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
-2022-09-14 15:53:02.092  INFO 28276 --- [    Test worker] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
-2022-09-14 15:53:02.656  INFO 28276 --- [    Test worker] c.s.p.PerDayOneSpoonApplicationTests     : Started PerDayOneSpoonApplicationTests in 21.545 seconds (JVM running for 24.836)
+2022-09-17 02:46:12.496  INFO 8583 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-09-17 02:46:12.517  INFO 8583 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2022-09-17 02:46:12.566  INFO 8583 --- [    Test worker] c.u.j.e.DefaultLazyEncryptor             : Found Custom Encryptor Bean org.jasypt.encryption.pbe.PooledPBEStringEncryptor@3d00c2ae with name: jasyptStringEncryptor
+2022-09-17 02:46:12.957  WARN 8583 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2022-09-17 02:46:15.281  INFO 8583 --- [    Test worker] o.s.b.a.h.H2ConsoleAutoConfiguration     : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
+2022-09-17 02:46:15.796  INFO 8583 --- [    Test worker] o.s.s.w.DefaultSecurityFilterChain       : Will secure Ant [pattern='/h2-console/**'] with []
+2022-09-17 02:46:15.797  INFO 8583 --- [    Test worker] o.s.s.w.DefaultSecurityFilterChain       : Will secure Ant [pattern='/favicon.ico'] with []
+2022-09-17 02:46:15.967  INFO 8583 --- [    Test worker] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
+2022-09-17 02:46:16.246  INFO 8583 --- [    Test worker] o.s.s.w.DefaultSecurityFilterChain       : Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@6b909973, org.springframework.security.web.context.SecurityContextPersistenceFilter@7d97a1a0, org.springframework.security.web.header.HeaderWriterFilter@34a8a5ad, org.springframework.web.filter.CorsFilter@458044df, org.springframework.security.web.authentication.logout.LogoutFilter@39584147, com.sparta.perdayonespoon.jwt.JwtFilter@f4cfc61, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@24c04958, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@ae2227, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@64d7737c, org.springframework.security.web.session.SessionManagementFilter@47c8c176, org.springframework.security.web.access.ExceptionTranslationFilter@6f77917c, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@1de78f97]
+2022-09-17 02:46:16.866  WARN 8583 --- [    Test worker] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
+2022-09-17 02:46:17.937  INFO 8583 --- [    Test worker] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2022-09-17 02:46:17.974  INFO 8583 --- [    Test worker] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2022-09-17 02:46:18.028  INFO 8583 --- [    Test worker] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2022-09-17 02:46:18.429  INFO 8583 --- [    Test worker] c.s.p.PerDayOneSpoonApplicationTests     : Started PerDayOneSpoonApplicationTests in 16.089 seconds (JVM running for 19.118)
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
