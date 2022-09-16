@@ -4,10 +4,10 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.perdayonespoon.domain.dto.CountDto;
 import com.sparta.perdayonespoon.domain.dto.QCountDto;
-import com.sparta.perdayonespoon.domain.dto.response.calender.CalenderGoalsDto;
+import com.sparta.perdayonespoon.domain.dto.response.calendar.CalendarGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.QTodayGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.TodayGoalsDto;
-import com.sparta.perdayonespoon.domain.dto.response.calender.QCalenderGoalsDto;
+import com.sparta.perdayonespoon.domain.dto.response.calendar.QCalendarGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.rate.GoalRateDto;
 import com.sparta.perdayonespoon.domain.dto.response.rate.QGoalRateDto;
 import lombok.RequiredArgsConstructor;
@@ -65,8 +65,8 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
     }
 
     @Override
-    public List<CalenderGoalsDto> getMyCalender(LocalDate startDate, LocalDate endDate, String socialId){
-        return queryFactory.select(new QCalenderGoalsDto(goal.id,goal.title,goal.startDate, goal.endDate, goal.currentDate,goal.time,goal.characterId,goal.privateCheck,goal.achievementCheck))
+    public List<CalendarGoalsDto> getMyCalendar(LocalDate startDate, LocalDate endDate, String socialId){
+        return queryFactory.select(new QCalendarGoalsDto(goal.id,goal.title,goal.startDate, goal.endDate, goal.currentDate,goal.time,goal.characterId,goal.privateCheck,goal.achievementCheck))
                 .from(goal)
                 .where(goal.currentDate.dayOfMonth().between(startDate.getDayOfMonth(),endDate.getDayOfMonth()),GoalSocialEq(socialId))
                 .orderBy(goal.currentDate.asc())
@@ -74,9 +74,9 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
     }
 
     @Override
-    public List<CalenderGoalsDto> getFriendCalender(LocalDate startDate, LocalDate endDate, boolean privateCheck,
-                                                String socialId){
-        return queryFactory.select(new QCalenderGoalsDto(goal.id,goal.title,goal.startDate, goal.endDate, goal.currentDate,goal.time,goal.characterId,goal.privateCheck,goal.achievementCheck))
+    public List<CalendarGoalsDto> getFriendCalendar(LocalDate startDate, LocalDate endDate, boolean privateCheck,
+                                                    String socialId){
+        return queryFactory.select(new QCalendarGoalsDto(goal.id,goal.title,goal.startDate, goal.endDate, goal.currentDate,goal.time,goal.characterId,goal.privateCheck,goal.achievementCheck))
                 .from(goal)
                 .where(goal.currentDate.dayOfMonth().between(startDate.getDayOfMonth(),endDate.getDayOfMonth()),GoalSocialEq(socialId),GoalPrivateEq(privateCheck))
                 .orderBy(goal.currentDate.asc())

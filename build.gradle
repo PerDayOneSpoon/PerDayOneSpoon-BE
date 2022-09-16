@@ -104,6 +104,10 @@ dependencies {
     // 자바 암호화 Jasypt
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
 
+    // 자바 진영 caffeine cache 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'com.github.ben-manes.caffeine:caffeine'
+
 //	//엘라스틱서치
 //	implementation 'org.springframework.data:spring-data-elasticsearch:4.2.2'
 //

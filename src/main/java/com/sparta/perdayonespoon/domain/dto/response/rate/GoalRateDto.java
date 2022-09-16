@@ -6,9 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.Transient;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
 

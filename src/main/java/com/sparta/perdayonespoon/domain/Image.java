@@ -6,7 +6,6 @@ import com.sparta.perdayonespoon.domain.dto.S3Dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 
 import javax.persistence.*;
 

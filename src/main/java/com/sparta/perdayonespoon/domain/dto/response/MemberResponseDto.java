@@ -1,11 +1,9 @@
 package com.sparta.perdayonespoon.domain.dto.response;
 
-import com.querydsl.core.annotations.QueryProjection;
 import com.sparta.perdayonespoon.domain.Authority;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import springfox.documentation.annotations.ApiIgnore;
