@@ -38,8 +38,8 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                                 .otherwise(false)))
                 .from(member)
                 .where(memberEmailEq(condition.getThreeToOne()).or(memberCodeEq(condition.getThreeToOne())).or(memberNickEq(condition.getThreeToOne())))
-                .leftJoin(friend).on(member.socialId.eq(friend.followerId))
-                .fetch().stream().distinct().collect(Collectors.toList());
+                .leftJoin(friend).on(member.socialId.eq(friend.followerId).and(friend.followingId.eq(socialId)))
+                .fetch();
     }
 
     // 추후 SubQuery중 goal은 member와 연관시켜 해결할 예정 -> 성능 테스트 후 변경 사항 적용
