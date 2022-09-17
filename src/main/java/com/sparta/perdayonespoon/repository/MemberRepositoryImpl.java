@@ -17,6 +17,7 @@ import org.hibernate.annotations.SelectBeforeUpdate;
 import javax.persistence.EntityManager;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.sparta.perdayonespoon.domain.QFriend.friend;
 import static com.sparta.perdayonespoon.domain.QGoal.goal;
@@ -28,7 +29,6 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
-
     @Override
     public List<MemberSearchDto> getMember(MemberSearchCondition condition,String socialId){
         return queryFactory.select(new QMemberSearchDto(member.nickname,member.status,member.image.imgUrl,member.socialCode,member.email
@@ -39,9 +39,10 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .from(member)
                 .where(memberEmailEq(condition.getThreeToOne()).or(memberCodeEq(condition.getThreeToOne())).or(memberNickEq(condition.getThreeToOne())))
                 .leftJoin(friend).on(member.socialId.eq(friend.followerId))
-                .fetch();
+                .fetch().stream().distinct().collect(Collectors.toList());
     }
 
+    // 추후 SubQuery중 goal은 member와 연관시켜 해결할 예정 -> 성능 테스트 후 변경 사항 적용
     @Override
     public MyPageCollectDto getMypageData(String socialId){
         return queryFactory.select(new QMyPageCollectDto(member,
