@@ -35,7 +35,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                         ,member.socialId,member.id,
                         new CaseBuilder()
                                 .when(member.socialId.eq(friend.followerId).and(friend.followingId.eq(socialId))).then(true)
-                                .otherwise(false)))
+                                .otherwise(member.socialId.eq(socialId))))
                 .from(member)
                 .where(memberEmailEq(condition.getThreeToOne()).or(memberCodeEq(condition.getThreeToOne())).or(memberNickEq(condition.getThreeToOne())))
                 .leftJoin(friend).on(member.socialId.eq(friend.followerId).and(friend.followingId.eq(socialId)))
