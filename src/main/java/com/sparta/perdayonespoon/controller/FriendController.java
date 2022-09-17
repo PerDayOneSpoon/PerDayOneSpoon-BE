@@ -30,9 +30,9 @@ public class FriendController {
             @ApiResponse(code = 200, message = "API 정상 작동" , response = MemberSearchDto.class)
     })
     @GetMapping("/search/friends/{searchQuery}")
-    public ResponseEntity<List<MemberSearchDto>> getFriendlist(@PathVariable String searchQuery){
+    public ResponseEntity<List<MemberSearchDto>> getFriendlist(@AuthenticationPrincipal Principaldetail principaldetail, @PathVariable String searchQuery){
         MemberSearchCondition memberSearchCondition = new MemberSearchCondition(searchQuery);
-        return ResponseEntity.ok().body(memberRepository.getMember(memberSearchCondition));
+        return ResponseEntity.ok().body(memberRepository.getMember(memberSearchCondition,principaldetail.getMember().getSocialId()));
     }
 
     @ApiOperation(value = "마이페이지 팔로우 한 유저 검색 API", notes = "토큰검사 후 팔로우 한 유저 리스트 응답")

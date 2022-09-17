@@ -1,6 +1,7 @@
 package com.sparta.perdayonespoon.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.perdayonespoon.domain.QFriend;
@@ -29,10 +30,15 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
 
 
     @Override
-    public List<MemberSearchDto> getMember(MemberSearchCondition condition){
-        return queryFactory.select(new QMemberSearchDto(member.nickname,member.status,member.image.imgUrl,member.socialCode,member.email))
+    public List<MemberSearchDto> getMember(MemberSearchCondition condition,String socialId){
+        return queryFactory.select(new QMemberSearchDto(member.nickname,member.status,member.image.imgUrl,member.socialCode,member.email
+                        ,member.socialId,member.id,
+                        new CaseBuilder()
+                                .when(member.socialId.eq(friend.followerId).and(friend.followingId.eq(socialId))).then(true)
+                                .otherwise(false)))
                 .from(member)
                 .where(memberEmailEq(condition.getThreeToOne()).or(memberCodeEq(condition.getThreeToOne())).or(memberNickEq(condition.getThreeToOne())))
+                .leftJoin(friend).on(member.socialId.eq(friend.followerId))
                 .fetch();
     }
 
