@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface MemberRepositoryCustom {
 
-    List<MemberSearchDto> getMember(MemberSearchCondition condition);
+    List<MemberSearchDto> getMember(MemberSearchCondition condition, String socialId);
 
     MyPageCollectDto getMypageData(String socialId);
 }

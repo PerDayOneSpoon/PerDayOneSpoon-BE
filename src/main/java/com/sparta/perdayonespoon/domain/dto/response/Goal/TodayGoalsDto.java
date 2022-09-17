@@ -21,7 +21,6 @@ public class TodayGoalsDto {
     private String characterUrl;
     private boolean privateCheck;
     private boolean achievementCheck;
-
     private int heartCnt;
 
     @QueryProjection
