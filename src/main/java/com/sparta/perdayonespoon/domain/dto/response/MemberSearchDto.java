@@ -29,8 +29,10 @@ public class MemberSearchDto {
     @ApiModelProperty(example = "팔로우 했는지 여부")
     private boolean followCheck;
 
+    @ApiModelProperty(example = "본인 여부 확인")
+    private boolean selfCheck;
     @QueryProjection
-    public MemberSearchDto(String nickname, String status, String ImgUrl, String socialCode, String Email, String socialId,Long id, boolean followCheck){
+    public MemberSearchDto(String nickname, String status, String ImgUrl, String socialCode, String Email, String socialId,Long id, boolean followCheck,boolean selfCheck){
         this.nickname=nickname;
         this.status=status;
         this.ImgUrl=ImgUrl;
@@ -39,5 +41,6 @@ public class MemberSearchDto {
         this.socialId=socialId;
         this.id=id;
         this.followCheck=followCheck;
+        this.selfCheck=selfCheck;
     }
 }

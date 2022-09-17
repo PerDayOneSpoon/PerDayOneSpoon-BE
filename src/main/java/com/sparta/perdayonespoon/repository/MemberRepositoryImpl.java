@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.SelectBeforeUpdate;
 
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,9 +35,12 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
         return queryFactory.select(new QMemberSearchDto(member.nickname,member.status,member.image.imgUrl,member.socialCode,member.email
                         ,member.socialId,member.id,
                         new CaseBuilder()
-                                .when(member.socialId.eq(socialId)).then(true)
                                 .when(member.socialId.eq(friend.followerId).and(friend.followingId.eq(socialId))).then(true)
-                                .otherwise(false)))
+                                .otherwise(false),
+                        new CaseBuilder()
+                                .when(member.socialId.eq(socialId)).then(true)
+                                .otherwise(false)
+                        ))
                 .from(member)
                 .where(memberEmailEq(condition.getThreeToOne()).or(memberCodeEq(condition.getThreeToOne())).or(memberNickEq(condition.getThreeToOne())))
                 .leftJoin(friend).on(member.socialId.eq(friend.followerId).and(friend.followingId.eq(socialId)))
