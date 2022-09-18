@@ -13,17 +13,30 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class PrivateService {
     private final GoalRepository goalRepository;
-    public ResponseEntity changePrivateCheck(Principaldetail principaldetail, PrivateDto privateDto, Long goalId) {
-        Goal goal = goalRepository.findByIdAndSocialId(goalId,principaldetail.getMember().getSocialId())
-                .map(Goal->changePrivate(Goal,privateDto.getPrivateCheck()))
-                .orElseThrow(() -> new IllegalArgumentException("해당 습관이 존재하지 않습니다."));
+    public ResponseEntity changePrivateCheck(Principaldetail principaldetail, PrivateDto privateDto, String goalFlag) {
+        List<Goal> goalList = goalRepository.getCategoryGoals(principaldetail.getMember().getSocialId(),goalFlag);
+        List<GoalResponseDto> goalResponseDtoList = new ArrayList<>();
+        if(goalList.isEmpty()) throw new IllegalArgumentException("해당 습관이 없습니다.");
+        goalList.forEach(goal -> changePrivate(goal,privateDto.getPrivateCheck(),goalResponseDtoList));
+        return ResponseEntity.ok().body(goalResponseDtoList);
+    }
+
+    private void changePrivate(Goal goal,Boolean privateCheck,List<GoalResponseDto> goalResponseDtoList) {
+        if(privateCheck == null){
+            goal.SetPrivateCheck(!goal.isPrivateCheck());
+        }
+        else{
+            goal.SetPrivateCheck(privateCheck);
+        }
         if(goal.isPrivateCheck()) {
-            GoalResponseDto goalResponseDto = GoalResponseDto
+            goalResponseDtoList.add(GoalResponseDto
                     .builder()
                     .id(goal.getId())
                     .characterUrl(GetCharacterUrl.getMandooUrl(goal.getCharacterId()))
@@ -36,10 +49,9 @@ public class PrivateService {
                     .title(goal.getTitle())
                     .socialId(goal.getSocialId())
                     .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK, "나만보기로 설정하셨습니다."))
-                    .build();
-            return ResponseEntity.ok().body(goalResponseDto);
+                    .build());
         }
-        GoalResponseDto goalResponseDto = GoalResponseDto
+        goalResponseDtoList.add(GoalResponseDto
                 .builder()
                 .id(goal.getId())
                 .characterUrl(GetCharacterUrl.getMandooUrl(goal.getCharacterId()))
@@ -52,18 +64,7 @@ public class PrivateService {
                 .title(goal.getTitle())
                 .socialId(goal.getSocialId())
                 .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK, "공개보기로 설정하셨습니다."))
-                .build();
-        return ResponseEntity.ok().body(goalResponseDto);
-    }
-
-    private Goal changePrivate(Goal goal,Boolean privateCheck) {
-        if(privateCheck == null){
-            goal.SetPrivateCheck(!goal.isPrivateCheck());
-        }
-        else{
-            goal.SetPrivateCheck(privateCheck);
-        }
+                .build());
         goalRepository.save(goal);
-        return goal;
     }
 }

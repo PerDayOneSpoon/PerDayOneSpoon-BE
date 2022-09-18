@@ -45,7 +45,7 @@ public class MyPageService {
     private final Scalr_Resize_S3Uploader scalr_resize_s3Uploader;
 
     public ResponseEntity getProfile(Principaldetail principaldetail) {
-        // 이룬 목표 개수 , 팔로워한 친구 수 , 팔로우한 친구 수 3개가 가야함 추후엔 뱃지까지
+        //TODO 이룬 목표 개수 , 팔로워한 친구 수 , 팔로우한 친구 수 3개가 가야함 추후엔 뱃지까지 follower -> 나를 팔로우한 사람 following 내가 팔로우한거 이렇게
         MyPageCollectDto myPageCollectDto = memberRepository.getMypageData(principaldetail.getMember().getSocialId());
         myPageCollectDto.SetCodeMsg(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"프로필 조회에 성공하셨습니다."));
         return ResponseEntity.ok(myPageCollectDto);

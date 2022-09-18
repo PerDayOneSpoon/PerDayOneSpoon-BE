@@ -19,6 +19,7 @@ import com.sparta.perdayonespoon.repository.MemberRepository;
 import com.sparta.perdayonespoon.repository.RefreshTokenRepository;
 import com.sparta.perdayonespoon.util.GenerateHeader;
 import com.sparta.perdayonespoon.util.GenerateMsg;
+import com.sparta.perdayonespoon.util.MailUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -32,13 +33,17 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpHeaders;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
 public class KakaoService {
+
+//    private final MailUtil mailUtil;
 
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -67,7 +72,7 @@ public class KakaoService {
     @Value("${spring.security.oauth2.client.provider.kakao.userInfoUri}")
     private String KAKAO_SNS_User_URL;
 
-    public ResponseEntity login(String code) {
+    public ResponseEntity login(String code) throws MessagingException, IOException {
 
         // 인가코드로 토큰받기
         OauthToken oauthToken = getAccessToken(code);
@@ -123,7 +128,7 @@ public class KakaoService {
         return oauthToken; //(8)
     }
 
-    public Member saveUser(String access_token) {
+    public Member saveUser(String access_token) throws MessagingException, IOException {
         KakaoProfile profile = findProfile(access_token);
         //(2)
         Optional<Member> checkmember = memberRepository.findBySocialId(profile.getId());
@@ -143,6 +148,7 @@ public class KakaoService {
                     .build();
             image.setMember(member);
             imageRepository.save(image);
+//            mailUtil.trilsPromoMail(member);
             return member;
         }
         else

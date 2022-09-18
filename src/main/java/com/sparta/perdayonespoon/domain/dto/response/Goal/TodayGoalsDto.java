@@ -1,5 +1,6 @@
 package com.sparta.perdayonespoon.domain.dto.response.Goal;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.querydsl.core.annotations.QueryProjection;
 
 import com.sparta.perdayonespoon.util.GetCharacterUrl;
@@ -23,9 +24,11 @@ public class TodayGoalsDto {
     private boolean achievementCheck;
     private int heartCnt;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String deleteFlag;
     @QueryProjection
     public TodayGoalsDto(String title, LocalDateTime startDate, LocalDateTime endDate, String time, int characterUrl,
-                         Long id, boolean privateCheck, LocalDateTime currentDate, boolean achievementCheck, int heartCnt){
+                         Long id, boolean privateCheck, LocalDateTime currentDate, boolean achievementCheck, int heartCnt, String deleteFlag){
         this.title=title;
         this.startDate= startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13);
         this.endDate= endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13);
@@ -36,10 +39,11 @@ public class TodayGoalsDto {
         this.currentDate= currentDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13);
         this.achievementCheck=achievementCheck;
         this.heartCnt = heartCnt;
+        this.deleteFlag =deleteFlag;
     }
     @Builder
     public TodayGoalsDto(String title, LocalDateTime startDate, LocalDateTime endDate, String time, int characterUrl,
-                         Long id, boolean privateCheck, String currentDate, boolean achievementCheck, int heartCnt){
+                         Long id, boolean privateCheck, String currentDate, boolean achievementCheck, int heartCnt, String deleteFlag){
         this.title=title;
         this.startDate= startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13);
         this.endDate= endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13);
@@ -50,5 +54,6 @@ public class TodayGoalsDto {
         this.currentDate= currentDate;
         this.achievementCheck=achievementCheck;
         this.heartCnt = heartCnt;
+        this.deleteFlag =deleteFlag;
     }
 }

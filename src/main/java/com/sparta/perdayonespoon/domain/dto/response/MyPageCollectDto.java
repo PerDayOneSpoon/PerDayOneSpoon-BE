@@ -39,7 +39,7 @@ public class MyPageCollectDto {
         socialEmail = member.getEmail();
         this.goalCnt = goalCnt;
         this.followerCnt = followerCnt;
-        this.followingCnt=followingCnt;
+        this.followingCnt = followingCnt;
     }
 
     public void SetCodeMsg(MsgDto msgDto){

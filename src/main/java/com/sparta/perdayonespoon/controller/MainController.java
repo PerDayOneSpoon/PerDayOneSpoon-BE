@@ -53,4 +53,16 @@ public class MainController {
     public ResponseEntity<GoalResponseDto> ChangeGoal(@PathVariable long goalId, @RequestBody RequestBooleanDto requestBooleanDto, @ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail) {
         return mainService.ChangeGoal(goalId,requestBooleanDto.getAchivement(),principaldetail);
     }
+
+    @ApiOperation(value = "메인페이지 습관 지우기 API ", notes = "토큰검사 후 습관 카테고리 지움")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름"),
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "API 정상 작동",response = GoalDto.class)
+    })
+    @DeleteMapping("/delete/{deleteFlag}")
+    public ResponseEntity deleteGoals(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail, @PathVariable String deleteFlag) {
+        return mainService.deleteGoals(principaldetail,deleteFlag);
+    }
 }

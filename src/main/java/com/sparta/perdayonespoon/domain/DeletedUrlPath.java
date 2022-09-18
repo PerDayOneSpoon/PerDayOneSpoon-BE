@@ -1,16 +1,12 @@
 package com.sparta.perdayonespoon.domain;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Setter
 public class DeletedUrlPath {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)

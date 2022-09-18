@@ -51,8 +51,8 @@ public class CalendarController {
                             @ResponseHeader(name = "refreshtoken", description = "refreshtoken이 담기는 헤더의 이름", response = TokenDto.class)}),
     })
     @GetMapping("/calendar/friend/{friendId}")
-    public ResponseEntity getFriendCalendar(@PathVariable(required = false) String friendId , @AuthenticationPrincipal Principaldetail principaldetail){
-        return calendarService.getFriendCalendar(friendId,principaldetail);
+    public ResponseEntity getFriendCalendar(@PathVariable(required = false) Long friendId){
+        return calendarService.getFriendCalendar(friendId);
     }
 
     @ApiOperation(value = "친구 캘린더 데이터 조회 API", notes = "캘린더 페이지에서 친구의 전체 정보를 보여주는 api ")
@@ -63,7 +63,7 @@ public class CalendarController {
                             @ResponseHeader(name = "refreshtoken", description = "refreshtoken이 담기는 헤더의 이름", response = TokenDto.class)}),
     })
     @GetMapping("/calendar/friend/{friendId}/detail")
-    public ResponseEntity getFriendSpecific(@PathVariable String friendId,@RequestParam(value = "specificDate") String specificDate){
+    public ResponseEntity getFriendSpecific(@PathVariable Long friendId,@RequestParam(value = "specificDate") String specificDate){
         return calendarService.getFriendSpecific(friendId,specificDate);
     }
 }

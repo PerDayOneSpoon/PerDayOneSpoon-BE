@@ -3,6 +3,7 @@ package com.sparta.perdayonespoon.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sparta.perdayonespoon.domain.dto.S3Dto;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "image")
 @Entity
 public class Image extends  Timestamped{
