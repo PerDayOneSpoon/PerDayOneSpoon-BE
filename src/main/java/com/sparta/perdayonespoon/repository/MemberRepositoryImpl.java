@@ -52,8 +52,8 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     public MyPageCollectDto getMypageData(String socialId){
         return queryFactory.select(new QMyPageCollectDto(member,
                         JPAExpressions.select(goal.count()).from(goal).where(goal.socialId.eq(socialId)).groupBy(goal.socialId,goal.achievementCheck).having(goal.achievementCheck.eq(true)),
-                        JPAExpressions.select(friend.count()).from(friend).where(friend.followingId.eq(socialId)).groupBy(friend.followingId),
-                        JPAExpressions.select(friend.count()).from(friend).where(friend.followerId.eq(socialId)).groupBy(friend.followerId)))
+                        JPAExpressions.select(friend.count()).from(friend).where(friend.followerId.eq(socialId)).groupBy(friend.followerId),
+                        JPAExpressions.select(friend.count()).from(friend).where(friend.followingId.eq(socialId)).groupBy(friend.followingId)))
                 .from(member)
                 .where(member.socialId.eq(socialId))
                 .fetchOne();

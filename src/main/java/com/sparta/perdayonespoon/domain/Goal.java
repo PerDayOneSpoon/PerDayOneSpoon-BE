@@ -1,6 +1,7 @@
 package com.sparta.perdayonespoon.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Getter
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name="goal")
 public class Goal{
     @Id
@@ -48,13 +49,16 @@ public class Goal{
     @Column
     private boolean achievementCheck;
 
+    @Column
+    private String goalFlag;
+
     @OneToMany(mappedBy = "goal",cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Heart> heartList = new ArrayList<>();
 
     @Builder
     public Goal(String title, LocalDateTime startDate,LocalDateTime currentDate,LocalDateTime endDate, String time, int category,
-                int characterId, boolean privateCheck, String socialId,boolean achievementCheck){
+                int characterId, boolean privateCheck, String socialId,boolean achievementCheck,String goalFlag){
         this.title = title;
         this.category = category;
         this.startDate = startDate;
@@ -65,6 +69,7 @@ public class Goal{
         this.time=time;
         this.socialId=socialId;
         this.achievementCheck=achievementCheck;
+        this.goalFlag = goalFlag;
     }
 
     public void SetAchivementCheck(boolean achievementCheck){

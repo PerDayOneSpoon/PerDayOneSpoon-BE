@@ -1,5 +1,6 @@
 package com.sparta.perdayonespoon.domain;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,7 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Friend {
 
@@ -24,6 +25,6 @@ public class Friend {
     @Builder
     public Friend(String followerId, String followingId){
         this.followerId = followerId;
-        this.followingId =followingId;
+        this.followingId = followingId;
     }
 }

@@ -50,6 +50,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    //이메일 인증
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
@@ -77,11 +79,6 @@ dependencies {
 //    //redis
 //    implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.5.3'
 
-    implementation group: 'com.github.scribejava', name: 'scribejava-core', version: '2.8.1'
-
-    //이메일 인증
-    implementation 'org.springframework.boot:spring-boot-starter-mail'
-
 //    websocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.webjars:sockjs-client:1.1.2'
@@ -90,6 +87,8 @@ dependencies {
     // scalr 라이브러리
     implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
     implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.17'
+
+    implementation group: 'commons-io', name: 'commons-io', version: '2.4'
 
     //aws 의존성
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.0.1.RELEASE'

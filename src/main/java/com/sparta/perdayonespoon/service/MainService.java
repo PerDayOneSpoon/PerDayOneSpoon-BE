@@ -136,6 +136,7 @@ public class MainService {
     }
     // TODO : 달력 날짜 받기X 주간 달성도 리턴하기
     public ResponseEntity CreateGoal(GoalDto goalDto, Principaldetail principaldetail) {
+        String deleteFlag = UUID.randomUUID().toString();
         if(goalDto.getTitle() == null){
             throw new IllegalArgumentException("제목을 입력해주세요");
         } else if (goalDto.getCharacterId() == 0){
@@ -156,6 +157,7 @@ public class MainService {
                     .category(goalDto.category)
                     .characterId(goalDto.characterId)
                     .title(goalDto.title)
+                    .goalFlag(deleteFlag)
                     .build());
                 x++;
             }
@@ -172,6 +174,7 @@ public class MainService {
                     .startDate(Goal.getStartDate().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
                     .privateCheck(Goal.isPrivateCheck())
                     .time(Goal.getTime())
+                    .goalFlag(Goal.getGoalFlag())
                     .msgDto(GenerateMsg.getMsg(MsgCollector.CREATE_GOALS.getCode(), MsgCollector.CREATE_GOALS.getMsg()))
                     .build()));
             return ResponseEntity.ok(goalResponseDtoList);
@@ -226,5 +229,19 @@ public class MainService {
                 .characterId(goal.getCharacterId())
                 .time(goal.getTime())
                 .build());
+    }
+
+    public ResponseEntity deleteGoals(Principaldetail principaldetail, String deleteFlag) {
+        List<Goal> goalList = goalRepository.getCategoryGoals(principaldetail.getMember().getSocialId(),deleteFlag);
+        int category;
+        if(goalList.isEmpty()){
+            throw new IllegalArgumentException("해당 습관이 존재하지 않습니다.");
+        }
+        else
+        {
+            category=goalList.get(0).getCategory();
+            goalRepository.deleteAll(goalList);
+        }
+        return ResponseEntity.ok().body(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"만드셨던"+ category +"일치의 습관을 모두 삭제하셨습니다."));
     }
 }

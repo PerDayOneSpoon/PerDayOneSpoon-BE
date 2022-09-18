@@ -28,8 +28,8 @@ public class PrivateController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "API 정상 작동",response = ImageDto.class),
     })
-    @PatchMapping(value = "change/goal/{goalId}")
-    public ResponseEntity changeImage (@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail, @RequestBody(required = false) PrivateDto privateDto, @PathVariable Long goalId){
-        return privateService.changePrivateCheck(principaldetail,privateDto,goalId);
+    @PatchMapping(value = "change/goal/{goalFlag}")
+    public ResponseEntity changeImage (@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail, @RequestBody(required = false) PrivateDto privateDto, @PathVariable String goalFlag){
+        return privateService.changePrivateCheck(principaldetail,privateDto,goalFlag);
     }
 }

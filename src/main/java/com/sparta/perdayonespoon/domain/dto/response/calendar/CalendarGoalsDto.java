@@ -12,7 +12,6 @@ import java.time.format.DateTimeFormatter;
 public class CalendarGoalsDto {
 
     private Long id;
-
     private int characterId;
     private String title;
     private LocalDateTime startDate;

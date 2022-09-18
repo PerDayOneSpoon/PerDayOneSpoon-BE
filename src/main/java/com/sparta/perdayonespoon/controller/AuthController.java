@@ -7,6 +7,7 @@ import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
 import com.sparta.perdayonespoon.service.GoogleService;
 import com.sparta.perdayonespoon.service.KakaoService;
 import com.sparta.perdayonespoon.service.NaverService;
+import com.sparta.perdayonespoon.util.ReissueUtil;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,13 +15,16 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Nullable;
+import javax.mail.MessagingException;
+import java.io.IOException;
 
 @Api(tags="소셜로그인 REST API")
 @RequestMapping("/login")
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "*")
 public class AuthController {
+
+    private final ReissueUtil reissueUtil;
 
     private final KakaoService kakaoService;
 
@@ -36,7 +40,7 @@ public class AuthController {
                                        @ResponseHeader(name = "refreshtoken", description = "refreshtoken이 담기는 헤더의 이름", response = TokenDto.class)}),
     })
     @GetMapping("/kakao") // (3)
-    public ResponseEntity getkakaoLogin(@RequestParam("code") String code) {//(4)
+    public ResponseEntity getkakaoLogin(@RequestParam("code") String code) throws MessagingException, IOException {//(4)
         return kakaoService.login(code);
     }
 
@@ -79,6 +83,6 @@ public class AuthController {
     public ResponseEntity reissue(@ApiIgnore @RequestHeader(value = "refreshtoken", required = false) String refreshtoken){
         TokenSearchCondition tokenSearchCondition = new TokenSearchCondition();
         tokenSearchCondition.setRefreshtoken(refreshtoken);
-        return googleService.regenerateToken(tokenSearchCondition);
+        return reissueUtil.regenerateToken(tokenSearchCondition);
     }
 }

@@ -158,7 +158,7 @@ public class CalendarService {
         return ResponseEntity.ok().body(todayGoalsDtoList);
     }
 
-    public ResponseEntity getFriendCalendar(String friendId, Principaldetail principaldetail) {
+    public ResponseEntity getFriendCalendar(Long friendId) {
         HashMap<String, List<String>> twolist = new LinkedHashMap<>();
         List<MonthCalendarDto> monthGoalsDtoList = new ArrayList<>();
         Stack<String> dayCheck = new Stack<>();
@@ -169,7 +169,7 @@ public class CalendarService {
         List<CalendarGoalsDto> calendarGoalsDtoList;
         if(friendId != null) {
             calendarGoalsDtoList = goalRepository.getFriendCalendar(startDate, endDate, false, friendId);
-        } else calendarGoalsDtoList = goalRepository.getMyCalendar(startDate, endDate,principaldetail.getMember().getSocialId());
+        } else throw new IllegalArgumentException("친구 아이디를 입력 하셔야 합니다.!");
         calendarGoalsDtoList.forEach(calendarGoalsDto->CollectSameDate(calendarGoalsDto,twolist,dayCheck,monthGoalsDtoList,id));
         List<TodayGoalsDto> todayGoalsDtoList = calendarGoalsDtoList.stream().filter(c->c.getCurrentDate().equals(today.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))).map(CalendarGoalsDto::getTodayGoalsDto).collect(Collectors.toList());
         if(!dayCheck.isEmpty()) {
@@ -184,7 +184,7 @@ public class CalendarService {
         return ResponseEntity.ok().body(calenderFriendUniteDto);
     }
 
-    public ResponseEntity getFriendSpecific(String friendId, String specificDate) {
+    public ResponseEntity getFriendSpecific(Long friendId, String specificDate) {
         LocalDate localDate = LocalDate.parse(specificDate);
         LocalDateTime localDateTime = LocalDateTime.of(localDate.getYear(),localDate.getMonth(),localDate.getDayOfMonth(),0,0,0);
         List<TodayGoalsDto> todayGoalsDtoList = goalRepository.getFriendTodayGoal(localDateTime,friendId,false);

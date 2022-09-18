@@ -1,5 +1,6 @@
 package com.sparta.perdayonespoon.repository;
 
+import com.sparta.perdayonespoon.domain.Goal;
 import com.sparta.perdayonespoon.domain.dto.CountDto;
 import com.sparta.perdayonespoon.domain.dto.response.calendar.CalendarGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.TodayGoalsDto;
@@ -14,13 +15,15 @@ public interface GoalRepositoryCustom  {
 
     List<GoalRateDto> getRateGoal(LocalDateTime sunday, LocalDateTime saturday, String socialId);
 
-    Optional<CountDto> getCountGoal(LocalDateTime currentdate,String socialId);
+    Optional<CountDto> getCountGoal(LocalDateTime currentDate,String socialId);
 
-    List<TodayGoalsDto> getTodayGoal(LocalDateTime currentdate, String socialId);
+    List<TodayGoalsDto> getTodayGoal(LocalDateTime currentDate, String socialId);
 
-    List<TodayGoalsDto> getFriendTodayGoal(LocalDateTime currentdate, String socialId, boolean privateCheck);
+    List<TodayGoalsDto> getFriendTodayGoal(LocalDateTime currentDate, Long goalId, boolean privateCheck);
 
     List<CalendarGoalsDto> getMyCalendar(LocalDate startDate, LocalDate endDate, String socialId);
 
-    List<CalendarGoalsDto> getFriendCalendar(LocalDate startDate, LocalDate endDate, boolean privateCheck, String socialId);
+    List<CalendarGoalsDto> getFriendCalendar(LocalDate startDate, LocalDate endDate, boolean privateCheck, Long goalId);
+
+    List<Goal> getCategoryGoals(String socialId, String deleteFlag);
 }
