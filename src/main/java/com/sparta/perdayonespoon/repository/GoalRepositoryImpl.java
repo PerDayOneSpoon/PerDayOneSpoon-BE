@@ -50,7 +50,7 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
     public List<TodayGoalsDto> getTodayGoal(LocalDateTime currentDate,String socialId){
         return queryFactory.select(new QTodayGoalsDto(goal.title,goal.startDate
                 ,goal.endDate,goal.time, goal.characterId,goal.id,goal.privateCheck,
-                goal.currentDate,goal.achievementCheck,goal.heartList.size(),goal.deleteFlag))
+                goal.currentDate,goal.achievementCheck,goal.heartList.size(),goal.goalFlag))
                 .from(goal)
                 .where(GoalCurrentEq(currentDate.getDayOfMonth()),GoalSocialEq(socialId))
                 .fetch();
@@ -60,7 +60,7 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
     public List<TodayGoalsDto> getFriendTodayGoal(LocalDateTime currentDate,Long goalId,boolean privateCheck){
         return queryFactory.select(new QTodayGoalsDto(goal.title,goal.startDate
                         ,goal.endDate,goal.time, goal.characterId,goal.id,goal.privateCheck,
-                        goal.currentDate,goal.achievementCheck,goal.heartList.size(),goal.deleteFlag))
+                        goal.currentDate,goal.achievementCheck,goal.heartList.size(),goal.goalFlag))
                 .from(goal)
                 .rightJoin(member).on(goal.socialId.eq(member.socialId),member.id.eq(goalId))
                 .where(GoalCurrentEq(currentDate.getDayOfMonth()),GoalIdEq(goalId),GoalPrivateEq(privateCheck))
@@ -111,7 +111,7 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
         return isEmpty(privateCheck) ? null : goal.privateCheck.eq(privateCheck);
     }
 
-    private BooleanExpression GoalFlagEq(String deleteFlag){
-        return isEmpty(deleteFlag) ? null : goal.deleteFlag.eq(deleteFlag);
+    private BooleanExpression GoalFlagEq(String goalFlag){
+        return isEmpty(goalFlag) ? null : goal.goalFlag.eq(goalFlag);
     }
 }
