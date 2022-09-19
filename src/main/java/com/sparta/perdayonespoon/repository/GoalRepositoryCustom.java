@@ -19,7 +19,7 @@ public interface GoalRepositoryCustom  {
 
     List<TodayGoalsDto> getTodayGoal(LocalDateTime currentDate, String socialId);
 
-    List<TodayGoalsDto> getFriendTodayGoal(LocalDateTime currentDate, Long goalId, boolean privateCheck);
+    List<TodayGoalsDto> getFriendTodayGoal(LocalDateTime currentDate, Long friendId, boolean privateCheck);
 
     List<CalendarGoalsDto> getMyCalendar(LocalDate startDate, LocalDate endDate, String socialId);
 

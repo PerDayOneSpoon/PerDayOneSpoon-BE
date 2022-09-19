@@ -57,13 +57,13 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
     }
 
     @Override
-    public List<TodayGoalsDto> getFriendTodayGoal(LocalDateTime currentDate,Long goalId,boolean privateCheck){
+    public List<TodayGoalsDto> getFriendTodayGoal(LocalDateTime currentDate,Long friendId,boolean privateCheck){
         return queryFactory.select(new QTodayGoalsDto(goal.title,goal.startDate
                         ,goal.endDate,goal.time, goal.characterId,goal.id,goal.privateCheck,
                         goal.currentDate,goal.achievementCheck,goal.heartList.size(),goal.goalFlag))
                 .from(goal)
-                .rightJoin(member).on(goal.socialId.eq(member.socialId),member.id.eq(goalId))
-                .where(GoalCurrentEq(currentDate.getDayOfMonth()),GoalIdEq(goalId),GoalPrivateEq(privateCheck))
+                .rightJoin(member).on(goal.socialId.eq(member.socialId),member.id.eq(friendId))
+                .where(GoalCurrentEq(currentDate.getDayOfMonth()),GoalPrivateEq(privateCheck))
                 .fetch();
     }
 

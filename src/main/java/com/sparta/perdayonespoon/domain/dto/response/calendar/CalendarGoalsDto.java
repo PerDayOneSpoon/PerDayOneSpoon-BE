@@ -1,6 +1,7 @@
 package com.sparta.perdayonespoon.domain.dto.response.calendar;
 
 import com.querydsl.core.annotations.QueryProjection;
+import com.sparta.perdayonespoon.domain.dto.response.Goal.TodayFrGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.TodayGoalsDto;
 import com.sparta.perdayonespoon.util.GetCharacterUrl;
 import lombok.Data;
@@ -38,6 +39,20 @@ public class CalendarGoalsDto {
 
     public TodayGoalsDto getTodayGoalsDto(){
         return TodayGoalsDto.builder()
+                .id(id)
+                .title(title)
+                .time(time)
+                .startDate(startDate)
+                .endDate(endDate)
+                .currentDate(currentDate)
+                .characterUrl(characterId)
+                .privateCheck(privateCheck)
+                .achievementCheck(achievementCheck)
+                .build();
+    }
+
+    public TodayFrGoalsDto getTodayFrGoalsDto(){
+        return TodayFrGoalsDto.builder()
                 .id(id)
                 .title(title)
                 .time(time)

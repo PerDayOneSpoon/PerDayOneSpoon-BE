@@ -82,7 +82,6 @@ public class MainService {
         if(!daylist.isEmpty()){
             daylist.clear();
         }
-
         List<TodayGoalsDto> todayGoalsDtoList = goalRepository.getTodayGoal(LocalDateTime.now(),principaldetail.getMember().getSocialId());
         AchivementResponseDto achivementResponseDto = AchivementResponseDto.builder()
                 .weekRateDtoList(weekRateDtoList)
