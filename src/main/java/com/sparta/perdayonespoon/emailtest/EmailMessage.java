@@ -8,6 +8,8 @@ import lombok.Data;
 @Builder
 public class EmailMessage {
 
+    private  String from;
+
     private String to;
 
     private String subject;
