@@ -52,10 +52,7 @@ public class AuthController {
                                        @ResponseHeader(name = "refreshtoken", description = "refreshtoken이 담기는 헤더의 이름", response = TokenDto.class)}),
     })
     @GetMapping("/google") // (3)
-    public ResponseEntity getgoogleLogin(@RequestParam("code") String code) { //(4)
-
-        System.out.println("구글0번로그인");
-        System.out.println(code);
+    public ResponseEntity getgoogleLogin(@RequestParam("code") String code) throws MessagingException, IOException { //(4)
         return googleService.login(code);
     }
     @ApiOperation(value = "네이버 로그인 API", notes = "네이버 로그인 하는 apI ")

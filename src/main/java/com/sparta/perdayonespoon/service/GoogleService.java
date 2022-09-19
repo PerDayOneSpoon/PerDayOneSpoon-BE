@@ -18,6 +18,7 @@ import com.sparta.perdayonespoon.repository.MemberRepository;
 import com.sparta.perdayonespoon.repository.RefreshTokenRepository;
 import com.sparta.perdayonespoon.util.GenerateHeader;
 import com.sparta.perdayonespoon.util.GenerateMsg;
+import com.sparta.perdayonespoon.util.MailUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -32,7 +33,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import javax.mail.MessagingException;
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.UUID;
@@ -41,6 +44,7 @@ import java.util.UUID;
 @Service
 public class GoogleService {
 
+    private final MailUtil mailUtil;
     private final RefreshTokenRepository refreshTokenRepository;
 
     private final TokenProvider tokenProvider;
@@ -66,7 +70,7 @@ public class GoogleService {
     @Value("${spring.security.oauth2.client.provider.google.userInfoUri}")
     private String GOOGLE_SNS_User_URL;
 
-    public ResponseEntity login(String code) {
+    public ResponseEntity login(String code) throws MessagingException, IOException {
         // 인가코드로 토큰받기
         OauthToken oauthToken = getAccessToken(code);
         // 토큰으로 사용자 정보 요청
@@ -111,7 +115,7 @@ public class GoogleService {
     }
 
     @Transactional
-    public Member saveUser(String access_token) {
+    public Member saveUser(String access_token) throws MessagingException, IOException {
         GoogleProfile profile = findProfile(access_token);
         //(2)
         Optional<Member> checkmember = memberRepository.findBySocialId(profile.getSub());
@@ -131,6 +135,7 @@ public class GoogleService {
                     .build();
             image.setMember(member);
             imageRepository.save(image);
+            mailUtil.RegisterMail(member);
             return member;
         }
         return checkmember.get();
@@ -167,20 +172,5 @@ public class GoogleService {
                 .build();
         refreshTokenRepository.save(refreshToken);
         return tokenDto;
-    }
-    public ResponseEntity regenerateToken(TokenSearchCondition condition){
-        if(tokenProvider.validateToken(condition.getRefreshtoken())){
-            TwoFieldDto twoFieldDto = refreshTokenRepository.getMember(condition);
-            Principaldetail principaldetail = new Principaldetail(twoFieldDto.getMember());
-            Authentication authentication = new UsernamePasswordAuthenticationToken(principaldetail, null, principaldetail.getAuthorities());
-            TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", "Bearer " + tokenDto.getAccessToken());
-            headers.set("RefreshToken", twoFieldDto.getRefreshToken().getValue());
-            headers.set("Access-Token-Expire-Time", String.valueOf(tokenDto.getAccessTokenExpiresIn()));
-            return ResponseEntity.ok().headers(headers).body(GenerateMsg.getMsg(MsgCollector.RE_GENERATE_TOKEN.getCode(), MsgCollector.RE_GENERATE_TOKEN.getMsg()));
-        }
-        else
-            throw new IllegalArgumentException("리프레쉬 토큰이 유효하지 않습니다.");
     }
 }
