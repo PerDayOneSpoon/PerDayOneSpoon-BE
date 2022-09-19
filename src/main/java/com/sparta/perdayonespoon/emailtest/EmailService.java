@@ -23,7 +23,7 @@ public class EmailService{
 
     private static final String FROM_ADDRESS = "HaruHanJum";
 
-//    public void sendEmail(EmailMessage emailMessage) {
+//    public void sendEmail(EmailMessage emailMessage) {            // 단순 텍스트 메일
 //        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 //        try {
 //            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
@@ -67,7 +67,7 @@ public class EmailService{
         }
     }
 
-//    private String setContext() { // 타임리프 설정하는 코드
+//    private String setContext() { // 타임리프 설정하는 코드 따로 뺄 경우
 //        Context context = new Context();
 //        context.setVariable("welcome", "welcome"); // Template 에 전달할 데이터 설정
 //        return templateEngine.process("WelcomeEmail", context); // mail.html
