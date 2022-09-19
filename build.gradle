@@ -104,6 +104,9 @@ dependencies {
     // 자바 암호화 Jasypt
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
 
+    // Quartz Scheduler
+    implementation 'org.springframework.boot:spring-boot-starter-quartz'
+
 //	//엘라스틱서치
 //	implementation 'org.springframework.data:spring-data-elasticsearch:4.2.2'
 //
