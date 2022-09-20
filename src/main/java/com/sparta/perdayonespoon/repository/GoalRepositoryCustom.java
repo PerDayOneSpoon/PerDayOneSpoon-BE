@@ -19,11 +19,15 @@ public interface GoalRepositoryCustom  {
 
     List<TodayGoalsDto> getTodayGoal(LocalDateTime currentDate, String socialId);
 
-    List<TodayGoalsDto> getFriendTodayGoal(LocalDateTime currentDate, Long goalId, boolean privateCheck);
+    List<TodayGoalsDto> getFriendTodayGoal(LocalDateTime currentDate, Long friendId, boolean privateCheck);
 
     List<CalendarGoalsDto> getMyCalendar(LocalDate startDate, LocalDate endDate, String socialId);
 
+    List<CalendarGoalsDto> getSpecificCalender(LocalDate startDate, LocalDate endDate, LocalDate middleDate ,String socialId);
+
     List<CalendarGoalsDto> getFriendCalendar(LocalDate startDate, LocalDate endDate, boolean privateCheck, Long goalId);
+
+    List<CalendarGoalsDto> getFriendSpecificCalendar(LocalDate startDate, LocalDate endDate,LocalDate middleDate,boolean privateCheck, Long goalId);
 
     List<Goal> getCategoryGoals(String socialId, String deleteFlag);
 }

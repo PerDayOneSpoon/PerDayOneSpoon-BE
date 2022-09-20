@@ -23,9 +23,12 @@ public class CalendarUniteDto {
     private long code;
 
     private String msg;
+
+    private boolean isMe;
+
     @Builder
     public CalendarUniteDto(String startDate, String endDate, List<MonthCalendarDto> monthCalenderDtoList,
-                            List<TodayGoalsDto> todayGoalsDtoList, MsgDto msgDto, List<FriendDto> peopleList){
+                            List<TodayGoalsDto> todayGoalsDtoList, MsgDto msgDto, List<FriendDto> peopleList,boolean isMe){
         this.startDate =startDate;
         this.endDate=endDate;
         this.monthCalenderDtoList = monthCalenderDtoList;
@@ -33,5 +36,6 @@ public class CalendarUniteDto {
         this.code = msgDto.getCode();
         this.msg = msgDto.getMsg();
         this.peopleList = peopleList;
+        this.isMe = isMe;
     }
 }

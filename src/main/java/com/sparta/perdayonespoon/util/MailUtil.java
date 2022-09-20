@@ -7,6 +7,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
 import java.io.IOException;
 
 
@@ -20,13 +21,13 @@ public class MailUtil {
     // 최초 회원가입시 메일 전송
     @Async
     public void RegisterMail(Member member) throws MessagingException, IOException {
+        InternetAddress from = new InternetAddress(fromMail, "하루 한 줌");
         MailHandler mailHandler = new MailHandler(mailSender);
         String nickname = member.getNickname();
-
         // 받는 사람
         mailHandler.setTo(member.getEmail());
         // 보내는 사람
-        mailHandler.setFrom(fromMail);
+        mailHandler.setFrom(from.toString());
         // 제목
         mailHandler.setSubject("[하루 한 줌] 회원님의 회원가입을 축하해요! 😍");
         // 내용 (HTML Layout)

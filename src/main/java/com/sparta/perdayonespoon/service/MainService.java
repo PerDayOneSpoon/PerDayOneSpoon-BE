@@ -29,7 +29,6 @@ public class MainService {
     private static Stack<String> socialst = new Stack<>();
     private static Set<Integer> daylist = new HashSet<>();
     private static Stack<Boolean> goalst = new Stack<>();
-
     private static double truecount =0;
     private static double totalcount = 0;
     private static long period=0;
@@ -78,11 +77,9 @@ public class MainService {
                 }
                 else weekRateDtoList.add(WeekRateDto.builder().rate(0).id(y).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());}
         }
-
         if(!daylist.isEmpty()){
             daylist.clear();
         }
-
         List<TodayGoalsDto> todayGoalsDtoList = goalRepository.getTodayGoal(LocalDateTime.now(),principaldetail.getMember().getSocialId());
         AchivementResponseDto achivementResponseDto = AchivementResponseDto.builder()
                 .weekRateDtoList(weekRateDtoList)

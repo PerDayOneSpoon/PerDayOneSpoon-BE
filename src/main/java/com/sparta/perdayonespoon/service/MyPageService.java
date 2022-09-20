@@ -1,8 +1,6 @@
 package com.sparta.perdayonespoon.service;
 
-import com.sparta.perdayonespoon.domain.DeletedUrlPath;
-import com.sparta.perdayonespoon.domain.Member;
-import com.sparta.perdayonespoon.domain.RefreshToken;
+import com.sparta.perdayonespoon.domain.*;
 import com.sparta.perdayonespoon.domain.dto.ImageDto;
 import com.sparta.perdayonespoon.domain.dto.S3Dto;
 import com.sparta.perdayonespoon.domain.dto.request.StatusDto;
@@ -11,9 +9,7 @@ import com.sparta.perdayonespoon.domain.dto.response.MsgDto;
 import com.sparta.perdayonespoon.domain.dto.response.MyPageCollectDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.mapper.MemberMapper;
-import com.sparta.perdayonespoon.repository.DeletedUrlPathRepository;
-import com.sparta.perdayonespoon.repository.MemberRepository;
-import com.sparta.perdayonespoon.repository.RefreshTokenRepository;
+import com.sparta.perdayonespoon.repository.*;
 import com.sparta.perdayonespoon.util.GenerateMsg;
 import com.sparta.perdayonespoon.util.Scalr_Resize_S3Uploader;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +32,10 @@ import java.util.Optional;
 public class MyPageService {
     @Value("${spring.security.oauth2.client.registration.kakao.clientId}")
     private String KAKAO_SNS_CLIENT_ID;
+
+    private final GoalRepository goalRepository;
+    private final FriendRepository friendRepository;
+
     private final RefreshTokenRepository refreshTokenRepository;
 
     private final DeletedUrlPathRepository deletedUrlPathRepository;
@@ -65,6 +65,10 @@ public class MyPageService {
         memberRepository.findBySocialId(principaldetail.getMember().getSocialId())
                 .map(this::deleteDb)
                 .orElseThrow(() -> new IllegalArgumentException("이미 탈퇴한 회원입니다."));
+        List<Goal> goalList = goalRepository.findAllBySocialId(principaldetail.getMember().getSocialId());
+        List<Friend> friends = friendRepository.findAllByFollowingId(principaldetail.getMember().getSocialId());
+        friendRepository.deleteAll(friends);
+        goalRepository.deleteAll(goalList);
         return ResponseEntity.ok(GenerateMsg.getMsg(HttpServletResponse.SC_OK,principaldetail.getMember().getNickname()+"님 회원탈퇴 성공하셨습니다."));
     }
 
