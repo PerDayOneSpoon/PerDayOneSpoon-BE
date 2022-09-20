@@ -67,7 +67,9 @@ public class MyPageService {
                 .orElseThrow(() -> new IllegalArgumentException("이미 탈퇴한 회원입니다."));
         List<Goal> goalList = goalRepository.findAllBySocialId(principaldetail.getMember().getSocialId());
         List<Friend> friends = friendRepository.findAllByFollowingId(principaldetail.getMember().getSocialId());
+        List<Friend> friendList = friendRepository.findAllByFollowerId(principaldetail.getMember().getSocialId());
         friendRepository.deleteAll(friends);
+        friendRepository.deleteAll(friendList);
         goalRepository.deleteAll(goalList);
         return ResponseEntity.ok(GenerateMsg.getMsg(HttpServletResponse.SC_OK,principaldetail.getMember().getNickname()+"님 회원탈퇴 성공하셨습니다."));
     }
