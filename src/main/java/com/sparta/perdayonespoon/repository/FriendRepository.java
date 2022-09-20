@@ -10,4 +10,6 @@ public interface FriendRepository extends JpaRepository<Friend, Long>, FriendRep
     Optional<Friend> findByFollowerIdAndFollowingId(String user, String checkUser);
 
     List<Friend> findAllByFollowingId(String socialId);
+
+    List<Friend> findAllByFollowerId(String socialId);
 }
