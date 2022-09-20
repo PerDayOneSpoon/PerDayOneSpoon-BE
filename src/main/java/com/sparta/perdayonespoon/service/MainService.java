@@ -1,7 +1,7 @@
 package com.sparta.perdayonespoon.service;
 
 import com.sparta.perdayonespoon.domain.Goal;
-import com.sparta.perdayonespoon.domain.MsgCollector;
+import com.sparta.perdayonespoon.domain.SuccessMsg;
 import com.sparta.perdayonespoon.domain.dto.CountDto;
 import com.sparta.perdayonespoon.domain.dto.request.GoalDto;
 import com.sparta.perdayonespoon.domain.dto.response.AchivementResponseDto;
@@ -172,7 +172,7 @@ public class MainService {
                     .privateCheck(Goal.isPrivateCheck())
                     .time(Goal.getTime())
                     .goalFlag(Goal.getGoalFlag())
-                    .msgDto(GenerateMsg.getMsg(MsgCollector.CREATE_GOALS.getCode(), MsgCollector.CREATE_GOALS.getMsg()))
+                    .msgDto(GenerateMsg.getMsg(SuccessMsg.CREATE_GOALS.getCode(), SuccessMsg.CREATE_GOALS.getMsg()))
                     .build()));
             return ResponseEntity.ok(goalResponseDtoList);
         }
