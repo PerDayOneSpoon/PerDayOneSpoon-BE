@@ -20,14 +20,17 @@ public class CalendarFriendUniteDto {
     private long code;
 
     private String msg;
+
+    private boolean isMe;
     @Builder
     public CalendarFriendUniteDto(String startDate, String endDate, List<MonthCalendarDto> monthCalenderDtoList,
-                            List<TodayGoalsDto> todayGoalsDtoList, MsgDto msgDto){
+                            List<TodayGoalsDto> todayGoalsDtoList, MsgDto msgDto, boolean isMe){
         this.startDate =startDate;
         this.endDate=endDate;
         this.monthCalenderDtoList = monthCalenderDtoList;
         this.todayGoalsDtoList =todayGoalsDtoList;
         this.code = msgDto.getCode();
         this.msg = msgDto.getMsg();
+        this.isMe = isMe;
     }
 }

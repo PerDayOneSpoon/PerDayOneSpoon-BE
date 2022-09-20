@@ -1,6 +1,7 @@
 package com.sparta.perdayonespoon.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.perdayonespoon.domain.Goal;
 import com.sparta.perdayonespoon.domain.dto.CountDto;
@@ -50,7 +51,11 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
     public List<TodayGoalsDto> getTodayGoal(LocalDateTime currentDate,String socialId){
         return queryFactory.select(new QTodayGoalsDto(goal.title,goal.startDate
                 ,goal.endDate,goal.time, goal.characterId,goal.id,goal.privateCheck,
-                goal.currentDate,goal.achievementCheck,goal.heartList.size(),goal.goalFlag))
+                goal.currentDate,goal.achievementCheck,goal.heartList.size(),goal.goalFlag
+                , new CaseBuilder()
+                        .when(goal.socialId.eq(socialId)).then(true)
+                        .otherwise(false)
+                ))
                 .from(goal)
                 .where(GoalCurrentEq(currentDate.getDayOfMonth()),GoalSocialEq(socialId))
                 .fetch();
@@ -60,7 +65,11 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
     public List<TodayGoalsDto> getFriendTodayGoal(LocalDateTime currentDate,Long friendId,boolean privateCheck){
         return queryFactory.select(new QTodayGoalsDto(goal.title,goal.startDate
                         ,goal.endDate,goal.time, goal.characterId,goal.id,goal.privateCheck,
-                        goal.currentDate,goal.achievementCheck,goal.heartList.size(),goal.goalFlag))
+                        goal.currentDate,goal.achievementCheck,goal.heartList.size(),goal.goalFlag,
+                        new CaseBuilder()
+                                .when(member.id.eq(friendId)).then(true)
+                                .otherwise(false)
+                        ))
                 .from(goal)
                 .rightJoin(member).on(goal.socialId.eq(member.socialId),member.id.eq(friendId))
                 .where(GoalCurrentEq(currentDate.getDayOfMonth()),GoalPrivateEq(privateCheck))
@@ -77,12 +86,32 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
     }
 
     @Override
+    public List<CalendarGoalsDto> getSpecificCalender(LocalDate startDate, LocalDate endDate, LocalDate middleDate ,String socialId){
+        return queryFactory.select(new QCalendarGoalsDto(goal.id,goal.title,goal.startDate, goal.endDate, goal.currentDate,goal.time,goal.characterId,goal.privateCheck,goal.achievementCheck))
+                .from(goal)
+                .where(goal.currentDate.dayOfMonth().between(startDate.getDayOfMonth(),endDate.getDayOfMonth()),goal.currentDate.month().eq(middleDate.getMonthValue()),GoalSocialEq(socialId))
+                .orderBy(goal.currentDate.asc())
+                .fetch();
+    }
+
+
+    @Override
     public List<CalendarGoalsDto> getFriendCalendar(LocalDate startDate, LocalDate endDate, boolean privateCheck,
                                                     Long goalId){
         return queryFactory.select(new QCalendarGoalsDto(goal.id,goal.title,goal.startDate, goal.endDate, goal.currentDate,goal.time,goal.characterId,goal.privateCheck,goal.achievementCheck))
                 .from(goal)
                 .rightJoin(member).on(goal.socialId.eq(member.socialId),member.id.eq(goalId))
                 .where(goal.currentDate.dayOfMonth().between(startDate.getDayOfMonth(),endDate.getDayOfMonth()),GoalPrivateEq(privateCheck))
+                .orderBy(goal.currentDate.asc())
+                .fetch();
+    }
+
+    @Override
+    public List<CalendarGoalsDto> getFriendSpecificCalendar(LocalDate startDate, LocalDate endDate,LocalDate middleDate,boolean privateCheck, Long goalId){
+        return queryFactory.select(new QCalendarGoalsDto(goal.id,goal.title,goal.startDate, goal.endDate, goal.currentDate,goal.time,goal.characterId,goal.privateCheck,goal.achievementCheck))
+                .from(goal)
+                .rightJoin(member).on(goal.socialId.eq(member.socialId),member.id.eq(goalId))
+                .where(goal.currentDate.dayOfMonth().between(startDate.getDayOfMonth(),endDate.getDayOfMonth()),GoalPrivateEq(privateCheck),goal.currentDate.month().eq(middleDate.getMonthValue()))
                 .orderBy(goal.currentDate.asc())
                 .fetch();
     }

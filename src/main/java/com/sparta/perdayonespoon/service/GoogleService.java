@@ -45,12 +45,15 @@ import java.util.UUID;
 public class GoogleService {
 
     private final MailUtil mailUtil;
+
     private final RefreshTokenRepository refreshTokenRepository;
 
     private final TokenProvider tokenProvider;
 
     private final PasswordEncoder passwordEncoder;
+
     private final MemberRepository memberRepository;
+
     private final RestTemplate restTemplate;
 
     private final ImageRepository imageRepository;
