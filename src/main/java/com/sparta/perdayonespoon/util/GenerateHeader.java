@@ -8,7 +8,6 @@ import org.springframework.http.HttpHeaders;
 @Getter
 @NoArgsConstructor
 public class GenerateHeader {
-//    private static final HttpHeaders httpHeaders = new HttpHeaders();
 
     public static HttpHeaders getHttpHeaders(TokenDto tokenDto){
         HttpHeaders httpHeaders = new HttpHeaders();

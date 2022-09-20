@@ -1,6 +1,6 @@
 package com.sparta.perdayonespoon.util;
 
-import com.sparta.perdayonespoon.domain.MsgCollector;
+import com.sparta.perdayonespoon.domain.SuccessMsg;
 import com.sparta.perdayonespoon.domain.dto.request.TokenSearchCondition;
 import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
 import com.sparta.perdayonespoon.domain.dto.response.TwoFieldDto;
@@ -30,7 +30,7 @@ public class ReissueUtil {
             headers.set("Authorization", "Bearer " + tokenDto.getAccessToken());
             headers.set("RefreshToken", twoFieldDto.getRefreshToken().getValue());
             headers.set("Access-Token-Expire-Time", String.valueOf(tokenDto.getAccessTokenExpiresIn()));
-            return ResponseEntity.ok().headers(headers).body(GenerateMsg.getMsg(MsgCollector.RE_GENERATE_TOKEN.getCode(), MsgCollector.RE_GENERATE_TOKEN.getMsg()));
+            return ResponseEntity.ok().headers(headers).body(GenerateMsg.getMsg(SuccessMsg.RE_GENERATE_TOKEN.getCode(), SuccessMsg.RE_GENERATE_TOKEN.getMsg()));
         }
         else
             throw new IllegalArgumentException("리프레쉬 토큰이 유효하지 않습니다.");
