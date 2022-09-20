@@ -8,30 +8,30 @@ spring:
   mail:
     host: smtp.naver.com
     port: 465
-    username: ENC(qE+ggWnkDvnXUDxweYtHbL6DHwm+uCzS3DgviHRcyDchqo33BF6xDg==)
-    password: ENC(6GUqJYG/Mu+5CrIeQy86QFGb7r3FXZdsL7CZJZBxkdA=)
+    username: ENC(b5qTq5JPv+fVhIlJZQMEHeLU739Op2Bioe/fuqq14qCUXvJO0mpnCA==)
+    password: ENC(06QZ7BPcrnzFU37uCgXiKsYwTR+HsWDK)
     properties:
       mail.smtp.auth: true
       mail.smtp.ssl.enable: true
 #
-#
-  datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+##
+#  datasource:
+#    url: jdbc:h2:mem:testdb
+#    driver-class-name: org.h2.Driver
+#    username: sa
+#    password:
 
 
 
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: create
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    defer-datasource-initialization: true
-    properties:
-      hibernate:
+#  jpa:
+#    database-platform: org.hibernate.dialect.H2Dialect
+#    hibernate:
+#      ddl-auto: create
+#      naming:
+#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+#    defer-datasource-initialization: true
+#    properties:
+#      hibernate:
 #   redis 설정 기본 6379로 작동
 #  redis:
 #    host: ENC(LY/fQOcSgwDyQHb4+WqSRXETqOMDOZQD)
@@ -65,32 +65,32 @@ spring:
 #    defer-datasource-initialization: true
 
 # 민혁님 RDS
-#  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://database-1.cjqsacqcnhg0.ap-northeast-2.rds.amazonaws.com:3306/testdb222?serverTimezone=Asia/Seoul
-#    username: ENC(ra3fPVdpel5Ze2nnanW60w==)
-#    password: ENC(TIukE6eAJmSYxDlIli+AcJf2NNIo/7xf)
-#    hikari:
-#      pool-name: jpa-hikari-pool
-#      maximum-pool-size: 5
-#      jdbc-url: ${spring.datasource.url}
-#      username: ${spring.datasource.username}
-#      password: ${spring.datasource.password}
-#      driver-class-name: ${spring.datasource.driver-class-name}
-##      data-source-properties:
-##        rewriteBatchedStatements: true
-#
-#
-#  jpa:
-##    database-platform : org.hibernate.dialect.MySQL5Dialect
-##    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-#    database: mysql
-#    generate-ddl: true
-#    hibernate:
-#      ddl-auto: update
-#      naming:
-#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-#    defer-datasource-initialization: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://database-1.cjqsacqcnhg0.ap-northeast-2.rds.amazonaws.com:3306/testdb222?serverTimezone=Asia/Seoul
+    username: ENC(ra3fPVdpel5Ze2nnanW60w==)
+    password: ENC(TIukE6eAJmSYxDlIli+AcJf2NNIo/7xf)
+    hikari:
+      pool-name: jpa-hikari-pool
+      maximum-pool-size: 5
+      jdbc-url: ${spring.datasource.url}
+      username: ${spring.datasource.username}
+      password: ${spring.datasource.password}
+      driver-class-name: ${spring.datasource.driver-class-name}
+#      data-source-properties:
+#        rewriteBatchedStatements: true
+
+
+  jpa:
+#    database-platform : org.hibernate.dialect.MySQL5Dialect
+#    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database: mysql
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    defer-datasource-initialization: true
 
   # Security OAuth
   security:

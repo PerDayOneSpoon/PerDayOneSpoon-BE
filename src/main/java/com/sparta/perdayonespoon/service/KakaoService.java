@@ -19,6 +19,7 @@ import com.sparta.perdayonespoon.repository.MemberRepository;
 import com.sparta.perdayonespoon.repository.RefreshTokenRepository;
 import com.sparta.perdayonespoon.util.GenerateHeader;
 import com.sparta.perdayonespoon.util.GenerateMsg;
+import com.sparta.perdayonespoon.util.MailUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -42,7 +43,7 @@ import java.util.UUID;
 @Service
 public class KakaoService {
 
-//    private final MailUtil mailUtil;
+    private final MailUtil mailUtil;
 
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -147,7 +148,7 @@ public class KakaoService {
                     .build();
             image.setMember(member);
             imageRepository.save(image);
-//            mailUtil.trilsPromoMail(member);
+            mailUtil.RegisterMail(member);
             return member;
         }
         else
