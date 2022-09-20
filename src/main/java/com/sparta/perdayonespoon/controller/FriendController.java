@@ -19,7 +19,6 @@ import java.util.List;
 @Api(tags="친구 페이지 REST API")
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "*")
 public class FriendController {
 
     private final FriendService friendService;

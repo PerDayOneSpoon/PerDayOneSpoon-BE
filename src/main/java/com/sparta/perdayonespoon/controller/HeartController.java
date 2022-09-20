@@ -13,7 +13,6 @@ import springfox.documentation.annotations.ApiIgnore;
 @Api(tags="좋아요 및 응원하기 REST API")
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "*")
 public class HeartController {
 
     private final HeartService heartService;

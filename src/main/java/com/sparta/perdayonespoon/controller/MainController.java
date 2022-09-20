@@ -15,7 +15,6 @@ import springfox.documentation.annotations.ApiIgnore;
 @Api(tags="메인페이지 REST API")
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "*")
 public class MainController {
 
     private final MainService mainService;

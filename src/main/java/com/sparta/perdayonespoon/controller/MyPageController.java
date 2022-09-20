@@ -19,7 +19,6 @@ import java.io.IOException;
 
 
 @Api(tags = "마이페이지 REST API")
-@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "*")
 @RequiredArgsConstructor
 @RestController
 public class MyPageController {
