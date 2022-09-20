@@ -37,7 +37,7 @@ public class FriendService {
                 .build());
     }
 
-    public ResponseEntity<FriendResponseDto> deleteFriend(Principaldetail principaldetail, String friendId) {
+    public ResponseEntity<FriendResponseDto> deleteFollowerFriend(Principaldetail principaldetail, String friendId) {
         friendRepository.findByFollowerIdAndFollowingId(friendId,principaldetail.getMember().getSocialId())
                 .map(this::delete)
                 .orElseThrow(() -> new IllegalArgumentException("이미 팔로우를 취소하셨습니다."));
@@ -69,6 +69,16 @@ public class FriendService {
         return ResponseEntity.ok().body(FollowResponseDto.builder()
                 .friendDtoList(friendDtoList)
                 .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK, "나를 팔로우한 친구목록 조회에 성공하셨습니다."))
+                .build());
+    }
+
+    public ResponseEntity<FriendResponseDto> deleteFollowingFriend(Principaldetail principaldetail, String friendId) {
+        friendRepository.findByFollowerIdAndFollowingId(principaldetail.getMember().getSocialId(),friendId)
+                .map(this::delete)
+                .orElseThrow(() -> new IllegalArgumentException("이미 팔로잉을 끊으셨습니다."));
+        return ResponseEntity.ok().body(FriendResponseDto.builder()
+                .followCheck(false)
+                .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"팔로잉을 끊으셨습니다."))
                 .build());
     }
 }

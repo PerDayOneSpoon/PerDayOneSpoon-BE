@@ -18,7 +18,6 @@ import java.io.IOException;
 @Api(tags="권한 수정 REST API")
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "*")
 public class PrivateController {
     private final PrivateService privateService;
 

@@ -17,7 +17,6 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequestMapping("/confirm")
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "*")
 public class CalendarController {
     private final CalendarService calendarService;
     @ApiOperation(value = "캘린더 데이터 조회 API", notes = "캘린더 페이지에서 전체 정보를 보여주는 api ")
