@@ -16,7 +16,7 @@ public class MemberSearchDto {
     @ApiModelProperty(example = "사용자의 상태 메세지")
     private String status;
     @ApiModelProperty(example = "사용자의 프로필 이미지")
-    private String ImgUrl;
+    private String profileImage;
     @ApiModelProperty(example = "사용자의 검색 코드")
     private String socialCode;
 
@@ -32,10 +32,10 @@ public class MemberSearchDto {
     @ApiModelProperty(example = "본인 여부 확인")
     private boolean selfCheck;
     @QueryProjection
-    public MemberSearchDto(String nickname, String status, String ImgUrl, String socialCode, String Email, String socialId,Long id, boolean followCheck,boolean selfCheck){
+    public MemberSearchDto(String nickname, String status, String profileImage, String socialCode, String Email, String socialId,Long id, boolean followCheck,boolean selfCheck){
         this.nickname=nickname;
         this.status=status;
-        this.ImgUrl=ImgUrl;
+        this.profileImage=profileImage;
         this.socialCode=socialCode;
         this.Email=Email;
         this.socialId=socialId;

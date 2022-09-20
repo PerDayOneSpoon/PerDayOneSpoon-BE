@@ -12,12 +12,15 @@ public class FriendDto {
 
     private String status;
 
+    private String socialId;
+
     @Builder
     @QueryProjection
-    public FriendDto(Long id, String nickname, String profileImage,String status){
+    public FriendDto(Long id, String nickname, String profileImage,String status,String socialId){
         this.id = id;
         this.nickname=nickname;
         this.profileImage=profileImage;
         this.status = status;
+        this.socialId = socialId;
     }
 }
