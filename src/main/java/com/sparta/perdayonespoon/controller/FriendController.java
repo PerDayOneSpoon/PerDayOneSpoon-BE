@@ -1,7 +1,9 @@
 package com.sparta.perdayonespoon.controller;
 
 import com.sparta.perdayonespoon.domain.dto.request.MemberSearchCondition;
+import com.sparta.perdayonespoon.domain.dto.response.FriendResponseDto;
 import com.sparta.perdayonespoon.domain.dto.response.MemberSearchDto;
+import com.sparta.perdayonespoon.domain.follow.FollowResponseDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.repository.MemberRepository;
 import com.sparta.perdayonespoon.service.FriendService;
@@ -30,8 +32,7 @@ public class FriendController {
             @ApiResponse(code = 200, message = "API 정상 작동" , response = MemberSearchDto.class)
     })
     @GetMapping("/search/friends/{searchQuery}")
-    public ResponseEntity<List<MemberSearchDto>> getFriendlist(@AuthenticationPrincipal Principaldetail principaldetail, @PathVariable String searchQuery){
-        MemberSearchCondition memberSearchCondition = new MemberSearchCondition(searchQuery);
+    public ResponseEntity<List<MemberSearchDto>> getFriendlist(@AuthenticationPrincipal Principaldetail principaldetail, @ModelAttribute MemberSearchCondition memberSearchCondition){
         return ResponseEntity.ok().body(memberRepository.getMember(memberSearchCondition,principaldetail.getMember().getSocialId()));
     }
 
@@ -41,7 +42,7 @@ public class FriendController {
             @ApiResponse(code = 200, message = "API 정상 작동" , response = MemberSearchDto.class)
     })
     @GetMapping("/search/friends/follower")
-    public ResponseEntity getFollowerList(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
+    public ResponseEntity<FollowResponseDto> getFollowerList(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
         return friendService.getFollowerList(principaldetail);
     }
 
@@ -51,7 +52,7 @@ public class FriendController {
             @ApiResponse(code = 200, message = "API 정상 작동" , response = MemberSearchDto.class)
     })
     @GetMapping("/search/friends/following")
-    public ResponseEntity getFollowingList(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
+    public ResponseEntity<FollowResponseDto> getFollowingList(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
         return friendService.getFollowingList(principaldetail);
     }
 
@@ -63,7 +64,7 @@ public class FriendController {
             @ApiResponse(code = 200, message = "API 정상 작동" , response = MemberSearchDto.class)
     })
     @PostMapping("/friends/{friendId}")
-    public ResponseEntity addFriend(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail, @PathVariable String friendId){
+    public ResponseEntity<FriendResponseDto> addFriend(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail, @PathVariable String friendId){
         return friendService.addFriend(principaldetail,friendId);
     }
 
@@ -73,7 +74,7 @@ public class FriendController {
             @ApiResponse(code = 200, message = "API 정상 작동" , response = MemberSearchDto.class)
     })
     @DeleteMapping("delete/friend/{friendId}")
-    public ResponseEntity deleteFriend(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail,@PathVariable String friendId){
+    public ResponseEntity<FriendResponseDto> deleteFriend(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail,@PathVariable String friendId){
         return friendService.deleteFriend(principaldetail,friendId);
     }
 }

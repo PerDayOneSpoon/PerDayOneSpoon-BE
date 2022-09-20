@@ -21,7 +21,7 @@ public class FriendService {
     private final MemberRepository memberRepository;
     private final FriendRepository friendRepository;
 
-    public ResponseEntity addFriend(Principaldetail principaldetail, String friendId) {
+    public ResponseEntity<FriendResponseDto> addFriend(Principaldetail principaldetail, String friendId) {
         if(principaldetail.getMember().getSocialId().equals(friendId)){
             throw new IllegalArgumentException("자신은 팔로우 할 수 없습니다.");
         }
@@ -31,22 +31,20 @@ public class FriendService {
         Member member = memberRepository.findBySocialId(friendId).orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
         Friend friend = Friend.builder().followerId(member.getSocialId()).followingId(principaldetail.getMember().getSocialId()).build();
         friendRepository.save(friend);
-        FriendResponseDto friendResponseDto = FriendResponseDto.builder()
+        return ResponseEntity.ok().body(FriendResponseDto.builder()
                 .followCheck(true)
                 .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"팔로우를 신청하셨습니다."))
-                .build();
-        return ResponseEntity.ok().body(friendResponseDto);
+                .build());
     }
 
-    public ResponseEntity deleteFriend(Principaldetail principaldetail, String friendId) {
+    public ResponseEntity<FriendResponseDto> deleteFriend(Principaldetail principaldetail, String friendId) {
         friendRepository.findByFollowerIdAndFollowingId(friendId,principaldetail.getMember().getSocialId())
                 .map(this::delete)
                 .orElseThrow(() -> new IllegalArgumentException("이미 팔로우를 취소하셨습니다."));
-        FriendResponseDto friendResponseDto = FriendResponseDto.builder()
+        return ResponseEntity.ok().body(FriendResponseDto.builder()
                 .followCheck(false)
                 .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"팔로우를 끊으셨습니다."))
-                .build();
-        return ResponseEntity.ok().body(friendResponseDto);
+                .build());
     }
 
     public boolean isFollowBetween(String user, String checkUser) {
@@ -58,7 +56,7 @@ public class FriendService {
         return true;
     }
 
-    public ResponseEntity getFollowerList(Principaldetail principaldetail) {
+    public ResponseEntity<FollowResponseDto> getFollowerList(Principaldetail principaldetail) {
         List<FriendDto> friendDtoList = friendRepository.getFollowerList(principaldetail.getMember().getSocialId());
         return ResponseEntity.ok().body(FollowResponseDto.builder()
                 .friendDtoList(friendDtoList)
@@ -66,7 +64,7 @@ public class FriendService {
                 .build());
     }
 
-    public ResponseEntity getFollowingList(Principaldetail principaldetail) {
+    public ResponseEntity<FollowResponseDto> getFollowingList(Principaldetail principaldetail) {
         List<FriendDto> friendDtoList = friendRepository.getFollowingList(principaldetail.getMember().getSocialId());
         return ResponseEntity.ok().body(FollowResponseDto.builder()
                 .friendDtoList(friendDtoList)
