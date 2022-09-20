@@ -42,7 +42,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                                 .otherwise(false)
                         ))
                 .from(member)
-                .where(memberEmailEq(condition.getThreeToOne()).or(memberCodeEq(condition.getThreeToOne())).or(memberNickEq(condition.getThreeToOne())))
+                .where(memberEmailEq(condition.getSearchQuery()).or(memberCodeEq(condition.getSearchQuery())).or(memberNickEq(condition.getSearchQuery())))
                 .leftJoin(friend).on(member.socialId.eq(friend.followerId).and(friend.followingId.eq(socialId)))
                 .fetch();
     }

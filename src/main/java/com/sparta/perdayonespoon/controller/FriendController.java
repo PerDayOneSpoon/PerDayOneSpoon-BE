@@ -67,13 +67,24 @@ public class FriendController {
         return friendService.addFriend(principaldetail,friendId);
     }
 
-    @ApiOperation(value = "친구 삭제 API", notes = "토큰검사 후 친구를 삭제")
-    @ApiImplicitParam(name = "friendId", required = false,  dataType = "string", paramType = "path", value = "추가할때 요청하는 친구의 Id")
+    @ApiOperation(value = "팔로우 한 친구 삭제 API", notes = "토큰검사 후 팔로우 한 친구를 삭제")
+    @ApiImplicitParam(name = "friendId", required = false,  dataType = "string", paramType = "path", value = "팔로우 한 친구 삭제할때 요청하는 친구의 Id")
     @ApiResponses({
             @ApiResponse(code = 200, message = "API 정상 작동" , response = MemberSearchDto.class)
     })
-    @DeleteMapping("delete/friend/{friendId}")
-    public ResponseEntity<FriendResponseDto> deleteFriend(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail,@PathVariable String friendId){
-        return friendService.deleteFriend(principaldetail,friendId);
+    @DeleteMapping("delete/follower/{friendId}")
+    public ResponseEntity<FriendResponseDto> deleteFollowerFriend(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail,@PathVariable String friendId){
+        return friendService.deleteFollowerFriend(principaldetail,friendId);
     }
+
+    @ApiOperation(value = "팔로잉 한 친구 삭제 API", notes = "토큰검사 후 팔로잉 한 친구를 삭제")
+    @ApiImplicitParam(name = "friendId", required = false,  dataType = "string", paramType = "path", value = "팔로우 한 친구 삭제할때 요청하는 친구의 Id")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "API 정상 작동" , response = MemberSearchDto.class)
+    })
+    @DeleteMapping("delete/following/{friendId}")
+    public ResponseEntity<FriendResponseDto> deleteFollowingFriend(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail,@PathVariable String friendId){
+        return friendService.deleteFollowingFriend(principaldetail,friendId);
+    }
+
 }

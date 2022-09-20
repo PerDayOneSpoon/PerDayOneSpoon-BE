@@ -18,7 +18,7 @@ public class FriendRepositoryImpl implements FriendRepositoryCustom{
     @Override
     public List<FriendDto> getFollowerList(String socialId){
         return jpaQueryFactory
-                .select(new QFriendDto(member.id,member.nickname,member.image.imgUrl))
+                .select(new QFriendDto(member.id,member.nickname,member.image.imgUrl,member.status))
                 .from(friend)
                 .where(friend.followingId.eq(socialId))
                 .rightJoin(member).on(friend.followerId.eq(member.socialId))
@@ -27,7 +27,7 @@ public class FriendRepositoryImpl implements FriendRepositoryCustom{
     @Override
     public List<FriendDto> getFollowingList(String socialId){
         return jpaQueryFactory
-                .select(new QFriendDto(member.id,member.nickname,member.image.imgUrl))
+                .select(new QFriendDto(member.id,member.nickname,member.image.imgUrl,member.status))
                 .from(friend)
                 .where(friend.followerId.eq(socialId))
                 .rightJoin(member).on(friend.followingId.eq(member.socialId))

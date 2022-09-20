@@ -10,11 +10,14 @@ public class FriendDto {
     private String nickname;
     private String profileImage;
 
+    private String status;
+
     @Builder
     @QueryProjection
-    public FriendDto(Long id, String nickname, String profileImage){
+    public FriendDto(Long id, String nickname, String profileImage,String status){
         this.id = id;
         this.nickname=nickname;
         this.profileImage=profileImage;
+        this.status = status;
     }
 }
