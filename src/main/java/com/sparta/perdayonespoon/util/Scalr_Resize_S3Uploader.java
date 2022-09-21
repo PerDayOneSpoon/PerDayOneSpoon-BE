@@ -43,16 +43,6 @@ public class Scalr_Resize_S3Uploader {
         File newFile = resizeImage(multipartFile, fileName, fileFormatName)
                 .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> 파일 변환 실패"));
         return uploadToS3(newFile,directory);
-//        String uploadImgUrl = putS3(newFile, directory);
-//
-//        removeNewFile(newFile);     // File 생성시 로컬에 저장되는 파일 삭제
-//
-//        S3Dto s3Dto = S3Dto.builder()
-//                .fileName(fileName)
-//                .uploadImageUrl(uploadImgUrl)
-//                .build();
-//
-//        return s3Dto;
     }
 
     @Transactional
@@ -119,7 +109,7 @@ public class Scalr_Resize_S3Uploader {
         resizedImage.setReadable(true, false);
         resizedImage.setWritable(true, false);
 
-        Runtime.getRuntime().exec("chmod -R 777 /spoon " + resizedImage);
+        Runtime.getRuntime().exec("sudo chmod -R 777 /spoon " + resizedImage);
 
         if(resizedImage.createNewFile()){
             ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
