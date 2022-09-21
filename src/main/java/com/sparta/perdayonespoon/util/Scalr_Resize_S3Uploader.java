@@ -4,6 +4,7 @@ package com.sparta.perdayonespoon.util;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.sparta.perdayonespoon.domain.dto.S3Dto;
 import lombok.RequiredArgsConstructor;
@@ -36,12 +37,13 @@ public class Scalr_Resize_S3Uploader {
         String fileFormatName = Objects.requireNonNull(multipartFile.getContentType()).substring(multipartFile.getContentType().lastIndexOf("/") + 1);
         String directory = "spoon/" + fileName;   // spoon/ 은 버킷 내 디렉토리 이름
 
-        File newFile = resizeImage(multipartFile, fileName, fileFormatName);
+        MultipartFile newFile = resizeImage(multipartFile, fileName, fileFormatName);
         return uploadToS3(newFile,directory);
     }
 
     @Transactional
-    public S3Dto uploadToS3(File uploadFile,String fileName) throws IOException {
+    public S3Dto uploadToS3(MultipartFile uploadFile,String fileName) throws IOException {
+
 //        String fileName = UUID.randomUUID() + uploadFile.getName();   // S3에 저장된 파일 이름 , 중복저장을 피하기 위해 UUID로 랜덤이름 추가
         String uploadImageUrl = putS3(uploadFile, fileName); // s3로 업로드
 
@@ -56,14 +58,16 @@ public class Scalr_Resize_S3Uploader {
     }
 
     // S3 에 업로드
-    private String putS3(File newFile, String fileName){
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, newFile).withCannedAcl(CannedAccessControlList.PublicRead));
+    private String putS3(MultipartFile newFile, String fileName) throws IOException {
+        ObjectMetadata metadata = new ObjectMetadata();
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, newFile.getInputStream(),metadata).withCannedAcl(CannedAccessControlList.PublicRead));
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
     // 생성된 로컬 파일 삭제 메소드
-    private void removeNewFile(File targetFile) throws IOException {
-        Runtime.getRuntime().exec("rm -r " + targetFile);
+    private void removeNewFile(MultipartFile targetFile) throws IOException {
+        File file = new File(targetFile.getOriginalFilename());
+        Runtime.getRuntime().exec("rm -r " + file);
 //        if (targetFile.delete()) {
 //            log.info("파일이 삭제되었습니다.");
 //        } else {
@@ -72,7 +76,7 @@ public class Scalr_Resize_S3Uploader {
     }
 
 //    Scalr 라이브러리로 Cropping 및 Resizing
-    private File resizeImage(MultipartFile originalImage, String fileName, String fileFormatName) throws IOException {
+    private MultipartFile resizeImage(MultipartFile originalImage, String fileName, String fileFormatName) throws IOException {
 
         Runtime.getRuntime().exec("chmod 777 " + fileName);
         Runtime.getRuntime().exec("chmod 777 " + originalImage.getOriginalFilename());
@@ -111,7 +115,8 @@ public class Scalr_Resize_S3Uploader {
         resizedImage.setWritable(true, false);
         Runtime.getRuntime().exec("chmod 777 " + fileName);
         ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
-        return resizedImage;
+        originalImage.transferTo(resizedImage);
+        return originalImage;
     }
 
     public void remove(String filename) {
