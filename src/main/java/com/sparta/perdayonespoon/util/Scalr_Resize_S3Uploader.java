@@ -61,12 +61,12 @@ public class Scalr_Resize_S3Uploader {
     private String putS3(MultipartFile newFile, String fileName) throws IOException {
         ObjectMetadata metadata = new ObjectMetadata();
         amazonS3Client.putObject(new PutObjectRequest(bucket, "/tmp/"+fileName, newFile.getInputStream(),metadata).withCannedAcl(CannedAccessControlList.PublicRead));
-        return amazonS3Client.getUrl(bucket, fileName).toString();
+        return amazonS3Client.getUrl(bucket, "/tmp/"+fileName).toString();
     }
 
     // 생성된 로컬 파일 삭제 메소드
     private void removeNewFile(MultipartFile targetFile) throws IOException {
-        File file = new File(targetFile.getOriginalFilename());
+        File file = new File("/tmp/"+targetFile.getOriginalFilename());
         Runtime.getRuntime().exec("rm -r " + file);
 //        if (file.delete()) {
 //            log.info("파일이 삭제되었습니다.");
