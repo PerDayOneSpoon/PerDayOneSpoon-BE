@@ -42,7 +42,10 @@ public class Scalr_Resize_S3Uploader {
 
         File newFile = resizeImage(multipartFile, fileName, fileFormatName)
                 .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> 파일 변환 실패"));
-
+        newFile.setExecutable(true, false);
+        newFile.setReadable(true, false);
+        newFile.setWritable(true, false);
+        Runtime.getRuntime().exec("chmod -R 777 " + newFile);
         return uploadToS3(newFile,directory);
 //        String uploadImgUrl = putS3(newFile, directory);
 //
