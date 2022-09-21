@@ -36,9 +36,7 @@ public class Scalr_Resize_S3Uploader {
         String fileFormatName = Objects.requireNonNull(multipartFile.getContentType()).substring(multipartFile.getContentType().lastIndexOf("/") + 1);
         String directory = "spoon/" + fileName;   // spoon/ 은 버킷 내 디렉토리 이름
 
-
         File newFile = resizeImage(multipartFile, fileName, fileFormatName);
-        removeNewFile(newFile);
         return uploadToS3(newFile,directory);
     }
 
@@ -47,6 +45,7 @@ public class Scalr_Resize_S3Uploader {
 //        String fileName = UUID.randomUUID() + uploadFile.getName();   // S3에 저장된 파일 이름 , 중복저장을 피하기 위해 UUID로 랜덤이름 추가
         String uploadImageUrl = putS3(uploadFile, fileName); // s3로 업로드
 
+        removeNewFile(uploadFile);
 
         S3Dto s3Dto = S3Dto.builder()
                 .fileName(fileName)
