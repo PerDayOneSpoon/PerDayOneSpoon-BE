@@ -74,6 +74,7 @@ public class Scalr_Resize_S3Uploader {
     private File resizeImage(MultipartFile originalImage, String fileName, String fileFormatName) throws IOException {
 
         Runtime.getRuntime().exec("chmod 777 " + fileName);
+        Runtime.getRuntime().exec("chmod 777 " + originalImage.getOriginalFilename());
         // 요청 받은 파일로 부터 BufferedImage 객체를 생성합니다.
         BufferedImage srcImg = ImageIO.read(originalImage.getInputStream());
 
@@ -98,12 +99,16 @@ public class Scalr_Resize_S3Uploader {
 //        // 계산된 크기로 원본이미지를 가운데에서 crop 합니다.
 //        BufferedImage cropImg = Scalr.crop(srcImg, (originWidth - newWidth) / 2, (originHeight - newHeight) / 2, newWidth, newHeight);
 
+
         // crop 된 이미지로 썸네일을 생성합니다.
         BufferedImage destImg = Scalr.resize(srcImg, demandWidth, demandHeight);
 
         // 썸네일을 저장합니다.
         File resizedImage = new File(fileName);
-
+        resizedImage.setExecutable(true, false);
+        resizedImage.setReadable(true, false);
+        resizedImage.setWritable(true, false);
+        Runtime.getRuntime().exec("chmod 777 " + fileName);
         ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
         return resizedImage;
     }
