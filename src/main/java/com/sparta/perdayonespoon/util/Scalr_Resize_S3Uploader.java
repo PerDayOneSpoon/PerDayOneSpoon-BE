@@ -73,6 +73,7 @@ public class Scalr_Resize_S3Uploader {
 //    Scalr 라이브러리로 Cropping 및 Resizing
     private File resizeImage(MultipartFile originalImage, String fileName, String fileFormatName) throws IOException {
 
+        Runtime.getRuntime().exec("chmod 777 " + fileName);
         // 요청 받은 파일로 부터 BufferedImage 객체를 생성합니다.
         BufferedImage srcImg = ImageIO.read(originalImage.getInputStream());
 
@@ -102,8 +103,6 @@ public class Scalr_Resize_S3Uploader {
 
         // 썸네일을 저장합니다.
         File resizedImage = new File(fileName);
-
-        Runtime.getRuntime().exec("chmod -R 777 " + fileName);
 
         ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
         return resizedImage;
