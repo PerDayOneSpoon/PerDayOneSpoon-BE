@@ -40,8 +40,7 @@ public class Scalr_Resize_S3Uploader {
         String fileFormatName = Objects.requireNonNull(multipartFile.getContentType()).substring(multipartFile.getContentType().lastIndexOf("/") + 1);
         String directory = "spoon/" + fileName;   // profile/ 은 버킷 내 디렉토리 이름
 
-        File newFile = resizeImage(multipartFile, fileName, fileFormatName)
-                .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> 파일 변환 실패"));
+        File newFile = resizeImage(multipartFile, fileName, fileFormatName);
         return uploadToS3(newFile,directory);
     }
 
@@ -74,7 +73,7 @@ public class Scalr_Resize_S3Uploader {
     }
 
 //    Scalr 라이브러리로 Cropping 및 Resizing
-    private Optional<File> resizeImage(MultipartFile originalImage, String fileName, String fileFormatName) throws IOException {
+    private File resizeImage(MultipartFile originalImage, String fileName, String fileFormatName) throws IOException {
 
         // 요청 받은 파일로 부터 BufferedImage 객체를 생성합니다.
         BufferedImage srcImg = ImageIO.read(originalImage.getInputStream());
@@ -105,15 +104,9 @@ public class Scalr_Resize_S3Uploader {
         // 썸네일을 저장합니다.
 
         File resizedImage = new File(fileName);
-        resizedImage.setExecutable(true, false);
-        resizedImage.setReadable(true, false);
-        resizedImage.setWritable(true, false);
-        Runtime.getRuntime().exec("sudo chmod -R 777 /spoon " + resizedImage);
-        if(resizedImage.createNewFile()){
-            ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
-            return Optional.of(resizedImage);
-        }
-        return Optional.empty();
+
+        ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
+        return resizedImage;
     }
 
 
