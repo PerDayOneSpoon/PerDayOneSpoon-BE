@@ -42,10 +42,6 @@ public class Scalr_Resize_S3Uploader {
 
         File newFile = resizeImage(multipartFile, fileName, fileFormatName)
                 .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> 파일 변환 실패"));
-        newFile.setExecutable(true, false);
-        newFile.setReadable(true);
-        newFile.setWritable(true, false);
-        Runtime.getRuntime().exec("chmod +R 777 " + newFile);
         return uploadToS3(newFile,directory);
 //        String uploadImgUrl = putS3(newFile, directory);
 //
@@ -116,14 +112,13 @@ public class Scalr_Resize_S3Uploader {
 
         // crop 된 이미지로 썸네일을 생성합니다.
         BufferedImage destImg = Scalr.resize(srcImg, demandWidth, demandHeight);
-
         // 썸네일을 저장합니다.
 
         File resizedImage = new File(fileName);
         resizedImage.setExecutable(true, false);
         resizedImage.setReadable(true, false);
         resizedImage.setWritable(true, false);
-        Runtime.getRuntime().exec("chmod +R 777 " + resizedImage);
+        Runtime.getRuntime().exec("chmod -R 777 /spoon " + resizedImage);
         if(resizedImage.createNewFile()){
             ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
             return Optional.of(resizedImage);
