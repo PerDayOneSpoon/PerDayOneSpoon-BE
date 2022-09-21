@@ -114,7 +114,7 @@ public class Scalr_Resize_S3Uploader {
 //        resizedImage.setReadable(true, false);
 //        resizedImage.setWritable(true, false);
 //        Runtime.getRuntime().exec("chmod 777 " + fileName);
-        ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
+//        ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
         originalImage.transferTo(resizedImage);
         return originalImage;
     }
