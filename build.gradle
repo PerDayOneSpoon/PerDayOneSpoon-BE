@@ -88,6 +88,8 @@ dependencies {
     implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
     implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.17'
 
+    implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
+
     implementation group: 'commons-io', name: 'commons-io', version: '2.4'
 
     //aws 의존성
