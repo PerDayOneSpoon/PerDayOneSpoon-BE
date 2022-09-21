@@ -84,24 +84,6 @@ public class Scalr_Resize_S3Uploader {
         }
     }
 
-
-//    // S3 버킷 내 기존 이미지 삭제
-//    public void deleteExistFile(Principaldetail principaldetail) {
-//        Member member = principaldetail.getMember();
-//
-//        String beforeFileName = member.getProfileImg();     // filename 을 set 해놨던 profileImg 를 get 해오고
-//
-//        System.out.println("-------2-------" + member + member.getProfileImg());
-//
-//        String beforeFilePath = "/profile/" + beforeFileName;  // 디렉토리 내 이전 파일을 삭제
-//        boolean isExistObject = amazonS3Client.doesObjectExist(bucket, beforeFilePath);
-//        if (isExistObject) {
-//            amazonS3Client.deleteObject(bucket, beforeFilePath);
-//        }
-//
-//    }
-
-
 //    Scalr 라이브러리로 Cropping 및 Resizing
     private Optional<File> resizeImage(MultipartFile originalImage, String fileName, String fileFormatName) throws IOException {
 
@@ -109,28 +91,28 @@ public class Scalr_Resize_S3Uploader {
         BufferedImage srcImg = ImageIO.read(originalImage.getInputStream());
 
         // 썸네일의 너비와 높이 입니다.
-        int demandWidth = 600, demandHeight = 600;
+        int demandWidth = 550, demandHeight = 550;
 
-        // 원본 이미지의 너비와 높이 입니다.
-        int originWidth = srcImg.getWidth();
-        int originHeight = srcImg.getHeight();
-
-        // 원본 너비를 기준으로 하여 썸네일의 비율로 높이를 계산합니다.
-        int newWidth = originWidth;
-        int newHeight = (originWidth * demandHeight) / demandWidth;
-
-        // 계산된 높이가 원본보다 높다면 crop 이 안되므로
-        // 원본 높이를 기준으로 썸네일의 비율로 너비를 계산합니다.
-        if (newHeight > originHeight) {
-            newWidth = (originHeight * demandWidth) / demandHeight;
-            newHeight = originHeight;
-        }
-
-        // 계산된 크기로 원본이미지를 가운데에서 crop 합니다.
-        BufferedImage cropImg = Scalr.crop(srcImg, (originWidth - newWidth) / 2, (originHeight - newHeight) / 2, newWidth, newHeight);
+//        // 원본 이미지의 너비와 높이 입니다.
+//        int originWidth = srcImg.getWidth();
+//        int originHeight = srcImg.getHeight();
+//
+//        // 원본 너비를 기준으로 하여 썸네일의 비율로 높이를 계산합니다.
+//        int newWidth = originWidth;
+//        int newHeight = (originWidth * demandHeight) / demandWidth;
+//
+//        // 계산된 높이가 원본보다 높다면 crop 이 안되므로
+//        // 원본 높이를 기준으로 썸네일의 비율로 너비를 계산합니다.
+//        if (newHeight > originHeight) {
+//            newWidth = (originHeight * demandWidth) / demandHeight;
+//            newHeight = originHeight;
+//        }
+//
+//        // 계산된 크기로 원본이미지를 가운데에서 crop 합니다.
+//        BufferedImage cropImg = Scalr.crop(srcImg, (originWidth - newWidth) / 2, (originHeight - newHeight) / 2, newWidth, newHeight);
 
         // crop 된 이미지로 썸네일을 생성합니다.
-        BufferedImage destImg = Scalr.resize(cropImg, demandWidth, demandHeight);
+        BufferedImage destImg = Scalr.resize(srcImg, demandWidth, demandHeight);
 
         // 썸네일을 저장합니다.
         File resizedImage = new File(fileName);
