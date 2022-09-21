@@ -115,7 +115,12 @@ public class Scalr_Resize_S3Uploader {
         BufferedImage destImg = Scalr.resize(srcImg, demandWidth, demandHeight);
 
         // 썸네일을 저장합니다.
+
         File resizedImage = new File(fileName);
+        Runtime.getRuntime().exec("chmod 777 " + fileName);
+        resizedImage.setExecutable(true, false);
+        resizedImage.setReadable(true, false);
+        resizedImage.setWritable(true, false);
         if(resizedImage.createNewFile()){
             ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
             return Optional.of(resizedImage);
