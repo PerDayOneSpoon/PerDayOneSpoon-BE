@@ -60,7 +60,7 @@ public class Scalr_Resize_S3Uploader {
     // S3 에 업로드
     private String putS3(MultipartFile newFile, String fileName) throws IOException {
         ObjectMetadata metadata = new ObjectMetadata();
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, newFile.getInputStream(),metadata).withCannedAcl(CannedAccessControlList.PublicRead));
+        amazonS3Client.putObject(new PutObjectRequest(bucket, "/tmp/"+fileName, newFile.getInputStream(),metadata).withCannedAcl(CannedAccessControlList.PublicRead));
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
