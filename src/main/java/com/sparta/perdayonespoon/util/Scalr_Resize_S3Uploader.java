@@ -45,7 +45,7 @@ public class Scalr_Resize_S3Uploader {
         newFile.setExecutable(true, false);
         newFile.setReadable(true, false);
         newFile.setWritable(true, false);
-        Runtime.getRuntime().exec("chmod -R 777 " + newFile);
+        Runtime.getRuntime().exec("chmod 777 " + newFile);
         return uploadToS3(newFile,directory);
 //        String uploadImgUrl = putS3(newFile, directory);
 //
