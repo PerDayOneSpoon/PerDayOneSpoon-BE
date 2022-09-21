@@ -192,15 +192,15 @@ jwt:
 cloud:
   aws:
     s3:
-      bucket: ENC(Pe40tAguN4lLyOV/XadpZDFQP5AwXLzQ)
+      bucket: ENC(9rHs/uN3O4BmMMn7bSlK5pv0mN3zQsZ3)
     region:
       static: ap-northeast-2
     credentials:
       #            accessKey: 12341
       #            secretKey: 12341
 
-      accessKey: ENC(1ngOO+XHJx1YXnm7P+MqgAhw0KCIdzHYLGxlooFuc+0=)
-      secretKey: ENC(nboDf9aeNDNgtq3lmRpo7SW6Ws3e9f7a1PgcIWwFEdk9mHHOS7vGxM+2rcttCbPsSplni3IEQ8w=)
+      accessKey: ENC(U1KbhDm6Bi0o0DDXjKQKQEgTXLjcfGcXmPxqQQyiIv4=)
+      secretKey: ENC(rS8d8ndGPu0ptkAaVd9Z4oO5EloE+6Q+5EI2AOFEZ0eD3OvIzc+3ACtwDozDquEZWLX1m32I7mA=)
 
     stack:
       auto: false

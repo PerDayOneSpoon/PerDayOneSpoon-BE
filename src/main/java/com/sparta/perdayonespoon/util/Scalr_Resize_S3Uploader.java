@@ -26,14 +26,12 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
 @Component
 @Slf4j
 public class Scalr_Resize_S3Uploader {
-
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -52,7 +50,6 @@ public class Scalr_Resize_S3Uploader {
 
     @Transactional
     public S3Dto uploadToS3(MultipartFile uploadFile,String fileName) throws IOException {
-        ObjectMetadata metadata = new ObjectMetadata();
 //        String fileName = UUID.randomUUID() + uploadFile.getName();   // S3에 저장된 파일 이름 , 중복저장을 피하기 위해 UUID로 랜덤이름 추가
         String uploadImageUrl = putS3(uploadFile, fileName); // s3로 업로드
 
@@ -128,21 +125,8 @@ public class Scalr_Resize_S3Uploader {
         return multipartFile;
     }
 
-
     public void remove(String filename) {
         DeleteObjectRequest request = new DeleteObjectRequest(bucket, filename);
         amazonS3Client.deleteObject(request);
     }
-
-    private Optional<File> convert(MultipartFile file) throws IOException {
-        File convertFile = new File(file.getOriginalFilename());     // 현재 프로젝트 절대경로
-        if (convertFile.createNewFile()) {
-            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-                fos.write(file.getBytes());
-            }
-            return Optional.of(convertFile);
-        }
-        return Optional.empty();
-    }
-
 }
