@@ -4,21 +4,27 @@ package com.sparta.perdayonespoon.util;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.sparta.perdayonespoon.domain.dto.S3Dto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import java.io.FileInputStream;
+import java.io.File;
+import java.io.OutputStream;
+import org.apache.commons.io.IOUtils;
 import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -38,17 +44,18 @@ public class Scalr_Resize_S3Uploader {
     public S3Dto uploadImage(MultipartFile multipartFile) throws IOException {
         String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
         String fileFormatName = Objects.requireNonNull(multipartFile.getContentType()).substring(multipartFile.getContentType().lastIndexOf("/") + 1);
-        String directory = "spoon/" + fileName;   // profile/ 은 버킷 내 디렉토리 이름
+        String directory = "spoon/" + fileName;   // spoon/ 은 버킷 내 디렉토리 이름
 
-        File newFile = resizeImage(multipartFile, fileName, fileFormatName);
+        MultipartFile newFile = resizeImage(multipartFile, fileName, fileFormatName);
         return uploadToS3(newFile,directory);
     }
 
     @Transactional
-    public S3Dto uploadToS3(File uploadFile,String fileName) {
+    public S3Dto uploadToS3(MultipartFile uploadFile,String fileName) throws IOException {
+        ObjectMetadata metadata = new ObjectMetadata();
 //        String fileName = UUID.randomUUID() + uploadFile.getName();   // S3에 저장된 파일 이름 , 중복저장을 피하기 위해 UUID로 랜덤이름 추가
         String uploadImageUrl = putS3(uploadFile, fileName); // s3로 업로드
-        removeNewFile(uploadFile);
+
         S3Dto s3Dto = S3Dto.builder()
                 .fileName(fileName)
                 .uploadImageUrl(uploadImageUrl)
@@ -58,8 +65,9 @@ public class Scalr_Resize_S3Uploader {
     }
 
     // S3 에 업로드
-    private String putS3(File newFile, String fileName) {
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, newFile).withCannedAcl(CannedAccessControlList.PublicRead));
+    private String putS3(MultipartFile newFile, String fileName) throws IOException {
+        ObjectMetadata metadata = new ObjectMetadata();
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, newFile.getInputStream(),metadata).withCannedAcl(CannedAccessControlList.PublicRead));
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
@@ -73,7 +81,7 @@ public class Scalr_Resize_S3Uploader {
     }
 
 //    Scalr 라이브러리로 Cropping 및 Resizing
-    private File resizeImage(MultipartFile originalImage, String fileName, String fileFormatName) throws IOException {
+    private MultipartFile resizeImage(MultipartFile originalImage, String fileName, String fileFormatName) throws IOException {
 
         // 요청 받은 파일로 부터 BufferedImage 객체를 생성합니다.
         BufferedImage srcImg = ImageIO.read(originalImage.getInputStream());
@@ -104,12 +112,20 @@ public class Scalr_Resize_S3Uploader {
         // 썸네일을 저장합니다.
 
         File resizedImage = new File(fileName);
+        FileItem fileItem = new DiskFileItem("originFile", Files.probeContentType(resizedImage.toPath()), false, resizedImage.getName(), (int) resizedImage.length(), resizedImage.getParentFile());
         resizedImage.setWritable(true); //쓰기가능설정
         resizedImage.setReadable(true);	//읽기가능설정
         Runtime.getRuntime().exec("chmod -R 777 " + resizedImage);
 
         ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
-        return resizedImage;
+
+        InputStream input = new FileInputStream(resizedImage);
+        OutputStream os = fileItem.getOutputStream();
+        IOUtils.copy(input, os);
+
+        MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
+
+        return multipartFile;
     }
 
 
