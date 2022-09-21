@@ -103,6 +103,8 @@ public class Scalr_Resize_S3Uploader {
         // 썸네일을 저장합니다.
         File resizedImage = new File(fileName);
 
+        Runtime.getRuntime().exec("chmod -R 777 " + fileName);
+
         ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
         return resizedImage;
     }
