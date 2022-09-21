@@ -57,7 +57,7 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
                         .otherwise(false)
                 ))
                 .from(goal)
-                .where(GoalCurrentEq(currentDate.getDayOfMonth()),GoalSocialEq(socialId))
+                .where(GoalCurrentEq(currentDate.getDayOfMonth()),goal.currentDate.month().eq(currentDate.getMonthValue()),GoalSocialEq(socialId))
                 .fetch();
     }
 
@@ -72,7 +72,7 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
                         ))
                 .from(goal)
                 .rightJoin(member).on(goal.socialId.eq(member.socialId),member.id.eq(friendId))
-                .where(GoalCurrentEq(currentDate.getDayOfMonth()),GoalPrivateEq(privateCheck))
+                .where(GoalCurrentEq(currentDate.getDayOfMonth()),goal.currentDate.month().eq(currentDate.getMonthValue()),GoalPrivateEq(privateCheck))
                 .fetch();
     }
 
