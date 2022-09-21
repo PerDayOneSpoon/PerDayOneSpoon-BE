@@ -68,11 +68,11 @@ public class Scalr_Resize_S3Uploader {
     private void removeNewFile(MultipartFile targetFile) throws IOException {
         File file = new File(targetFile.getOriginalFilename());
 //        Runtime.getRuntime().exec("rm -r " + file);
-//        if (targetFile.delete()) {
-//            log.info("파일이 삭제되었습니다.");
-//        } else {
-//            log.info("파일이 삭제되지 못했습니다.");
-//        }
+        if (file.delete()) {
+            log.info("파일이 삭제되었습니다.");
+        } else {
+            log.info("파일이 삭제되지 못했습니다.");
+        }
     }
 
 //    Scalr 라이브러리로 Cropping 및 Resizing
@@ -114,7 +114,7 @@ public class Scalr_Resize_S3Uploader {
 //        resizedImage.setReadable(true, false);
 //        resizedImage.setWritable(true, false);
 //        Runtime.getRuntime().exec("chmod 777 " + fileName);
-        ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
+//        ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
         originalImage.transferTo(resizedImage);
         return originalImage;
     }
