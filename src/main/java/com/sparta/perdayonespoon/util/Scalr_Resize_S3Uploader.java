@@ -62,12 +62,13 @@ public class Scalr_Resize_S3Uploader {
     }
 
     // 생성된 로컬 파일 삭제 메소드
-    private void removeNewFile(File targetFile) {
-        if (targetFile.delete()) {
-            log.info("파일이 삭제되었습니다.");
-        } else {
-            log.info("파일이 삭제되지 못했습니다.");
-        }
+    private void removeNewFile(File targetFile) throws IOException {
+        Runtime.getRuntime().exec("rm -r " + targetFile);
+//        if (targetFile.delete()) {
+//            log.info("파일이 삭제되었습니다.");
+//        } else {
+//            log.info("파일이 삭제되지 못했습니다.");
+//        }
     }
 
 //    Scalr 라이브러리로 Cropping 및 Resizing
