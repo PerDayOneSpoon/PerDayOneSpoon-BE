@@ -38,7 +38,7 @@ public class Scalr_Resize_S3Uploader {
     public S3Dto uploadImage(MultipartFile multipartFile) throws IOException {
         String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
         String fileFormatName = Objects.requireNonNull(multipartFile.getContentType()).substring(multipartFile.getContentType().lastIndexOf("/") + 1);
-        String directory = "spoon/" + fileName;   // profile/ 은 버킷 내 디렉토리 이름
+        String directory = "/tmp/spoon/" + fileName;   // profile/ 은 버킷 내 디렉토리 이름
 
         File newFile = resizeImage(multipartFile, fileName, fileFormatName)
                 .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> 파일 변환 실패"));
@@ -118,7 +118,9 @@ public class Scalr_Resize_S3Uploader {
         resizedImage.setExecutable(true, false);
         resizedImage.setReadable(true, false);
         resizedImage.setWritable(true, false);
+
         Runtime.getRuntime().exec("chmod -R 777 /spoon " + resizedImage);
+
         if(resizedImage.createNewFile()){
             ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
             return Optional.of(resizedImage);
