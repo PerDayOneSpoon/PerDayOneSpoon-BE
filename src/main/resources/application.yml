@@ -38,38 +38,11 @@ spring:
 #    port: 6379
 #
 ##명순님 RDS
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://database-1.cy6dpdsrdbon.ap-northeast-2.rds.amazonaws.com:3306/perdayonespoon?serverTimezone=Asia/Seoul
-    username: ENC(k3ytHzF66+V4OJw5PJPVAQ==)
-    password: ENC(K+pFW7XZvCdwCVQHJRt9BPLsxxbTquu8)
-    hikari:
-      pool-name: jpa-hikari-pool
-      maximum-pool-size: 5
-      jdbc-url: ${spring.datasource.url}
-      username: ${spring.datasource.username}
-      password: ${spring.datasource.password}
-      driver-class-name: ${spring.datasource.driver-class-name}
-      data-source-properties:
-        rewriteBatchedStatements: true
-
-  jpa:
-#    database-platform : org.hibernate.dialect.MySQL5Dialect
-#    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-    database: mysql
-    generate-ddl: true
-    hibernate:
-      ddl-auto: update
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    defer-datasource-initialization: true
-
-# 민혁님 RDS
 #  datasource:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://database-1.cjqsacqcnhg0.ap-northeast-2.rds.amazonaws.com:3306/testdb222?serverTimezone=Asia/Seoul
-#    username: ENC(ra3fPVdpel5Ze2nnanW60w==)
-#    password: ENC(TIukE6eAJmSYxDlIli+AcJf2NNIo/7xf)
+#    url: jdbc:mysql://database-1.cy6dpdsrdbon.ap-northeast-2.rds.amazonaws.com:3306/perdayonespoon?serverTimezone=Asia/Seoul
+#    username: ENC(k3ytHzF66+V4OJw5PJPVAQ==)
+#    password: ENC(K+pFW7XZvCdwCVQHJRt9BPLsxxbTquu8)
 #    hikari:
 #      pool-name: jpa-hikari-pool
 #      maximum-pool-size: 5
@@ -77,9 +50,8 @@ spring:
 #      username: ${spring.datasource.username}
 #      password: ${spring.datasource.password}
 #      driver-class-name: ${spring.datasource.driver-class-name}
-##      data-source-properties:
-##        rewriteBatchedStatements: true
-#
+#      data-source-properties:
+#        rewriteBatchedStatements: true
 #
 #  jpa:
 ##    database-platform : org.hibernate.dialect.MySQL5Dialect
@@ -92,6 +64,34 @@ spring:
 #        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 #    defer-datasource-initialization: true
 
+# 민혁님 RDS
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://database-1.cjqsacqcnhg0.ap-northeast-2.rds.amazonaws.com:3306/testdb222?serverTimezone=Asia/Seoul
+    username: ENC(ra3fPVdpel5Ze2nnanW60w==)
+    password: ENC(TIukE6eAJmSYxDlIli+AcJf2NNIo/7xf)
+    hikari:
+      pool-name: jpa-hikari-pool
+      maximum-pool-size: 5
+      jdbc-url: ${spring.datasource.url}
+      username: ${spring.datasource.username}
+      password: ${spring.datasource.password}
+      driver-class-name: ${spring.datasource.driver-class-name}
+#      data-source-properties:
+#        rewriteBatchedStatements: true
+
+
+  jpa:
+#    database-platform : org.hibernate.dialect.MySQL5Dialect
+#    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database: mysql
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    defer-datasource-initialization: true
+
   # Security OAuth
   security:
     oauth2:
@@ -100,8 +100,8 @@ spring:
           google:
             clientId: ENC(g8WoHBYWBvmBHHmxw9e7DKQnkFzkPAK1jO6gnOAjeMFlDWV6/jSZDJI2CZP2mcURBBl+dOP+b5ZxlNrZ3GWTMvHCs678cdZcTVLlwjzgjkUe+8CP9b3TDw==)
             clientSecret: ENC(iF2apuDhYP/qtvK5gjp9Jmd6530IvIqoQW32xgEoaXMMn/SIdpLMEObzfCvtaOCe)
-#            redirectUri: ENC(fcoO0HlaBYNPqfWf9xoQyyOKlOLHFQPIQunFAhKO75l2DGR/A9wDNRZvt/lKTcK+G8lsYncFRWKBqdp8VY3Qdw==)
-            redirectUri: ENC(SL7/IA7YeBHSn8shDMkVpiCdxnOufOQF75YDxXvTJxQzzTNP0wztG1G/2yJhT3K3)
+            redirectUri: ENC(fcoO0HlaBYNPqfWf9xoQyyOKlOLHFQPIQunFAhKO75l2DGR/A9wDNRZvt/lKTcK+G8lsYncFRWKBqdp8VY3Qdw==)
+#            redirectUri: ENC(SL7/IA7YeBHSn8shDMkVpiCdxnOufOQF75YDxXvTJxQzzTNP0wztG1G/2yJhT3K3)
             scope:
               - email
               - profile
@@ -110,8 +110,8 @@ spring:
             clientSecret: ENC(EpBz3Sr0DuOzDqkuATljEMBPu5Jt6fgN)
             clientAuthenticationMethod: post
             authorizationGrantType: authorization_code
-#            redirectUri: ENC(XygVHDhYXoMpBB6aAYq3Yeac2lP0PkcXtMM6YCiG+eISIYVLH+VTmaLNYlpS+J3E0F6lFH3JcUnMRUZraAwbFQ==)
-            redirectUri: ENC(n48BYtmUMZYSbbhg98SQap39XsQpT2XriMrdc/v53vhj1Mvz9JcxKu7VDUTXy4Oy)
+            redirectUri: ENC(XygVHDhYXoMpBB6aAYq3Yeac2lP0PkcXtMM6YCiG+eISIYVLH+VTmaLNYlpS+J3E0F6lFH3JcUnMRUZraAwbFQ==)
+#            redirectUri: ENC(n48BYtmUMZYSbbhg98SQap39XsQpT2XriMrdc/v53vhj1Mvz9JcxKu7VDUTXy4Oy)
             scope:
               - nickname
               - email
@@ -122,8 +122,8 @@ spring:
             clientSecret: ENC(pYeIOwYVo+rIpalj/lM2yATxpqojWagwxFE4WpT/SciBReh1dIiAqzFyRZRHVQyv)
             clientAuthenticationMethod: post
             authorizationGrantType: authorization_code
-#            redirectUri: ENC(pr+8A5qPpqPnjp6oy/Vkea8WIDm8SZ46D25JGasTpuIHVeIwkmqv8fj7Ol1mc/gjlpROs6DNCxwetBSyHOefnw==)
-            redirectUri: ENC(U32Iyo/eyBOh+tyfnx9mmQhLC+adfKcSOEoT2IUHWgu2tM1XLONqRVA7Qg5dCYO3mcOurr8KIwc=)
+            redirectUri: ENC(pr+8A5qPpqPnjp6oy/Vkea8WIDm8SZ46D25JGasTpuIHVeIwkmqv8fj7Ol1mc/gjlpROs6DNCxwetBSyHOefnw==)
+#            redirectUri: ENC(U32Iyo/eyBOh+tyfnx9mmQhLC+adfKcSOEoT2IUHWgu2tM1XLONqRVA7Qg5dCYO3mcOurr8KIwc=)
             scope:
               - profile_nickname
               - profile_image
