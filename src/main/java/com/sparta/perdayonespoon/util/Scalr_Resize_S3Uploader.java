@@ -115,7 +115,7 @@ public class Scalr_Resize_S3Uploader {
         // crop 된 이미지로 썸네일을 생성합니다.
         BufferedImage destImg = Scalr.resize(srcImg, demandWidth, demandHeight);
         // 썸네일을 저장합니다.
-        //
+        // //
         File resizedImage = new File("/upload/"+fileName);
         Runtime.getRuntime().exec("chmod 777 " + "/upload/"+fileName);
         resizedImage.setExecutable(true, false);
