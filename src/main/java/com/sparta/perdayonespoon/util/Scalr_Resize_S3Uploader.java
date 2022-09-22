@@ -40,18 +40,17 @@ public class Scalr_Resize_S3Uploader {
         String fileFormatName = Objects.requireNonNull(multipartFile.getContentType()).substring(multipartFile.getContentType().lastIndexOf("/") + 1);
 //        String directory = "spoon/" + fileName;   // spoon/ 은 버킷 내 디렉토리 이름
 
-        MultipartFile newFile = resizeImage(multipartFile, fileName, fileFormatName);
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentLength(newFile.getSize());
-        objectMetadata.setContentType(newFile.getContentType());
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, newFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
+        File newFile = resizeImage(multipartFile, fileName, fileFormatName);
+//        ObjectMetadata objectMetadata = new ObjectMetadata();
+//        objectMetadata.setContentLength(newFile.getSize());
+//        objectMetadata.setContentType(newFile.getContentType());
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, newFile).withCannedAcl(CannedAccessControlList.PublicRead));
         String uploadImageUrl = amazonS3Client.getUrl(bucket, fileName).toString();
-        removeNewFile(new File(Objects.requireNonNull(newFile.getOriginalFilename())));
-        S3Dto s3Dto = S3Dto.builder()
+        removeNewFile(newFile);
+        return S3Dto.builder()
                 .fileName(fileName)
                 .uploadImageUrl(uploadImageUrl)
                 .build();
-        return s3Dto;
     }
 
 
@@ -86,7 +85,7 @@ public class Scalr_Resize_S3Uploader {
     }
 
 //    Scalr 라이브러리로 Cropping 및 Resizing
-    private MultipartFile resizeImage(MultipartFile originalImage, String fileName, String fileFormatName) throws IOException {
+    private File resizeImage(MultipartFile originalImage, String fileName, String fileFormatName) throws IOException {
 
         // 요청 받은 파일로 부터 BufferedImage 객체를 생성합니다.
         BufferedImage srcImg = ImageIO.read(originalImage.getInputStream());
@@ -116,14 +115,13 @@ public class Scalr_Resize_S3Uploader {
         BufferedImage destImg = Scalr.resize(srcImg, demandWidth, demandHeight);
         // 썸네일을 저장합니다.
 
-        File resizedImage = new File( File.separator + fileName);
-        Runtime.getRuntime().exec("chmod 777 " + fileName);
-        resizedImage.setExecutable(true, false);
-        resizedImage.setReadable(true, false);
-        resizedImage.setWritable(true, false);
+        File resizedImage = new File(fileName);
+//        Runtime.getRuntime().exec("chmod 777 " + fileName);
+//        resizedImage.setExecutable(true, false);
+//        resizedImage.setReadable(true, false);
+//        resizedImage.setWritable(true, false);
         ImageIO.write(destImg, fileFormatName.toLowerCase(), resizedImage);
-        originalImage.transferTo(resizedImage);
-        return originalImage;
+        return resizedImage;
     }
 
     public void remove(String filename) {
