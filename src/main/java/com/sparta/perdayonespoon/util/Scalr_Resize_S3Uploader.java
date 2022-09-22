@@ -38,13 +38,13 @@ public class Scalr_Resize_S3Uploader {
     public S3Dto uploadImage(MultipartFile multipartFile) throws IOException {
         String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
         String fileFormatName = Objects.requireNonNull(multipartFile.getContentType()).substring(multipartFile.getContentType().lastIndexOf("/") + 1);
-        String directory = "spoon/" + fileName;   // spoon/ 은 버킷 내 디렉토리 이름
+//        String directory = "spoon/" + fileName;   // spoon/ 은 버킷 내 디렉토리 이름
 
         MultipartFile newFile = resizeImage(multipartFile, fileName, fileFormatName);
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(newFile.getSize());
         objectMetadata.setContentType(newFile.getContentType());
-        amazonS3Client.putObject(new PutObjectRequest(bucket, directory, newFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, newFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
         String uploadImageUrl = amazonS3Client.getUrl(bucket, fileName).toString();
         removeNewFile(new File(Objects.requireNonNull(newFile.getOriginalFilename())));
         S3Dto s3Dto = S3Dto.builder()
@@ -116,8 +116,8 @@ public class Scalr_Resize_S3Uploader {
         BufferedImage destImg = Scalr.resize(srcImg, demandWidth, demandHeight);
         // 썸네일을 저장합니다.
 
-        File resizedImage = new File("spoon/"+ File.separator +fileName);
-        Runtime.getRuntime().exec("chmod 777 " + "spoon/"+fileName);
+        File resizedImage = new File( File.separator + fileName);
+        Runtime.getRuntime().exec("chmod 777 " + fileName);
         resizedImage.setExecutable(true, false);
         resizedImage.setReadable(true, false);
         resizedImage.setWritable(true, false);
