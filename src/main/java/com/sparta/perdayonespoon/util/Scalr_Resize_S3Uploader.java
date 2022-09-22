@@ -112,6 +112,7 @@ public class Scalr_Resize_S3Uploader {
 //        // 계산된 크기로 원본이미지를 가운데에서 crop 합니다.
 //        BufferedImage cropImg = Scalr.crop(srcImg, (originWidth - newWidth) / 2, (originHeight - newHeight) / 2, newWidth, newHeight);
         // crop 된 이미지로 썸네일을 생성합니다.
+        //
         BufferedImage destImg = Scalr.resize(srcImg, demandWidth, demandHeight);
         // 썸네일을 저장합니다.
 
