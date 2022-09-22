@@ -116,11 +116,28 @@ public class Scalr_Resize_S3Uploader {
         // 썸네일을 저장합니다.
         File resizedImage = new File("spoon/"+fileName);
 
-        Runtime.getRuntime().exec("chmod -R 777  spoon/" + resizedImage);
-        resizedImage.setExecutable(true, false);
-        resizedImage.setReadable(true, false);
-        resizedImage.setWritable(true, false);
-        ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
+
+        ByteArrayOutputStream thumbOutput = new ByteArrayOutputStream();
+        ImageIO.write(destImg, fileFormatName.toUpperCase(), thumbOutput);
+
+        // set metadata
+        ObjectMetadata thumbObjectMetadata = new ObjectMetadata();
+        byte[] thumbBytes = thumbOutput.toByteArray();
+        thumbObjectMetadata.setContentLength(thumbBytes.length);
+        thumbObjectMetadata.setContentType(fileFormatName.toUpperCase());
+
+        // save in s3
+        InputStream thumbInput = new ByteArrayInputStream(thumbBytes);
+        amazonS3Client.putObject(bucket, "spoon/"+fileName, thumbInput, thumbObjectMetadata);
+
+        thumbInput.close();
+        thumbOutput.close();
+//
+//        Runtime.getRuntime().exec("chmod -R 777  spoon/" + resizedImage);
+//        resizedImage.setExecutable(true, false);
+//        resizedImage.setReadable(true, false);
+//        resizedImage.setWritable(true, false);
+//        ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
         return resizedImage;
     }
 
