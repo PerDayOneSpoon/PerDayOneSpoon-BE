@@ -62,19 +62,20 @@ public class Scalr_Resize_S3Uploader {
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(newFile.getSize());
         metadata.setContentType(newFile.getContentType());
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, newFile.getInputStream(),metadata).withCannedAcl(CannedAccessControlList.PublicRead));
+        InputStream inputStream = newFile.getInputStream();
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream,metadata).withCannedAcl(CannedAccessControlList.PublicRead));
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
     // 생성된 로컬 파일 삭제 메소드
     private void removeNewFile(MultipartFile targetFile) throws IOException {
-        File file = new File("/tmp/"+targetFile.getOriginalFilename());
-        Runtime.getRuntime().exec("rm -r " + file);
-//        if (file.delete()) {
-//            log.info("파일이 삭제되었습니다.");
-//        } else {
-//            log.info("파일이 삭제되지 못했습니다.");
-//        }
+        File file = new File(targetFile.getOriginalFilename());
+//        Runtime.getRuntime().exec("rm -r " + file);
+        if (file.delete()) {
+            log.info("파일이 삭제되었습니다.");
+        } else {
+            log.info("파일이 삭제되지 못했습니다.");
+        }
     }
 
 //    Scalr 라이브러리로 Cropping 및 Resizing
@@ -111,11 +112,11 @@ public class Scalr_Resize_S3Uploader {
         BufferedImage destImg = Scalr.resize(srcImg, demandWidth, demandHeight);
 
         // 썸네일을 저장합니다.
-        File resizedImage = new File("/tmp/"+fileName);
+        File resizedImage = new File("tmp/"+fileName);
         resizedImage.setExecutable(true, false);
         resizedImage.setReadable(true, false);
         resizedImage.setWritable(true, false);
-        Runtime.getRuntime().exec("chmod 777 " + "/tmp/"+fileName);
+        Runtime.getRuntime().exec("chmod 777 " + "tmp/"+fileName);
         ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
         originalImage.transferTo(resizedImage);
         return originalImage;
