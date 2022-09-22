@@ -40,10 +40,13 @@ public class Scalr_Resize_S3Uploader {
         String fileFormatName = Objects.requireNonNull(multipartFile.getContentType()).substring(multipartFile.getContentType().lastIndexOf("/") + 1);
         String directory = "spoon/" + fileName;   // spoon/ 은 버킷 내 디렉토리 이름
 
-        File newFile = resizeImage(multipartFile, fileName, fileFormatName).orElseThrow(() -> new io.jsonwebtoken.io.IOException("변환실패"));
-        amazonS3Client.putObject(new PutObjectRequest(bucket, directory, newFile).withCannedAcl(CannedAccessControlList.PublicRead));
+        MultipartFile newFile = resizeImage(multipartFile, fileName, fileFormatName);
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(newFile.getSize());
+        objectMetadata.setContentType(newFile.getContentType());
+        amazonS3Client.putObject(new PutObjectRequest(bucket, directory, newFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
         String uploadImageUrl = amazonS3Client.getUrl(bucket, fileName).toString();
-        removeNewFile(newFile);
+        removeNewFile(new File(Objects.requireNonNull(newFile.getOriginalFilename())));
         S3Dto s3Dto = S3Dto.builder()
                 .fileName(fileName)
                 .uploadImageUrl(uploadImageUrl)
@@ -83,7 +86,7 @@ public class Scalr_Resize_S3Uploader {
     }
 
 //    Scalr 라이브러리로 Cropping 및 Resizing
-    private Optional<File> resizeImage(MultipartFile originalImage, String fileName, String fileFormatName) throws IOException {
+    private MultipartFile resizeImage(MultipartFile originalImage, String fileName, String fileFormatName) throws IOException {
 
         // 요청 받은 파일로 부터 BufferedImage 객체를 생성합니다.
         BufferedImage srcImg = ImageIO.read(originalImage.getInputStream());
@@ -112,16 +115,14 @@ public class Scalr_Resize_S3Uploader {
         // crop 된 이미지로 썸네일을 생성합니다.
         BufferedImage destImg = Scalr.resize(srcImg, demandWidth, demandHeight);
         // 썸네일을 저장합니다.
-        File resizedImage = new File(fileName);
+//        File resizedImage = new File(fileName);
 //        Runtime.getRuntime().exec("chmod 777 " + originalImage.getOriginalFilename());
-        resizedImage.setExecutable(true, false);
-        resizedImage.setReadable(true, false);
-        resizedImage.setWritable(true, false);
-        if (resizedImage.createNewFile()) {
-            ImageIO.write(destImg, fileFormatName.toLowerCase(), resizedImage);
-            return Optional.of(resizedImage);
-        }
-        return Optional.empty();
+//        resizedImage.setExecutable(true, false);
+//        resizedImage.setReadable(true, false);
+//        resizedImage.setWritable(true, false);
+        ImageIO.write(destImg, fileFormatName.toLowerCase(), new File(fileName));
+        originalImage.transferTo(new File(fileName));
+        return originalImage;
     }
 
     public void remove(String filename) {
