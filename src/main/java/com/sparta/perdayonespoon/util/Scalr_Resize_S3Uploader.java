@@ -111,20 +111,17 @@ public class Scalr_Resize_S3Uploader {
 
         // crop 된 이미지로 썸네일을 생성합니다.
         BufferedImage destImg = Scalr.resize(srcImg, demandWidth, demandHeight);
-        File file = new File(String.valueOf(destImg));
-
-        return Optional.of(file);
-//        // 썸네일을 저장합니다.
-//        File resizedImage = new File(Objects.requireNonNull(originalImage.getOriginalFilename()));
-////        Runtime.getRuntime().exec("chmod 777 " + originalImage.getOriginalFilename());
-//        resizedImage.setExecutable(true, false);
-//        resizedImage.setReadable(true, false);
-//        resizedImage.setWritable(true, false);
-//        if (resizedImage.createNewFile()) {
-//            ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
-//            return Optional.of(resizedImage);
-//        }
-//        return Optional.empty();
+        // 썸네일을 저장합니다.
+        File resizedImage = new File(fileName);
+//        Runtime.getRuntime().exec("chmod 777 " + originalImage.getOriginalFilename());
+        resizedImage.setExecutable(true, false);
+        resizedImage.setReadable(true, false);
+        resizedImage.setWritable(true, false);
+        if (resizedImage.createNewFile()) {
+            ImageIO.write(destImg, fileFormatName.toLowerCase(), resizedImage);
+            return Optional.of(resizedImage);
+        }
+        return Optional.empty();
     }
 
     public void remove(String filename) {
