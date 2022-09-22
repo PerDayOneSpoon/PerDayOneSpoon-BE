@@ -46,8 +46,6 @@ public class Scalr_Resize_S3Uploader {
 
     @Transactional
     public S3Dto uploadToS3(File uploadFile,String fileName) throws IOException {
-
-//        String fileName = UUID.randomUUID() + uploadFile.getName();   // S3에 저장된 파일 이름 , 중복저장을 피하기 위해 UUID로 랜덤이름 추가
         String uploadImageUrl = putS3(uploadFile, fileName); // s3로 업로드
 
         removeNewFile(uploadFile);
