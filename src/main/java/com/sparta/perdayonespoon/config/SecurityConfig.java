@@ -74,7 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/login/kakao").permitAll()
                 .antMatchers(HttpMethod.GET,"/login/google").permitAll()
                 .antMatchers(HttpMethod.GET,"/login/naver").permitAll()
-                .antMatchers(HttpMethod.GET,"/health").permitAll()
+                .antMatchers(HttpMethod.GET,"/login/health").permitAll()
                 .antMatchers(HttpMethod.POST,"/login/reissue").permitAll()
 //                .antMatchers("/api/**").permitAll()
                 .anyRequest().authenticated()   // 나머지 API 는 전부 인증 필요
