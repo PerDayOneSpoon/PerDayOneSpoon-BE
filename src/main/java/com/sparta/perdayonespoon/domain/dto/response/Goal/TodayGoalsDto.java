@@ -30,7 +30,8 @@ public class TodayGoalsDto {
 
     @QueryProjection
     public TodayGoalsDto(String title, LocalDateTime startDate, LocalDateTime endDate, String time, int characterUrl,
-                         Long id, boolean privateCheck, LocalDateTime currentDate, boolean achievementCheck, int heartCnt, String goalFlag, boolean isMe){
+                         Long id, boolean privateCheck, LocalDateTime currentDate, boolean achievementCheck, int heartCnt,
+                         String goalFlag, boolean isMe){
         this.title=title;
         this.startDate= startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13);
         this.endDate= endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13);
