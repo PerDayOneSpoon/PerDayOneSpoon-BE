@@ -10,6 +10,7 @@ import com.sparta.perdayonespoon.domain.dto.S3Dto;
 import lombok.extern.slf4j.Slf4j;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
@@ -17,7 +18,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 
@@ -40,13 +40,13 @@ public class Scalr_Resize_S3Uploader {
         String fileFormatName = Objects.requireNonNull(multipartFile.getContentType()).substring(multipartFile.getContentType().lastIndexOf("/") + 1);
 //        String directory = "spoon/" + fileName;   // spoon/ 은 버킷 내 디렉토리 이름
 
-        File newFile = resizeImage(multipartFile, fileName, fileFormatName);
-//        ObjectMetadata objectMetadata = new ObjectMetadata();
-//        objectMetadata.setContentLength(newFile.getSize());
-//        objectMetadata.setContentType(newFile.getContentType());
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, newFile).withCannedAcl(CannedAccessControlList.PublicRead));
+        MultipartFile newFile = resizeImage(multipartFile, fileName, fileFormatName);
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(newFile.getSize());
+        objectMetadata.setContentType(newFile.getContentType());
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, newFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
         String uploadImageUrl = amazonS3Client.getUrl(bucket, fileName).toString();
-        removeNewFile(newFile);
+        removeNewFile(new File(Objects.requireNonNull(newFile.getOriginalFilename())));
         return S3Dto.builder()
                 .fileName(fileName)
                 .uploadImageUrl(uploadImageUrl)
@@ -85,7 +85,7 @@ public class Scalr_Resize_S3Uploader {
     }
 
 //    Scalr 라이브러리로 Cropping 및 Resizing
-    private File resizeImage(MultipartFile originalImage, String fileName, String fileFormatName) throws IOException {
+    private MultipartFile resizeImage(MultipartFile originalImage, String fileName, String fileFormatName) throws IOException {
 
         // 요청 받은 파일로 부터 BufferedImage 객체를 생성합니다.
         BufferedImage srcImg = ImageIO.read(originalImage.getInputStream());
@@ -111,17 +111,20 @@ public class Scalr_Resize_S3Uploader {
 //        // 계산된 크기로 원본이미지를 가운데에서 crop 합니다.
 //        BufferedImage cropImg = Scalr.crop(srcImg, (originWidth - newWidth) / 2, (originHeight - newHeight) / 2, newWidth, newHeight);
         // crop 된 이미지로 썸네일을 생성합니다.
-        //
+
         BufferedImage destImg = Scalr.resize(srcImg, demandWidth, demandHeight);
         // 썸네일을 저장합니다.
 
-        File resizedImage = new File(fileName);
-//        Runtime.getRuntime().exec("chmod 777 " + fileName);
-//        resizedImage.setExecutable(true, false);
-//        resizedImage.setReadable(true, false);
-//        resizedImage.setWritable(true, false);
-        ImageIO.write(destImg, fileFormatName.toLowerCase(), resizedImage);
-        return resizedImage;
+//        File resizedImage = new File(fileName);
+        Runtime.getRuntime().exec("chmod 777 " + fileName);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        baos.setExecutable(true, false);
+//        baos.setReadable(true, false);
+//        baos.setWritable(true, false);
+        ImageIO.write(destImg, fileFormatName.toLowerCase(), baos);
+        baos.flush();
+        destImg.flush();
+        return new MockMultipartFile(fileName, baos.toByteArray());
     }
 
     public void remove(String filename) {
