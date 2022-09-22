@@ -68,7 +68,6 @@ public class Scalr_Resize_S3Uploader {
 
     // S3 에 업로드
     private String putS3(File newFile, String fileName) throws IOException {
-//        ObjectMetadata metadata = new ObjectMetadata();
         amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, newFile).withCannedAcl(CannedAccessControlList.PublicRead));
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
@@ -116,6 +115,10 @@ public class Scalr_Resize_S3Uploader {
 
         // 썸네일을 저장합니다.
         File resizedImage = new File(fileName);
+        Runtime.getRuntime().exec("chmod 777 " + originalImage.getOriginalFilename());
+        resizedImage.setExecutable(true, false);
+        resizedImage.setReadable(true, false);
+        resizedImage.setWritable(true, false);
         if (resizedImage.createNewFile()) {
             ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
             return Optional.of(resizedImage);
