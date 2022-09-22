@@ -116,7 +116,7 @@ public class Scalr_Resize_S3Uploader {
         // 썸네일을 저장합니다.
 
 //        File resizedImage = new File(fileName);
-        Runtime.getRuntime().exec("chmod 777 " + fileName);
+//        Runtime.getRuntime().exec("chmod 777 " + fileName);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 //        baos.setExecutable(true, false);
 //        baos.setReadable(true, false);
