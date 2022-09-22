@@ -38,39 +38,19 @@ public class Scalr_Resize_S3Uploader {
     public S3Dto uploadImage(MultipartFile multipartFile) throws IOException {
         String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
         String fileFormatName = Objects.requireNonNull(multipartFile.getContentType()).substring(multipartFile.getContentType().lastIndexOf("/") + 1);
-//        String directory = "spoon/" + fileName;   // spoon/ 은 버킷 내 디렉토리 이름
+        String directory = "spoon/" + fileName;   // spoon/ 은 버킷 내 디렉토리 이름
 
         MultipartFile newFile = resizeImage(multipartFile, fileName, fileFormatName);
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(newFile.getSize());
         objectMetadata.setContentType(newFile.getContentType());
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, newFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
+        amazonS3Client.putObject(new PutObjectRequest(bucket, directory, newFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
         String uploadImageUrl = amazonS3Client.getUrl(bucket, fileName).toString();
         removeNewFile(new File(Objects.requireNonNull(newFile.getOriginalFilename())));
         return S3Dto.builder()
                 .fileName(fileName)
                 .uploadImageUrl(uploadImageUrl)
                 .build();
-    }
-
-
-    public S3Dto uploadToS3(File uploadFile,String fileName) throws IOException {
-        String uploadImageUrl = putS3(uploadFile, fileName); // s3로 업로드
-
-        removeNewFile(uploadFile);
-
-        S3Dto s3Dto = S3Dto.builder()
-                .fileName(fileName)
-                .uploadImageUrl(uploadImageUrl)
-                .build();
-
-        return s3Dto;
-    }
-
-    // S3 에 업로드
-    private String putS3(File newFile, String fileName) throws IOException {
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, newFile).withCannedAcl(CannedAccessControlList.PublicRead));
-        return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
     // 생성된 로컬 파일 삭제 메소드
@@ -114,13 +94,7 @@ public class Scalr_Resize_S3Uploader {
 
         BufferedImage destImg = Scalr.resize(srcImg, demandWidth, demandHeight);
         // 썸네일을 저장합니다.
-
-//        File resizedImage = new File(fileName);
-//        Runtime.getRuntime().exec("chmod 777 " + fileName);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//        baos.setExecutable(true, false);
-//        baos.setReadable(true, false);
-//        baos.setWritable(true, false);
         ImageIO.write(destImg, fileFormatName.toLowerCase(), baos);
         baos.flush();
         destImg.flush();
