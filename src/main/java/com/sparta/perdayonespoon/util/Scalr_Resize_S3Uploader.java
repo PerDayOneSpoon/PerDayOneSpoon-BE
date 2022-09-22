@@ -121,6 +121,7 @@ public class Scalr_Resize_S3Uploader {
 //        baos.setExecutable(true, false);
 //        baos.setReadable(true, false);
 //        baos.setWritable(true, false);
+        //
         ImageIO.write(destImg, fileFormatName.toLowerCase(), baos);
         baos.flush();
         destImg.flush();
