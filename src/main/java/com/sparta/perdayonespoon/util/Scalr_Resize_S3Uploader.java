@@ -41,7 +41,7 @@ public class Scalr_Resize_S3Uploader {
         String directory = "spoon/" + fileName;   // spoon/ 은 버킷 내 디렉토리 이름
 
         File newFile = resizeImage(multipartFile, fileName, fileFormatName);
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, newFile).withCannedAcl(CannedAccessControlList.PublicRead));
+        amazonS3Client.putObject(new PutObjectRequest(bucket, directory, newFile).withCannedAcl(CannedAccessControlList.PublicRead));
         String uploadImageUrl =amazonS3Client.getUrl(bucket, fileName).toString();
         removeNewFile(newFile);
         S3Dto s3Dto = S3Dto.builder()
@@ -114,8 +114,12 @@ public class Scalr_Resize_S3Uploader {
         BufferedImage destImg = Scalr.resize(srcImg, demandWidth, demandHeight);
 
         // 썸네일을 저장합니다.
-        File resizedImage = new File(fileName);
+        File resizedImage = new File("spoon/"+fileName);
 
+        Runtime.getRuntime().exec("chmod -R 777  spoon/" + resizedImage);
+        resizedImage.setExecutable(true, false);
+        resizedImage.setReadable(true, false);
+        resizedImage.setWritable(true, false);
         ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
         return resizedImage;
     }
