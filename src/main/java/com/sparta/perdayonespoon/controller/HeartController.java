@@ -29,4 +29,5 @@ public class HeartController {
     public ResponseEntity addHeart(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail, @PathVariable Long goalId){
         return heartService.addHeart(principaldetail,goalId);
     }
+
 }
