@@ -45,7 +45,7 @@ public class Scalr_Resize_S3Uploader {
         objectMetadata.setContentLength(newFile.getSize());
         objectMetadata.setContentType(newFile.getContentType());
         amazonS3Client.putObject(new PutObjectRequest(bucket, directory, newFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
-        String uploadImageUrl = amazonS3Client.getUrl(bucket, fileName).toString();
+        String uploadImageUrl = amazonS3Client.getUrl(bucket, directory).toString();
         removeNewFile(new File(Objects.requireNonNull(newFile.getOriginalFilename())));
         return S3Dto.builder()
                 .fileName(fileName)
