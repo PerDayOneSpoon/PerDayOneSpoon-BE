@@ -41,10 +41,17 @@ public class Scalr_Resize_S3Uploader {
         String directory = "spoon/" + fileName;   // spoon/ 은 버킷 내 디렉토리 이름
 
         File newFile = resizeImage(multipartFile, fileName, fileFormatName);
-        return uploadToS3(newFile,directory);
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, newFile).withCannedAcl(CannedAccessControlList.PublicRead));
+        String uploadImageUrl =amazonS3Client.getUrl(bucket, fileName).toString();
+        removeNewFile(newFile);
+        S3Dto s3Dto = S3Dto.builder()
+                .fileName(fileName)
+                .uploadImageUrl(uploadImageUrl)
+                .build();
+        return s3Dto;
     }
 
-    @Transactional
+
     public S3Dto uploadToS3(File uploadFile,String fileName) throws IOException {
         String uploadImageUrl = putS3(uploadFile, fileName); // s3로 업로드
 
@@ -83,7 +90,7 @@ public class Scalr_Resize_S3Uploader {
         BufferedImage srcImg = ImageIO.read(originalImage.getInputStream());
 
         // 썸네일의 너비와 높이 입니다.
-        int demandWidth = 1000, demandHeight = 1000;
+        int demandWidth = 550, demandHeight = 550;
 
 //        // 원본 이미지의 너비와 높이 입니다.
 //        int originWidth = srcImg.getWidth();
