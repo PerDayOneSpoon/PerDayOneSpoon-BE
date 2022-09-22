@@ -17,7 +17,6 @@ import springfox.documentation.annotations.ApiIgnore;
 public class PrivateController {
     private final PrivateService privateService;
 
-
     @ApiOperation(value = "습관 공개권한 수정 API", notes = "토큰검사 후 습관의 권한 변경하여 응답")
     @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름")
     @ApiResponses({

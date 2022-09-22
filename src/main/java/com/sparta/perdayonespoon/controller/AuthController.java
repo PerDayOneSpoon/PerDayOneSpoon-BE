@@ -82,4 +82,10 @@ public class AuthController {
         tokenSearchCondition.setRefreshtoken(refreshtoken);
         return reissueUtil.regenerateToken(tokenSearchCondition);
     }
+
+    @GetMapping("/health")
+    public ResponseEntity healthCheck() {
+        return ResponseEntity.ok().build();
+    }
+
 }
