@@ -5,7 +5,6 @@ import com.sparta.perdayonespoon.domain.dto.ImageDto;
 import com.sparta.perdayonespoon.domain.dto.S3Dto;
 import com.sparta.perdayonespoon.domain.dto.request.StatusDto;
 import com.sparta.perdayonespoon.domain.dto.response.MemberResponseDto;
-import com.sparta.perdayonespoon.domain.dto.response.MsgDto;
 import com.sparta.perdayonespoon.domain.dto.response.MyPageCollectDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.mapper.MemberMapper;
@@ -13,25 +12,16 @@ import com.sparta.perdayonespoon.repository.*;
 import com.sparta.perdayonespoon.util.GenerateMsg;
 import com.sparta.perdayonespoon.util.Scalr_Resize_S3Uploader;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
-import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class MyPageService {
-    @Value("${spring.security.oauth2.client.registration.kakao.clientId}")
-    private String KAKAO_SNS_CLIENT_ID;
 
     private final GoalRepository goalRepository;
     private final FriendRepository friendRepository;
@@ -112,6 +102,7 @@ public class MyPageService {
         }else if(statusDto.getStatus() == null && statusDto.getNickname() == null){
             throw new IllegalArgumentException("입력을 받지 못했습니다.");
         }
+
         memberRepository.save(member);
         MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member);
         memberResponseDto.setTwoField(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"성공하셨습니다."));
@@ -125,5 +116,26 @@ public class MyPageService {
     }
     private void remove(DeletedUrlPath deletedUrlPath){
         scalr_resize_s3Uploader.remove(deletedUrlPath.getDeletedUrlPath());
+    }
+
+    @Transactional
+    public ResponseEntity changeProfile(Principaldetail principaldetail, MultipartFile multipartFile, StatusDto statusDto) throws IOException {
+        Member member = memberRepository.findBySocialId(principaldetail.getMember().getSocialId()).orElseThrow(IllegalArgumentException::new);
+        if(statusDto.getStatus() != null && statusDto.getNickname() != null){
+            member.SetTwoColumn(statusDto);
+        }else if (statusDto.getNickname() != null){
+            member.Setname(statusDto.getNickname());
+        }else if (statusDto.getStatus() != null) {
+            member.SetStatus(statusDto.getStatus());
+        }
+        if(multipartFile != null) {
+            S3Dto s3Dto = scalr_resize_s3Uploader.uploadImage(multipartFile);
+            DeletedUrlPath deletedUrlPath = DeletedUrlPath.builder().deletedUrlPath(member.getImage().getImgUrl()).build();
+            deletedUrlPathRepository.save(deletedUrlPath);
+            member.getImage().SetTwoField(s3Dto);
+        }
+        MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member);
+        memberResponseDto.setTwoField(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"프로필 변경에 성공하셨습니다."));
+        return ResponseEntity.ok(memberResponseDto);
     }
 }

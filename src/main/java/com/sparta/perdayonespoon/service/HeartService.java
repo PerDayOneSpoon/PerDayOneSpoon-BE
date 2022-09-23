@@ -21,10 +21,10 @@ public class HeartService {
 
     private final GoalRepository goalRepository;
     private final HeartRepository heartRepository;
-    public ResponseEntity addHeart(Principaldetail principaldetail, Long goalId) {
+    public ResponseEntity<HeartResponseDto> addHeart(Principaldetail principaldetail, Long goalId) {
         Queue<String> queue = new LinkedList<>();
         Goal goal = goalRepository.findById(goalId)
-                .map(Goal->goalcheck(Goal,principaldetail))
+                .map(Goal->goalCheck(Goal,principaldetail))
                 .orElseThrow(() -> new IllegalArgumentException("해당 습관이 존재하지 않습니다."));
         Heart heart = (Heart) heartRepository.findBySocialId(principaldetail.getMember().getSocialId())
                 .map(Heart -> deleteHeart(Heart, queue))
@@ -50,7 +50,7 @@ public class HeartService {
         heartRepository.delete(heart);
         return null;
     }
-    private Goal goalcheck(Goal goal, Principaldetail principaldetail) {
+    private Goal goalCheck(Goal goal, Principaldetail principaldetail) {
         if(goal.getSocialId().equals(principaldetail.getMember().getSocialId()))
             throw new IllegalArgumentException("자신의 습관에 좋아요를 누를 수 없습니다.");
         else
