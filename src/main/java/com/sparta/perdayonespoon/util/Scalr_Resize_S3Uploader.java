@@ -167,10 +167,7 @@ public class Scalr_Resize_S3Uploader {
         // 썸네일을 저장합니다.
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        if(fileFormatName.equalsIgnoreCase("heic")){
-            ImageIO.write(destImg, "jpg", baos);
-        }
-        else ImageIO.write(destImg, fileFormatName.toLowerCase(), baos);
+        ImageIO.write(destImg, fileFormatName.toLowerCase(), baos);
         baos.flush();
         destImg.flush();
         return new MockMultipartFile(fileName, baos.toByteArray());
@@ -208,7 +205,7 @@ public class Scalr_Resize_S3Uploader {
         // 썸네일을 저장합니다.
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(destImg, fileFormatName.toLowerCase(), baos);
+        ImageIO.write(destImg, "jpg", baos);
         baos.flush();
         destImg.flush();
         return new MockMultipartFile(fileName, baos.toByteArray());
