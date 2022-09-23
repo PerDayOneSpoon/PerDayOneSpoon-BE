@@ -52,14 +52,11 @@ public class Scalr_Resize_S3Uploader {
         String directory = "spoon/" + fileName;   // spoon/ 은 버킷 내 디렉토리 이름
 
         byte[] imgBytes = multipartFile.getBytes();
-        System.out.println("여긴가?");
-        System.out.println(Arrays.toString(imgBytes));
-        System.out.println("여긴가?");
         // 모바일 이미지 업로드 시 회전 각도를 얻어내는 함수
         int orientation = findOrientation(multipartFile);
-        System.out.println("여긴가?");
+        System.out.println("여기인가요?");
         System.out.println(orientation);
-        System.out.println("여긴가?");
+        System.out.println("여기인가요?");
         ByteArrayInputStream byteIS = new ByteArrayInputStream(imgBytes);
         BufferedImage bufferedImage = rotateImageForMobile(byteIS,orientation);
 
