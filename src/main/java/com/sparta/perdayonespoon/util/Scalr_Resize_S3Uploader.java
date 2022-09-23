@@ -27,6 +27,7 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -51,11 +52,15 @@ public class Scalr_Resize_S3Uploader {
         String directory = "spoon/" + fileName;   // spoon/ 은 버킷 내 디렉토리 이름
 
         byte[] imgBytes = multipartFile.getBytes();
-        BufferedInputStream bufferedIS = new BufferedInputStream(new ByteArrayInputStream(imgBytes));
+        System.out.println("여긴가?");
+        System.out.println(Arrays.toString(imgBytes));
+        System.out.println("여긴가?");
         // 모바일 이미지 업로드 시 회전 각도를 얻어내는 함수
-        int orientation = findOrientation(bufferedIS);
-        byte[] bytes = multipartFile.getBytes();
-        ByteArrayInputStream byteIS = new ByteArrayInputStream(bytes);
+        int orientation = findOrientation(multipartFile);
+        System.out.println("여긴가?");
+        System.out.println(orientation);
+        System.out.println("여긴가?");
+        ByteArrayInputStream byteIS = new ByteArrayInputStream(imgBytes);
         BufferedImage bufferedImage = rotateImageForMobile(byteIS,orientation);
 
         MultipartFile newFile = resizeImage(bufferedImage, fileName, fileFormatName);
@@ -72,10 +77,10 @@ public class Scalr_Resize_S3Uploader {
                 .build();
     }
 
-    private int findOrientation(BufferedInputStream is) throws IOException{
+    private int findOrientation(MultipartFile is) throws IOException{
         int orientation=1;
         try {
-            Metadata metadata = ImageMetadataReader.readMetadata(is);
+            Metadata metadata = ImageMetadataReader.readMetadata(is.getInputStream());
             Directory directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
             try {
                 orientation = directory.getInt(ExifIFD0Directory.TAG_ORIENTATION);
