@@ -98,6 +98,12 @@ dependencies {
     //aws 의존성
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.0.1.RELEASE'
 
+    // Quartz 의존성
+    implementation "org.springframework.boot:spring-boot-starter-quartz"
+
+    //이미지 메타 데이터 읽어내는 의존성 - 이미지 orientation을 읽어내기 위함
+    implementation group: 'com.drewnoakes', name: 'metadata-extractor', version: '2.9.1'
+
     //Redis 의존성
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
@@ -109,8 +115,8 @@ dependencies {
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
 
     // 자바 진영 caffeine cache 의존성
-    implementation 'org.springframework.boot:spring-boot-starter-cache'
-    implementation 'com.github.ben-manes.caffeine:caffeine'
+//    implementation 'org.springframework.boot:spring-boot-starter-cache'
+//    implementation 'com.github.ben-manes.caffeine:caffeine'
 
 //	//엘라스틱서치
 //	implementation 'org.springframework.data:spring-data-elasticsearch:4.2.2'

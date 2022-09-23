@@ -14,6 +14,7 @@ import com.sparta.perdayonespoon.domain.dto.response.rate.GoalRateDto;
 import com.sparta.perdayonespoon.domain.dto.response.rate.QGoalRateDto;
 import lombok.RequiredArgsConstructor;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -57,7 +58,7 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
                         .otherwise(false)
                 ))
                 .from(goal)
-                .where(GoalCurrentEq(currentDate.getDayOfMonth()),goal.currentDate.month().eq(currentDate.getMonthValue()),GoalSocialEq(socialId))
+                .where(goal.currentDate.dayOfYear().eq(currentDate.getDayOfYear()),GoalSocialEq(socialId))
                 .fetch();
     }
 
@@ -72,7 +73,7 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
                         ))
                 .from(goal)
                 .rightJoin(member).on(goal.socialId.eq(member.socialId),member.id.eq(friendId))
-                .where(GoalCurrentEq(currentDate.getDayOfMonth()),goal.currentDate.month().eq(currentDate.getMonthValue()),GoalPrivateEq(privateCheck))
+                .where(goal.currentDate.dayOfYear().eq(currentDate.getDayOfYear()),GoalPrivateEq(privateCheck))
                 .fetch();
     }
 
@@ -89,7 +90,7 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
     public List<CalendarGoalsDto> getSpecificCalender(LocalDate startDate, LocalDate endDate, LocalDate middleDate ,String socialId){
         return queryFactory.select(new QCalendarGoalsDto(goal.id,goal.title,goal.startDate, goal.endDate, goal.currentDate,goal.time,goal.characterId,goal.privateCheck,goal.achievementCheck))
                 .from(goal)
-                .where(goal.currentDate.dayOfMonth().between(startDate.getDayOfMonth(),endDate.getDayOfMonth()),goal.currentDate.month().eq(middleDate.getMonthValue()),GoalSocialEq(socialId))
+                .where(goal.currentDate.dayOfMonth().between(startDate.getDayOfMonth(),endDate.getDayOfMonth()),goal.currentDate.month().eq(middleDate.getMonthValue()),GoalSocialEq(socialId),goal.currentDate.year().eq(middleDate.getYear()))
                 .orderBy(goal.currentDate.asc())
                 .fetch();
     }
@@ -98,7 +99,8 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
     @Override
     public List<CalendarGoalsDto> getFriendCalendar(LocalDate startDate, LocalDate endDate, boolean privateCheck,
                                                     Long goalId){
-        return queryFactory.select(new QCalendarGoalsDto(goal.id,goal.title,goal.startDate, goal.endDate, goal.currentDate,goal.time,goal.characterId,goal.privateCheck,goal.achievementCheck))
+        return queryFactory.select(new QCalendarGoalsDto(goal.id,goal.title,goal.startDate, goal.endDate, goal.currentDate,goal.time,goal.characterId,
+                        goal.privateCheck,goal.achievementCheck))
                 .from(goal)
                 .rightJoin(member).on(goal.socialId.eq(member.socialId),member.id.eq(goalId))
                 .where(goal.currentDate.dayOfMonth().between(startDate.getDayOfMonth(),endDate.getDayOfMonth()),GoalPrivateEq(privateCheck))
@@ -111,7 +113,8 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
         return queryFactory.select(new QCalendarGoalsDto(goal.id,goal.title,goal.startDate, goal.endDate, goal.currentDate,goal.time,goal.characterId,goal.privateCheck,goal.achievementCheck))
                 .from(goal)
                 .rightJoin(member).on(goal.socialId.eq(member.socialId),member.id.eq(goalId))
-                .where(goal.currentDate.dayOfMonth().between(startDate.getDayOfMonth(),endDate.getDayOfMonth()),GoalPrivateEq(privateCheck),goal.currentDate.month().eq(middleDate.getMonthValue()))
+                .where(goal.currentDate.dayOfMonth().between(startDate.getDayOfMonth(),endDate.getDayOfMonth()),GoalPrivateEq(privateCheck)
+                        ,goal.currentDate.month().eq(middleDate.getMonthValue()),goal.currentDate.year().eq(middleDate.getYear()))
                 .orderBy(goal.currentDate.asc())
                 .fetch();
     }

@@ -1,6 +1,6 @@
 package com.sparta.perdayonespoon.service;
 import com.sparta.perdayonespoon.domain.Member;
-import com.sparta.perdayonespoon.domain.dto.request.CalenderRequestDto;
+import com.sparta.perdayonespoon.domain.dto.request.CalendarRequestDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.DayGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.TodayGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.calendar.CalendarFriendUniteDto;
@@ -11,6 +11,7 @@ import com.sparta.perdayonespoon.domain.follow.FriendDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.repository.FriendRepository;
 import com.sparta.perdayonespoon.repository.GoalRepository;
+import com.sparta.perdayonespoon.repository.HeartRepository;
 import com.sparta.perdayonespoon.repository.MemberRepository;
 import com.sparta.perdayonespoon.util.GenerateMsg;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 @Service
 public class CalendarService {
 
+    private final HeartRepository heartRepository;
     private final MemberRepository memberRepository;
 
     private final FriendRepository friendRepository;
@@ -90,28 +92,28 @@ public class CalendarService {
     }
 
     //TODO :  캘린더에서 특정 날짜 눌러서 데이터 나오는거 통합 api 적용중
-    public ResponseEntity findMemberSpecificDate(CalenderRequestDto calenderRequestDto, Principaldetail principaldetail) {
-        assert calenderRequestDto.getCalenderDate() != null;
+    public ResponseEntity findMemberSpecificDate(CalendarRequestDto calendarRequestDto, Principaldetail principaldetail) {
+        assert calendarRequestDto.getCalendarDate() != null;
         boolean isMe = false;
-        LocalDate localDate = LocalDate.parse(calenderRequestDto.getCalenderDate());
+        boolean heartCheck = false;
+        LocalDate localDate = LocalDate.parse(calendarRequestDto.getCalendarDate());
         LocalDateTime localDateTime = LocalDateTime.of(localDate.getYear(), localDate.getMonth(), localDate.getDayOfMonth(), 0, 0, 0);
         List<TodayGoalsDto> todayGoalsDtoList;
-        if(Objects.equals(calenderRequestDto.getMemberId(), principaldetail.getMember().getId())) {
+        if(Objects.equals(calendarRequestDto.getMemberId(), principaldetail.getMember().getId())) {
             todayGoalsDtoList = goalRepository.getTodayGoal(localDateTime, principaldetail.getMember().getSocialId());
         } else {
-            todayGoalsDtoList = goalRepository.getFriendTodayGoal(localDateTime, calenderRequestDto.getMemberId(), false);
+            todayGoalsDtoList = goalRepository.getFriendTodayGoal(localDateTime, calendarRequestDto.getMemberId(), false);
         }
-        if(Objects.equals(calenderRequestDto.getMemberId(), principaldetail.getMember().getId())) isMe = true;
-        DayGoalsDto dayGoalsDto = DayGoalsDto.builder().todayGoalsDtoList(todayGoalsDtoList).isMe(isMe).build();
+        if(Objects.equals(calendarRequestDto.getMemberId(), principaldetail.getMember().getId())) isMe = true;
+        if(!todayGoalsDtoList.isEmpty()){
+            if(heartRepository.existsBySocialIdAndGoal_Id(principaldetail.getMember().getSocialId(),todayGoalsDtoList.get(0).getId())) heartCheck = true;
+        }
+        DayGoalsDto dayGoalsDto = DayGoalsDto.builder().todayGoalsDtoList(todayGoalsDtoList).isMe(isMe).heartCheck(heartCheck).build();
         return ResponseEntity.ok().body(dayGoalsDto);
     }
 
     //TODO :  캘린더에서 특정 날짜 눌러서 데이터 나오는거 통합 api 적용중이라 추후 삭제될 API
     public ResponseEntity getFriendCalendar(Long friendId , Principaldetail principaldetail) {
-        boolean isMe = false;
-        if(Objects.equals(friendId, principaldetail.getMember().getId())){
-            isMe = true;
-        }
         HashMap<String, List<String>> twolist = new LinkedHashMap<>();
         List<MonthCalendarDto> monthGoalsDtoList = new ArrayList<>();
         Stack<String> dayCheck = new Stack<>();
@@ -120,8 +122,7 @@ public class CalendarService {
         LocalDate startDate = today.with(TemporalAdjusters.firstDayOfMonth());
         LocalDate endDate = today.with(TemporalAdjusters.lastDayOfMonth());
         List<CalendarGoalsDto> calendarGoalsDtoList;
-
-        if(isMe){
+        if(Objects.equals(friendId, principaldetail.getMember().getId())){
             calendarGoalsDtoList = goalRepository.getMyCalendar(startDate, endDate,principaldetail.getMember().getSocialId());
         }
         else {
@@ -131,19 +132,13 @@ public class CalendarService {
         }
 
         calendarGoalsDtoList.forEach(calendarGoalsDto->CollectSameDate(calendarGoalsDto,twolist,dayCheck,monthGoalsDtoList,id));
-        List<TodayGoalsDto> todayGoalsDtoList = calendarGoalsDtoList.stream().filter(c->c.getCurrentDate().equals(today.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13)))
-                .map(CalendarGoalsDto::getTodayGoalsDto).filter(g->checkMe(g,principaldetail.getMember().getId())).collect(Collectors.toList());
-
         if(!dayCheck.isEmpty()) {
             monthGoalsDtoList.add(MonthCalendarDto.builder().id(id.pop()).currentDate(dayCheck.peek()).charactorColorlist(twolist.get(dayCheck.pop())).build());
         }
-
-        if(isMe == false) {
+        if(!Objects.equals(friendId, principaldetail.getMember().getId())) {
             CalendarFriendUniteDto calenderFriendUniteDto = CalendarFriendUniteDto.builder().startDate(startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                     .endDate(endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                     .monthCalenderDtoList(monthGoalsDtoList)
-                    .todayGoalsDtoList(todayGoalsDtoList)
-                    .isMe(isMe)
                     .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK, "친구 캘린더 조회에 성공하셨습니다.!"))
                     .build();
             return ResponseEntity.ok().body(calenderFriendUniteDto);
@@ -153,8 +148,6 @@ public class CalendarService {
             CalendarFriendUniteDto calenderFriendUniteDto = CalendarFriendUniteDto.builder().startDate(startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                     .endDate(endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                     .monthCalenderDtoList(monthGoalsDtoList)
-                    .todayGoalsDtoList(todayGoalsDtoList)
-                    .isMe(isMe)
                     .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK, principaldetail.getMember().getNickname() + "의 캘린더 조회에 성공하셨습니다.!"))
                     .build();
             return ResponseEntity.ok().body(calenderFriendUniteDto);
@@ -162,29 +155,24 @@ public class CalendarService {
     }
 
     //TODO :  캘린더에서 특정 날짜 달 눌러서 데이터 나오는거 통합 api 적용중
-    public ResponseEntity findMemberSpecificMonth(CalenderRequestDto calenderRequestDto, Principaldetail principaldetail) {
-        boolean isMe = false;
-        if(Objects.equals(calenderRequestDto.getMemberId(), principaldetail.getMember().getId())){
-            isMe = true;
-        }
-
-        if(calenderRequestDto.getCalenderMonth() == null){
+    public ResponseEntity findMemberSpecificMonth(CalendarRequestDto calendarRequestDto, Principaldetail principaldetail) {
+        if(calendarRequestDto.getCalendarYearAndMonth() == null){
             throw new IllegalArgumentException("달을 입력하셔야 합니다.");
         }
-
+        String [] yearOrMonth = calendarRequestDto.getCalendarYearAndMonth().split("-");
         List<MonthCalendarDto> monthGoalsDtoList = new ArrayList<>();
         Stack<String> dayCheck = new Stack<>();
         Stack<Long> id = new Stack<>();
-        LocalDate localDate = LocalDate.now().withMonth(calenderRequestDto.getCalenderMonth());
+        LocalDate localDate = LocalDate.now().withYear(Integer.parseInt(yearOrMonth[0])).withMonth(Integer.parseInt(yearOrMonth[1]));
         LocalDate startDate = localDate.with(TemporalAdjusters.firstDayOfMonth());
         LocalDate endDate = localDate.with(TemporalAdjusters.lastDayOfMonth());
         HashMap<String, List<String>> twolist = new LinkedHashMap<>();
         List<CalendarGoalsDto> calendarGoalsDtoList;
-        if(isMe){
+        if(Objects.equals(calendarRequestDto.getMemberId(), principaldetail.getMember().getId())){
             calendarGoalsDtoList = goalRepository.getSpecificCalender(startDate, endDate,localDate,principaldetail.getMember().getSocialId());
         }else {
-            if (calenderRequestDto.getMemberId() != null) {
-                calendarGoalsDtoList = goalRepository.getFriendSpecificCalendar(startDate, endDate,localDate,false, calenderRequestDto.getMemberId());
+            if (calendarRequestDto.getMemberId() != null) {
+                calendarGoalsDtoList = goalRepository.getFriendSpecificCalendar(startDate, endDate,localDate,false, calendarRequestDto.getMemberId());
             } else throw new IllegalArgumentException("친구 아이디를 입력 하셔야 합니다.!");
         }
         calendarGoalsDtoList.forEach(calendarGoalsDto->CollectSameDate(calendarGoalsDto,twolist,dayCheck,monthGoalsDtoList,id));
@@ -193,12 +181,11 @@ public class CalendarService {
         if(!dayCheck.isEmpty()) {
             monthGoalsDtoList.add(MonthCalendarDto.builder().id(id.pop()).currentDate(dayCheck.peek()).charactorColorlist(twolist.get(dayCheck.pop())).build());
         }
-        if(isMe == false) {
+        if(!Objects.equals(calendarRequestDto.getMemberId(), principaldetail.getMember().getId())) {
             CalendarFriendUniteDto calenderFriendUniteDto = CalendarFriendUniteDto.builder().startDate(startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                     .endDate(endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                     .monthCalenderDtoList(monthGoalsDtoList)
                     .todayGoalsDtoList(todayGoalsDtoList)
-                    .isMe(isMe)
                     .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK, "친구 캘린더 조회에 성공하셨습니다.!"))
                     .build();
             return ResponseEntity.ok().body(calenderFriendUniteDto);
@@ -208,7 +195,6 @@ public class CalendarService {
                     .endDate(endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                     .monthCalenderDtoList(monthGoalsDtoList)
                     .todayGoalsDtoList(todayGoalsDtoList)
-                    .isMe(isMe)
                     .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK, principaldetail.getMember().getNickname() + "의 캘린더 조회에 성공하셨습니다.!"))
                     .build();
             return ResponseEntity.ok().body(calenderFriendUniteDto);
