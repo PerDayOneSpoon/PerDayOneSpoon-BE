@@ -54,9 +54,6 @@ public class Scalr_Resize_S3Uploader {
         byte[] imgBytes = multipartFile.getBytes();
         // 모바일 이미지 업로드 시 회전 각도를 얻어내는 함수
         int orientation = findOrientation(multipartFile);
-        System.out.println("여기인가요?");
-        System.out.println(orientation);
-        System.out.println("여기인가요?");
         ByteArrayInputStream byteIS = new ByteArrayInputStream(imgBytes);
         BufferedImage bufferedImage = rotateImageForMobile(byteIS,orientation);
 
@@ -79,10 +76,12 @@ public class Scalr_Resize_S3Uploader {
         try {
             Metadata metadata = ImageMetadataReader.readMetadata(is.getInputStream());
             Directory directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
-            try {
-                orientation = directory.getInt(ExifIFD0Directory.TAG_ORIENTATION);
-            } catch (MetadataException me) {
-                System. out.println("Could not get orientation" );
+            if(directory!=null) {
+                try {
+                    orientation = directory.getInt(ExifIFD0Directory.TAG_ORIENTATION);
+                } catch (MetadataException me) {
+                    System.out.println("Could not get orientation");
+                }
             }
         } catch (ImageProcessingException e) {
             e.printStackTrace();
