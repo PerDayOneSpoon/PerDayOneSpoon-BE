@@ -1,6 +1,6 @@
 package com.sparta.perdayonespoon.controller;
 
-import com.sparta.perdayonespoon.domain.dto.request.CalenderRequestDto;
+import com.sparta.perdayonespoon.domain.dto.request.CalendarRequestDto;
 import com.sparta.perdayonespoon.domain.dto.response.MemberResponseDto;
 import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
@@ -40,9 +40,9 @@ public class CalendarController {
             @ApiResponse(code = 200, message = "API 정상 작동",response = MemberResponseDto.class,
                     responseHeaders = {@ResponseHeader(name = "Authorization", description = "accesstoken이 담기는 헤더의 이름", response = TokenDto.class),
                             @ResponseHeader(name = "refreshtoken", description = "refreshtoken이 담기는 헤더의 이름", response = TokenDto.class)})})
-    @GetMapping("/calendar/member/{calenderDate}")
-    public ResponseEntity findMemberSpecificDate(@ModelAttribute CalenderRequestDto calenderRequestDto, @ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
-        return calendarService.findMemberSpecificDate(calenderRequestDto,principaldetail);
+    @GetMapping("/calendar/member/{calendarDate}")
+    public ResponseEntity findMemberSpecificDate(@ModelAttribute CalendarRequestDto calendarRequestDto, @ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
+        return calendarService.findMemberSpecificDate(calendarRequestDto,principaldetail);
     }
 
     @ApiOperation(value = "친구 캘린더 데이터 조회 API", notes = "캘린더 페이지에서 친구의 전체 정보를 보여주는 api ")
@@ -59,14 +59,14 @@ public class CalendarController {
     @ApiOperation(value = "캘린더 선택한 달의 습관 API", notes = "캘린더 페이지에서 선택한 달의 습관 리스트를 보여주는 api ")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름"),
-            @ApiImplicitParam(name = "calenderMonth", dataType = "string", paramType = "path", value = "특정 월 - 4"),
+            @ApiImplicitParam(name = "calenderYearAndMonth", dataType = "string", paramType = "path", value = "특정 월 - 2022-04"),
             @ApiImplicitParam(name = "memberId", dataType = "Long", paramType = "query", value = "사람 Id", example = "0")})
     @ApiResponses({
             @ApiResponse(code = 200, message = "API 정상 작동",response = MemberResponseDto.class,
                     responseHeaders = {@ResponseHeader(name = "Authorization", description = "accesstoken이 담기는 헤더의 이름", response = TokenDto.class),
                             @ResponseHeader(name = "refreshtoken", description = "refreshtoken이 담기는 헤더의 이름", response = TokenDto.class)})})
-    @GetMapping("/calendar/month/{calenderMonth}")
-    public ResponseEntity findMemberSpecificMonth(@ModelAttribute CalenderRequestDto calenderRequestDto, @ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
-        return calendarService.findMemberSpecificMonth(calenderRequestDto,principaldetail);
+    @GetMapping("/calendar/month/{calendarYearAndMonth}")
+    public ResponseEntity findMemberSpecificMonth(@ModelAttribute CalendarRequestDto calendarRequestDto, @ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
+        return calendarService.findMemberSpecificMonth(calendarRequestDto,principaldetail);
     }
 }

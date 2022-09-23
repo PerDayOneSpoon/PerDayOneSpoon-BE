@@ -10,11 +10,14 @@ public class DayGoalsDto {
 
     private List<TodayGoalsDto> todayGoalsDtoList;
 
+    private boolean heartCheck;
+
     private boolean isMe;
 
     @Builder
-    public  DayGoalsDto(List<TodayGoalsDto> todayGoalsDtoList, boolean isMe){
+    public  DayGoalsDto(List<TodayGoalsDto> todayGoalsDtoList, boolean isMe, boolean heartCheck){
         this.todayGoalsDtoList = todayGoalsDtoList;
-        this. isMe = isMe;
+        this.isMe = isMe;
+        this.heartCheck = heartCheck;
     }
 }

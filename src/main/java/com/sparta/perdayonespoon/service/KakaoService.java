@@ -179,7 +179,6 @@ public class KakaoService {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-
         return kakaoProfile;
     }
 

@@ -5,13 +5,13 @@ import lombok.Data;
 import javax.annotation.Nullable;
 
 @Data
-public class CalenderRequestDto {
+public class CalendarRequestDto {
 
     private Long memberId;
 
     @Nullable
-    private String calenderDate;
+    private String calendarDate;
 
     @Nullable
-    private Integer calenderMonth;
+    private String calendarYearAndMonth;
 }
