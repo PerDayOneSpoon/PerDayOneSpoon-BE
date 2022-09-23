@@ -52,6 +52,7 @@ public class Scalr_Resize_S3Uploader {
         String directory = "spoon/" + fileName;   // spoon/ 은 버킷 내 디렉토리 이름
         BufferedImage bufferedImage;
         MultipartFile newFile;
+
         if(!fileFormatName.equalsIgnoreCase("heic")) {
             byte[] imgBytes = multipartFile.getBytes();
             // 모바일 이미지 업로드 시 회전 각도를 얻어내는 함수

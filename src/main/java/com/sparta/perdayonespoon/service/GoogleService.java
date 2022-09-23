@@ -6,10 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.perdayonespoon.domain.*;
 import com.sparta.perdayonespoon.auth.GoogleProfile;
 import com.sparta.perdayonespoon.domain.dto.OauthToken;
-import com.sparta.perdayonespoon.domain.dto.request.TokenSearchCondition;
 import com.sparta.perdayonespoon.domain.dto.response.MemberResponseDto;
 import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
-import com.sparta.perdayonespoon.domain.dto.response.TwoFieldDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.jwt.TokenProvider;
 import com.sparta.perdayonespoon.mapper.MemberMapper;
@@ -103,6 +101,7 @@ public class GoogleService {
         params.add("grant_type", "authorization_code");
         //(5)
         HttpEntity<MultiValueMap<String, String>> googleTokenRequest = new HttpEntity<>(params, headers);
+
         ResponseEntity<String> tokenResponse1 = restTemplate.postForEntity(GOOGLE_SNS_LOGIN_URL,googleTokenRequest,String.class);
         //(6)
         ObjectMapper objectMapper = new ObjectMapper();

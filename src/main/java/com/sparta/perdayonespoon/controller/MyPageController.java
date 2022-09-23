@@ -55,6 +55,18 @@ public class MyPageController {
         return myPageService.changeStatus(principaldetail,statusDto);
     }
 
+    @ApiOperation(value = "마이페이지 사진 , 프로필 변경 API", notes = "토큰검사 후 사진 및 프로필 변경한 뒤 응답")
+    @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "API 정상 작동",response = MemberResponseDto.class),
+    })
+    @PatchMapping(value = "change/profile", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity changeProfile (@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail,
+                                         @RequestPart(value = "dto" , required = false) StatusDto statusDto,
+                                         @RequestPart(required = false) MultipartFile multipartFile) throws IOException {
+        return myPageService.changeProfile(principaldetail,multipartFile,statusDto);
+    }
+
     @ApiOperation(value = "마이페이지 로그아웃 API", notes = "토큰검사 후 유저정보 응답")
     @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름")
     @ApiResponses({
