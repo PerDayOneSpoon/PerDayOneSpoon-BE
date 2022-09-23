@@ -164,7 +164,7 @@ public class Scalr_Resize_S3Uploader {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         if(fileFormatName.equalsIgnoreCase("heic")){
-            ImageIO.write(destImg, "jpeg", baos);
+            ImageIO.write(destImg, "jpg", baos);
         }
         else ImageIO.write(destImg, fileFormatName.toLowerCase(), baos);
         baos.flush();
