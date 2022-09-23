@@ -54,7 +54,8 @@ public class Scalr_Resize_S3Uploader {
         BufferedInputStream bufferedIS = new BufferedInputStream(new ByteArrayInputStream(imgBytes));
         // 모바일 이미지 업로드 시 회전 각도를 얻어내는 함수
         int orientation = findOrientation(bufferedIS);
-        ByteArrayInputStream byteIS = new ByteArrayInputStream(imgBytes);
+        byte[] bytes = multipartFile.getBytes();
+        ByteArrayInputStream byteIS = new ByteArrayInputStream(bytes);
         BufferedImage bufferedImage = rotateImageForMobile(byteIS,orientation);
 
         MultipartFile newFile = resizeImage(bufferedImage, fileName, fileFormatName);

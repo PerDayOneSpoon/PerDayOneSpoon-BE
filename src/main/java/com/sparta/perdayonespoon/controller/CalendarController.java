@@ -59,7 +59,7 @@ public class CalendarController {
     @ApiOperation(value = "캘린더 선택한 달의 습관 API", notes = "캘린더 페이지에서 선택한 달의 습관 리스트를 보여주는 api ")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름"),
-            @ApiImplicitParam(name = "calenderYearAndMonth", dataType = "string", paramType = "path", value = "특정 월 - 2022-04"),
+            @ApiImplicitParam(name = "calendarYearAndMonth", dataType = "string", paramType = "path", value = "특정 월 - 2022-04"),
             @ApiImplicitParam(name = "memberId", dataType = "Long", paramType = "query", value = "사람 Id", example = "0")})
     @ApiResponses({
             @ApiResponse(code = 200, message = "API 정상 작동",response = MemberResponseDto.class,
