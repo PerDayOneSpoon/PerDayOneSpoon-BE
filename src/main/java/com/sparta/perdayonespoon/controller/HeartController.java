@@ -35,7 +35,7 @@ public class HeartController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "API 정상 작동" , response = MemberSearchDto.class)
     })
-    @PatchMapping("/heart/{goalFlag}")
+    @PatchMapping("/heart/new/{goalFlag}")
     public ResponseEntity addHearts(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail, @PathVariable String goalFlag){
         return heartService.addHearts(principaldetail,goalFlag);
     }
