@@ -1,6 +1,5 @@
 package com.sparta.perdayonespoon.controller;
 
-import com.sparta.perdayonespoon.domain.dto.ImageDto;
 import com.sparta.perdayonespoon.domain.dto.request.StatusDto;
 import com.sparta.perdayonespoon.domain.dto.response.MemberResponseDto;
 import com.sparta.perdayonespoon.domain.dto.response.MsgDto;
@@ -17,7 +16,6 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import java.io.IOException;
 
-
 @Api(tags = "마이페이지 REST API")
 @RequiredArgsConstructor
 @RestController
@@ -33,26 +31,6 @@ public class MyPageController {
     @GetMapping("confirm/profile")
     public ResponseEntity getProfile(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
         return myPageService.getProfile(principaldetail);
-    }
-
-    @ApiOperation(value = "마이페이지 사진변경 API", notes = "토큰검사 후 사진 변경한 뒤 응답")
-    @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "API 정상 작동",response = ImageDto.class),
-    })
-    @PatchMapping(value = "change/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity changeImage (@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail, @RequestPart(required = false) MultipartFile multipartFile)throws IOException {
-        return myPageService.changeImage(principaldetail,multipartFile);
-    }
-
-    @ApiOperation(value = "마이페이지 상태메세지 변경 API", notes = "토큰검사 후 사진 변경한 뒤 응답")
-    @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "API 정상 작동",response = MemberResponseDto.class),
-    })
-    @PatchMapping("change/status")
-    public ResponseEntity changeStatus (@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail, @RequestBody StatusDto statusDto){
-        return myPageService.changeStatus(principaldetail,statusDto);
     }
 
     @ApiOperation(value = "마이페이지 사진 , 프로필 변경 API", notes = "토큰검사 후 사진 및 프로필 변경한 뒤 응답")

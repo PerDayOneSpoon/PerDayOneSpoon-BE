@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum SuccessMsg {
 
+    //HttpStatus.OK = 200
+
     FIND_GOALS(HttpStatus.OK, "목표 확인에 성공하셨습니다. 응원합니다"),
     CREATE_GOALS(HttpStatus.OK, "목표 생성에 성공하셨습니다. 응원합니다"),
     RE_GENERATE_TOKEN(HttpStatus.OK,"토큰 재발급 성공하셨습니다."),

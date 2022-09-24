@@ -14,7 +14,9 @@ public class FriendDto {
 
     private String socialId;
 
-    @Builder
+    private boolean isMe;
+
+
     @QueryProjection
     public FriendDto(Long id, String nickname, String profileImage,String status,String socialId){
         this.id = id;
@@ -22,5 +24,14 @@ public class FriendDto {
         this.profileImage=profileImage;
         this.status = status;
         this.socialId = socialId;
+    }
+    @Builder
+    public FriendDto(Long id, String nickname, String profileImage,String status,String socialId,boolean isMe){
+        this.id = id;
+        this.nickname=nickname;
+        this.profileImage=profileImage;
+        this.status = status;
+        this.socialId = socialId;
+        this.isMe= isMe;
     }
 }

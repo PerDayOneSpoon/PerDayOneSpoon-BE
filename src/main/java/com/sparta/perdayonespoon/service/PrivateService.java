@@ -25,6 +25,7 @@ public class PrivateService {
         List<GoalResponseDto> goalResponseDtoList = new ArrayList<>();
         if(goalList.isEmpty()) throw new IllegalArgumentException("해당 습관이 없습니다.");
         goalList.forEach(goal -> changePrivate(goal,privateDto.getPrivateCheck(),goalResponseDtoList));
+        goalRepository.saveAll(goalList);
         return ResponseEntity.ok().body(goalResponseDtoList);
     }
 
@@ -65,6 +66,5 @@ public class PrivateService {
                 .socialId(goal.getSocialId())
                 .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK, "공개보기로 설정하셨습니다."))
                 .build());
-        goalRepository.save(goal);
     }
 }

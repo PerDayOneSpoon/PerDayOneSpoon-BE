@@ -1,7 +1,7 @@
 package com.sparta.perdayonespoon.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.perdayonespoon.domain.Goal;
 import com.sparta.perdayonespoon.domain.dto.CountDto;
@@ -14,13 +14,13 @@ import com.sparta.perdayonespoon.domain.dto.response.rate.GoalRateDto;
 import com.sparta.perdayonespoon.domain.dto.response.rate.QGoalRateDto;
 import lombok.RequiredArgsConstructor;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import static com.sparta.perdayonespoon.domain.QGoal.goal;
+import static com.sparta.perdayonespoon.domain.QHeart.heart;
 import static com.sparta.perdayonespoon.domain.QMember.member;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
@@ -28,12 +28,13 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 public class GoalRepositoryImpl implements GoalRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
+
     @Override
     public List<GoalRateDto> getRateGoal(LocalDateTime sunday, LocalDateTime saturday, String socialId){
         return queryFactory
                 .select(new QGoalRateDto(goal.currentDate.stringValue().substring(0,10), goal.achievementCheck,goal.count()))
                 .from(goal)
-                .where(goal.currentDate.dayOfMonth().between(sunday.getDayOfMonth(),saturday.getDayOfMonth()),GoalSocialEq(socialId))
+                .where(goal.currentDate.dayOfYear().between(sunday.getDayOfYear(),saturday.getDayOfYear()),GoalSocialEq(socialId))
                 .groupBy(goal.currentDate.stringValue().substring(0,10),goal.achievementCheck)
                 .fetch();
     }
@@ -53,9 +54,7 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
         return queryFactory.select(new QTodayGoalsDto(goal.title,goal.startDate
                 ,goal.endDate,goal.time, goal.characterId,goal.id,goal.privateCheck,
                 goal.currentDate,goal.achievementCheck,goal.heartList.size(),goal.goalFlag
-                , new CaseBuilder()
-                        .when(goal.socialId.eq(socialId)).then(true)
-                        .otherwise(false)
+                ,JPAExpressions.selectFrom(heart).where(heart.goal.id.eq(goal.id),heart.socialId.eq(socialId)).exists()
                 ))
                 .from(goal)
                 .where(goal.currentDate.dayOfYear().eq(currentDate.getDayOfYear()),GoalSocialEq(socialId))
@@ -63,13 +62,11 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
     }
 
     @Override
-    public List<TodayGoalsDto> getFriendTodayGoal(LocalDateTime currentDate,Long friendId,boolean privateCheck){
+    public List<TodayGoalsDto> getFriendTodayGoal(LocalDateTime currentDate,Long friendId,String socialId, boolean privateCheck){
         return queryFactory.select(new QTodayGoalsDto(goal.title,goal.startDate
                         ,goal.endDate,goal.time, goal.characterId,goal.id,goal.privateCheck,
-                        goal.currentDate,goal.achievementCheck,goal.heartList.size(),goal.goalFlag,
-                        new CaseBuilder()
-                                .when(member.id.eq(friendId)).then(true)
-                                .otherwise(false)
+                        goal.currentDate,goal.achievementCheck,goal.heartList.size(),goal.goalFlag
+                ,JPAExpressions.selectFrom(heart).where(heart.goal.id.eq(goal.id),heart.socialId.eq(socialId)).exists()
                         ))
                 .from(goal)
                 .rightJoin(member).on(goal.socialId.eq(member.socialId),member.id.eq(friendId))

@@ -13,10 +13,13 @@ public class RestApiException {
     private boolean resultFlag;
     private long code;
 
+    private HttpStatus httpStatus;
+
     @Builder
-    public RestApiException(String errorMessage, boolean resultFlag, long code){
+    public RestApiException(String errorMessage, boolean resultFlag, long code, HttpStatus httpStatus){
         this.errorMessage =errorMessage;
         this.resultFlag =resultFlag;
         this.code =code;
+        this.httpStatus = httpStatus;
     }
 }

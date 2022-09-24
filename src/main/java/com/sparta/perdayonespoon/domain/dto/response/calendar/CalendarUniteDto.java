@@ -1,5 +1,6 @@
 package com.sparta.perdayonespoon.domain.dto.response.calendar;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.TodayGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.MsgDto;
 import com.sparta.perdayonespoon.domain.follow.FriendDto;
@@ -10,12 +11,18 @@ import java.util.List;
 
 @Data
 public class CalendarUniteDto {
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String startDate;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String endDate;
 
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<MonthCalendarDto> monthCalenderDtoList;
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<TodayGoalsDto> todayGoalsDtoList;
 
     private List<FriendDto> peopleList;
@@ -24,7 +31,8 @@ public class CalendarUniteDto {
 
     private String msg;
 
-    private boolean isMe;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean isMe;
 
     @Builder
     public CalendarUniteDto(String startDate, String endDate, List<MonthCalendarDto> monthCalenderDtoList,

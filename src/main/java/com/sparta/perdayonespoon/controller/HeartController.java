@@ -30,4 +30,14 @@ public class HeartController {
         return heartService.addHeart(principaldetail,goalId);
     }
 
+    @ApiOperation(value = "습관 좋아요 새로 생길 API", notes = "토큰검사 후 습관들에 좋아요 추가")
+    @ApiImplicitParam(name = "goalFlag", required = false,  dataType = "string", paramType = "path", value = "좋아요 할때 전달하는 습관들 통합 goalFlag")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "API 정상 작동" , response = MemberSearchDto.class)
+    })
+    @PatchMapping("/heart/{goalFlag}")
+    public ResponseEntity addHearts(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail, @PathVariable String goalFlag){
+        return heartService.addHearts(principaldetail,goalFlag);
+    }
+
 }

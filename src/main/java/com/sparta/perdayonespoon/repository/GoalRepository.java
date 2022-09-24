@@ -10,4 +10,6 @@ public interface GoalRepository extends JpaRepository<Goal, Long>, GoalRepositor
     List<Goal> findAllBySocialId(String socialId);
 
     Optional<Goal> findByIdAndSocialId(long goalId, String socialId);
+
+    List<Goal> findAllByGoalFlag(String goalFlag);
 }
