@@ -16,6 +16,7 @@ public class CalendarFriendUniteDto {
 
     private List<MonthCalendarDto> monthCalenderDtoList;
 
+
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<TodayGoalsDto> todayGoalsDtoList;
 

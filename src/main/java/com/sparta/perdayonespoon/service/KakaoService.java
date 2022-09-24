@@ -72,7 +72,7 @@ public class KakaoService {
     @Value("${spring.security.oauth2.client.provider.kakao.userInfoUri}")
     private String KAKAO_SNS_User_URL;
 
-    public ResponseEntity login(String code) throws MessagingException, IOException {
+    public ResponseEntity<MemberResponseDto> login(String code) throws MessagingException, IOException {
 
         // 인가코드로 토큰받기
         OauthToken oauthToken = getAccessToken(code);

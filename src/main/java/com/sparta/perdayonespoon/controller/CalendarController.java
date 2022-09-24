@@ -33,7 +33,7 @@ public class CalendarController {
     @ApiOperation(value = "캘린더 선택한 요일 습관 API", notes = "캘린더 페이지에서 선택한 요일의 습관 리스트를 보여주는 api ")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름"),
-            @ApiImplicitParam(name = "calenderDate", dataType = "string", paramType = "path", value = "특정 날짜 - yyyy-MM-dd"),
+            @ApiImplicitParam(name = "calendarDate", dataType = "string", paramType = "path", value = "특정 날짜 - yyyy-MM-dd"),
             @ApiImplicitParam(name = "memberId", dataType = "Long", paramType = "query", value = "사람 Id", example = "0")
     })
     @ApiResponses({

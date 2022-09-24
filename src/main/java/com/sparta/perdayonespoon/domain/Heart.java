@@ -22,7 +22,7 @@ public class Heart {
 
     @ManyToOne
     @JsonBackReference
-    @JoinColumn(name = "Goal_Id")
+    @JoinColumn(name = "goal_id")
     private Goal goal;
 
     @Builder
