@@ -10,7 +10,6 @@ public class MonthCalendarDto {
 
     private Long id;
     private String currentDate;
-
     private List<String> charactorColorlist;
 
     @Builder

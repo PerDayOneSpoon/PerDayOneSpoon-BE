@@ -10,10 +10,13 @@ public class HeartResponseDto {
     private long code;
     private String msg;
 
+    private long heartCnt;
+
     @Builder
-    public HeartResponseDto(boolean heartCheck, MsgDto msgDto){
+    public HeartResponseDto(boolean heartCheck, MsgDto msgDto, long heartCnt){
         this.heartCheck = heartCheck;
         this.code= msgDto.getCode();
         this.msg = msgDto.getMsg();
+        this.heartCnt = heartCnt;
     }
 }

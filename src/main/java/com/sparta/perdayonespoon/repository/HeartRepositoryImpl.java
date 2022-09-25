@@ -1,9 +1,9 @@
 package com.sparta.perdayonespoon.repository;
 
-import com.sparta.perdayonespoon.config.QuerydslConfig;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sparta.perdayonespoon.domain.Goal;
 import com.sparta.perdayonespoon.domain.Heart;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.GoalsAndHeart;
-import com.sparta.perdayonespoon.domain.dto.response.Goal.QGoalsAndHeart;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -15,15 +15,28 @@ import static com.sparta.perdayonespoon.domain.QHeart.heart;
 @Repository
 @RequiredArgsConstructor
 public class HeartRepositoryImpl implements HeartRepositoryCustom{
-    private final QuerydslConfig querydslConfig;
+    private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<GoalsAndHeart> findGoalsHeart(String goalFlag){
-        return querydslConfig.jpaQueryFactory()
-                .select(new QGoalsAndHeart(goal,heart))
-                .from(heart)
-                .innerJoin(heart.goal,goal)
+    public GoalsAndHeart findGoalsHeart(String goalFlag,String socialId){
+        List<Goal> goalList = jpaQueryFactory
+                .selectFrom(goal)
                 .where(goal.goalFlag.eq(goalFlag))
                 .fetch();
+        List<Heart> heartList = jpaQueryFactory
+                .selectFrom(heart)
+                .where(heart.goal.goalFlag.eq(goalFlag),heart.socialId.eq(socialId))
+                .fetch();
+        return GoalsAndHeart.builder().goalList(goalList).heartList(heartList).build();
+    }
+
+    @Override
+    public Long getHeartCnt(){
+        return jpaQueryFactory
+                .select(heart.count())
+                .from(heart)
+                .innerJoin(heart.goal,goal)
+                .groupBy(heart.goal.goalFlag)
+                .fetchOne();
     }
 }

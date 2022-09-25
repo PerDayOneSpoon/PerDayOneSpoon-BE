@@ -8,5 +8,7 @@ import java.util.List;
 public interface HeartRepositoryCustom {
 
 
-    List<GoalsAndHeart> findGoalsHeart(String goalFlag);
+    GoalsAndHeart findGoalsHeart(String goalFlag,String socialId);
+
+    Long getHeartCnt();
 }
