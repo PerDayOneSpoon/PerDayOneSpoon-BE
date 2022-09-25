@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -54,6 +55,9 @@ public class Member extends  Timestamped {
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
     @JsonManagedReference
     private Image image;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<badge> badgeList;
 
     @Builder
     public Member(Long id,String email, String password,String socialCode, String nickname, String socialId, Authority authority,Image image) {
