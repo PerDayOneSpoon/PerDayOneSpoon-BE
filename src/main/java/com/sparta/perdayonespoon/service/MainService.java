@@ -136,8 +136,8 @@ public class MainService {
     }
     // TODO : 달력 날짜 받기X 주간 달성도 리턴하기
     public ResponseEntity CreateGoal(GoalDto goalDto, Principaldetail principaldetail) {
-        String deleteFlag = UUID.randomUUID().toString();
-        if(goalDto.getTitle() == null){
+        String goalFlag = UUID.randomUUID().toString();
+        if(goalDto.getTitle() == null) {
             throw new IllegalArgumentException("제목을 입력해주세요");
         } else if (goalDto.getCharacterId() == 0){
             throw new IllegalArgumentException("캐릭터를 선택해 주세요");
@@ -157,7 +157,7 @@ public class MainService {
                     .category(goalDto.category)
                     .characterId(goalDto.characterId)
                     .title(goalDto.title)
-                    .goalFlag(deleteFlag)
+                    .goalFlag(goalFlag)
                     .build());
                 x++;
             }

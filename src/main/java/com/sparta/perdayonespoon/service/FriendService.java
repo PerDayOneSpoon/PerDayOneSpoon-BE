@@ -28,7 +28,8 @@ public class FriendService {
         if(isFollowBetween(friendId,principaldetail.getMember().getSocialId())){
             throw new IllegalArgumentException("이미 팔로우를 신청하셨습니다.");
         }
-        Member member = memberRepository.findBySocialId(friendId).orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+        Member member = memberRepository.findBySocialId(friendId).orElseThrow(
+                () -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
         Friend friend = Friend.builder().followerId(member.getSocialId()).followingId(principaldetail.getMember().getSocialId()).build();
         friendRepository.save(friend);
         return ResponseEntity.ok().body(FriendResponseDto.builder()

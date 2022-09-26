@@ -28,7 +28,6 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 public class GoalRepositoryImpl implements GoalRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
-
     @Override
     public List<GoalRateDto> getRateGoal(LocalDateTime sunday, LocalDateTime saturday, String socialId){
         return queryFactory

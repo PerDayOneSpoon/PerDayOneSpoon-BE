@@ -23,35 +23,6 @@ import java.util.stream.Collectors;
 @Service
 public class HeartService {
     private final HeartRepository heartRepository;
-//    public ResponseEntity<HeartResponseDto> addHeart(Principaldetail principaldetail, Long goalId) {
-//        Queue<String> queue = new LinkedList<>();
-//        Goal goal = goalRepository.findById(goalId)
-//                .map(Goal->goalCheck(Goal,principaldetail))
-//                .orElseThrow(() -> new IllegalArgumentException("해당 습관이 존재하지 않습니다."));
-//        Heart heart = (Heart) heartRepository.findBySocialId(principaldetail.getMember().getSocialId())
-//                .map(Heart -> deleteHeart(Heart, queue))
-//                .orElseGet(() -> Heart.builder().goal(goal).socialId(principaldetail.getMember().getSocialId()).build());
-//        if(queue.isEmpty()){
-//            heartRepository.save(heart);
-//            HeartResponseDto heartResponseDto = HeartResponseDto.builder()
-//                    .heartCheck(true)
-//                    .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"친구를 응원하셨습니다.!!"))
-//                    .build();
-//            return ResponseEntity.ok().body(heartResponseDto);
-//        }
-//        else {
-//            HeartResponseDto heartResponseDto = HeartResponseDto.builder()
-//                    .heartCheck(false)
-//                    .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK, "친구응원을 취소하셨습니다."))
-//                    .build();
-//            return ResponseEntity.ok().body(heartResponseDto);
-//        }
-//    }
-//    private <U> U deleteHeart(Heart heart, Queue<String> queue) {
-//        queue.offer(heart.getSocialId());
-//        heartRepository.delete(heart);
-//        return null;
-//    }
 
     private Goal goalCheck(Goal goal, Principaldetail principaldetail) {
         if(goal.getSocialId().equals(principaldetail.getMember().getSocialId()))

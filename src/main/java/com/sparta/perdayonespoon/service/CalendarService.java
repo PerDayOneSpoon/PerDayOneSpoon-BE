@@ -37,7 +37,8 @@ public class CalendarService {
     //TODO : 여기는 캘린더를 들어왔을때 모든걸 보여주는 함수
     public ResponseEntity getAlldate(Principaldetail principaldetail) {
         List<FriendDto> peopleList = friendRepository.getFollowerList(principaldetail.getMember().getSocialId());
-        Member myMember = memberRepository.findBySocialId(principaldetail.getMember().getSocialId()).orElseThrow(() ->new IllegalArgumentException("해당 유저가 없습니다"));
+        Member myMember = memberRepository.findBySocialId(principaldetail.getMember().getSocialId()).orElseThrow(
+                () ->new IllegalArgumentException("해당 유저가 없습니다"));
         peopleList.add(0,FriendDto.builder().isMe(true).id(myMember.getId()).socialId(myMember.getSocialId()).nickname(myMember.getNickname()).status(myMember.getStatus()).profileImage(myMember.getImage().getImgUrl()).build());
         CalendarUniteDto calenderUniteDto = CalendarUniteDto.builder()
                 .peopleList(peopleList)

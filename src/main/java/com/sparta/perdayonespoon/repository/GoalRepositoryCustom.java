@@ -31,4 +31,6 @@ public interface GoalRepositoryCustom  {
     List<CalendarGoalsDto> getFriendSpecificCalendar(LocalDate startDate, LocalDate endDate,LocalDate middleDate,boolean privateCheck, Long goalId);
 
     List<Goal> getCategoryGoals(String socialId, String deleteFlag);
+
+
 }
