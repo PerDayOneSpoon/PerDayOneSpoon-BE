@@ -50,18 +50,18 @@ public class Scalr_Resize_S3Uploader {
         String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
         String fileFormatName = Objects.requireNonNull(multipartFile.getContentType()).substring(multipartFile.getContentType().lastIndexOf("/") + 1);
         String directory = "spoon/" + fileName;   // spoon/ 은 버킷 내 디렉토리 이름
-        BufferedImage bufferedImage;
-        MultipartFile newFile;
+//        BufferedImage bufferedImage;
+        MultipartFile newFile = resizeImageNoMeta(multipartFile,fileName,fileFormatName);
 
-        if(!fileFormatName.equalsIgnoreCase("heic")) {
-            byte[] imgBytes = multipartFile.getBytes();
-            // 모바일 이미지 업로드 시 회전 각도를 얻어내는 함수
-            int orientation = findOrientation(multipartFile);
-            ByteArrayInputStream byteIS = new ByteArrayInputStream(imgBytes);
-             bufferedImage = rotateImageForMobile(byteIS, orientation);
-            newFile = resizeImage(bufferedImage, fileName, fileFormatName);
-        }
-        else newFile = resizeImagenotheic(multipartFile,fileName,fileFormatName);
+//        if(!fileFormatName.equalsIgnoreCase("heic")) {
+//            byte[] imgBytes = multipartFile.getBytes();
+//            // 모바일 이미지 업로드 시 회전 각도를 얻어내는 함수
+//            int orientation = findOrientation(multipartFile);
+//            ByteArrayInputStream byteIS = new ByteArrayInputStream(imgBytes);
+//             bufferedImage = rotateImageForMobile(byteIS, orientation);
+//            newFile = resizeImage(bufferedImage, fileName, fileFormatName);
+//        }
+//        else newFile = resizeImagenotheic(multipartFile,fileName,fileFormatName);
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
 
@@ -175,7 +175,7 @@ public class Scalr_Resize_S3Uploader {
     }
 
 ////    Scalr 라이브러리로 Cropping 및 Resizing
-    private MultipartFile resizeImagenotheic(MultipartFile originalImage, String fileName, String fileFormatName) throws IOException {
+    private MultipartFile resizeImageNoMeta(MultipartFile originalImage, String fileName, String fileFormatName) throws IOException {
 
         // 요청 받은 파일로 부터 BufferedImage 객체를 생성합니다.
         BufferedImage srcImg = ImageIO.read(originalImage.getInputStream());
@@ -206,7 +206,7 @@ public class Scalr_Resize_S3Uploader {
         // 썸네일을 저장합니다.
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(destImg, "jpg", baos);
+        ImageIO.write(destImg, fileFormatName.toLowerCase(), baos);
         baos.flush();
         destImg.flush();
         return new MockMultipartFile(fileName, baos.toByteArray());
