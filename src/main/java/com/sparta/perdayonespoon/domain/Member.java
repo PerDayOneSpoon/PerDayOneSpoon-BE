@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -57,7 +58,12 @@ public class Member extends  Timestamped {
     private Image image;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<badge> badgeList;
+    @JsonManagedReference
+    private List<Badge> badgeList;
+
+    @OneToMany(mappedBy = "member" , cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Goal> goalList;
 
     @Builder
     public Member(Long id,String email, String password,String socialCode, String nickname, String socialId, Authority authority,Image image) {

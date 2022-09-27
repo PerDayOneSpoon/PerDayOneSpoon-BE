@@ -1,23 +1,31 @@
 package com.sparta.perdayonespoon.service;
+
+import com.sparta.perdayonespoon.domain.Badge;
 import com.sparta.perdayonespoon.domain.Friend;
 import com.sparta.perdayonespoon.domain.Member;
 import com.sparta.perdayonespoon.domain.dto.response.FriendResponseDto;
 import com.sparta.perdayonespoon.domain.follow.FollowResponseDto;
 import com.sparta.perdayonespoon.domain.follow.FriendDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
+import com.sparta.perdayonespoon.repository.BadgeRepository;
 import com.sparta.perdayonespoon.repository.FriendRepository;
 import com.sparta.perdayonespoon.repository.MemberRepository;
 import com.sparta.perdayonespoon.util.GenerateMsg;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class FriendService {
+
+    private final BadgeRepository badgeRepository;
     private final MemberRepository memberRepository;
     private final FriendRepository friendRepository;
 
@@ -32,6 +40,41 @@ public class FriendService {
                 () -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
         Friend friend = Friend.builder().followerId(member.getSocialId()).followingId(principaldetail.getMember().getSocialId()).build();
         friendRepository.save(friend);
+        // 인싸 뱃지를 구하기 위한 로직
+        if(!member.getBadgeList().isEmpty()){
+            if(member.getBadgeList().stream().noneMatch(badge -> badge.getBadgeName().equals("인싸 뱃지"))){
+                List<Friend> friendList = friendRepository.getBothFollow(principaldetail.getMember().getSocialId());
+                List<String> followerFriendList = friendList.stream()
+                        .filter(f->f.getFollowerId().equals(principaldetail.getMember().getSocialId()))
+                        .map(Friend::getFollowingId)
+                        .collect(Collectors.toList());
+                int standardNumber = followerFriendList.size();
+                int friendNumber =0;
+                if(standardNumber>4) {
+                    Set<String> followingFriendList = friendList.stream()
+                            .filter(f -> f.getFollowingId().equals(principaldetail.getMember().getSocialId()))
+                            .map(Friend::getFollowerId)
+                            .collect(Collectors.toSet());
+                    for(int i=0; i<standardNumber; i++){
+                        if(followingFriendList.contains(followerFriendList.get(0))){
+                            friendNumber++;
+                            if(friendNumber>4)
+                                break;
+                        }
+                    }
+                    if(friendNumber == 5){
+                        badgeRepository.save(Badge
+                                .builder()
+                                .badgeName("인싸 뱃지")
+                                .member(member)
+                                .createdAt(LocalDateTime.now().toLocalDate())
+                                .badgeNumber(6)
+                                .build());
+                    }
+                }
+            }
+        }
+
         return ResponseEntity.ok().body(FriendResponseDto.builder()
                 .followCheck(true)
                 .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"팔로우를 신청하셨습니다."))
@@ -57,6 +100,7 @@ public class FriendService {
         return true;
     }
 
+    @Transactional(readOnly = true)
     public ResponseEntity<FollowResponseDto> getFollowerList(Principaldetail principaldetail) {
         List<FriendDto> friendDtoList = friendRepository.getFollowerList(principaldetail.getMember().getSocialId());
         return ResponseEntity.ok().body(FollowResponseDto.builder()
@@ -65,6 +109,7 @@ public class FriendService {
                 .build());
     }
 
+    @Transactional(readOnly = true)
     public ResponseEntity<FollowResponseDto> getFollowingList(Principaldetail principaldetail) {
         List<FriendDto> friendDtoList = friendRepository.getFollowingList(principaldetail.getMember().getSocialId());
         return ResponseEntity.ok().body(FollowResponseDto.builder()

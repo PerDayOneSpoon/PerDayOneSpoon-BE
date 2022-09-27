@@ -44,16 +44,16 @@ public class HeartService {
             List<Heart> newHeartList = new ArrayList<>();
             goalsAndHearts.getGoalList().forEach(goal-> createHeart(goal,newHeartList,principaldetail));
             heartRepository.saveAll(newHeartList);
-//            long heartCnt = heartRepository.getHeartCnt();
             HeartResponseDto heartResponseDto = HeartResponseDto.builder()
+                    .heartCnt(goalsAndHearts.getGoalList().get(0).getHeartList().size())
                     .heartCheck(true)
                     .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"친구를 응원하셨습니다.!!"))
                     .build();
             return ResponseEntity.ok().body(heartResponseDto);
         }else{
             heartRepository.deleteAll(goalsAndHearts.getHeartList());
-//            long heartCnt = heartRepository.getHeartCnt();
             HeartResponseDto heartResponseDto = HeartResponseDto.builder()
+                    .heartCnt(goalsAndHearts.getGoalList().get(0).getHeartList().size())
                     .heartCheck(false)
                     .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK, "친구응원을 취소하셨습니다."))
                     .build();

@@ -10,5 +10,4 @@ public interface HeartRepositoryCustom {
 
     GoalsAndHeart findGoalsHeart(String goalFlag,String socialId);
 
-    Long getHeartCnt();
 }

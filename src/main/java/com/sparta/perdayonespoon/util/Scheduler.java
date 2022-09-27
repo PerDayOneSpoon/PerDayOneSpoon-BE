@@ -14,5 +14,6 @@ public class Scheduler {
     public void removeImage() {
         myPageService.removeS3Image();
     }
+
 }
 

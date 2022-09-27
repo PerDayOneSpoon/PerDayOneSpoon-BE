@@ -22,6 +22,7 @@ public class HeartRepositoryImpl implements HeartRepositoryCustom{
         List<Goal> goalList = jpaQueryFactory
                 .selectFrom(goal)
                 .where(goal.goalFlag.eq(goalFlag))
+                .leftJoin(goal.heartList,heart).fetchJoin()
                 .fetch();
         List<Heart> heartList = jpaQueryFactory
                 .selectFrom(heart)
@@ -30,13 +31,4 @@ public class HeartRepositoryImpl implements HeartRepositoryCustom{
         return GoalsAndHeart.builder().goalList(goalList).heartList(heartList).build();
     }
 
-    @Override
-    public Long getHeartCnt(){
-        return jpaQueryFactory
-                .select(heart.count())
-                .from(heart)
-                .innerJoin(heart.goal,goal)
-                .groupBy(heart.goal.goalFlag)
-                .fetchOne();
-    }
 }
