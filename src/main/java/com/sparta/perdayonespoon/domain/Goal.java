@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -52,13 +53,13 @@ public class Goal{
     @Column
     private String goalFlag;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "goal",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "goal",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonIgnore
-    private List<Heart> heartList;
+    private Set<Heart> heartList;
 
     @Builder
     public Goal(String title, LocalDateTime startDate,LocalDateTime currentDate,LocalDateTime endDate, String time, int category,

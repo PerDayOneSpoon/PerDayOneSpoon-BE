@@ -16,7 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -41,6 +43,7 @@ public class FriendService {
         Friend friend = Friend.builder().followerId(member.getSocialId()).followingId(principaldetail.getMember().getSocialId()).build();
         friendRepository.save(friend);
         // 인싸 뱃지를 구하기 위한 로직
+        List<Badge> badgeList = new ArrayList<>();
         if(!member.getBadgeList().isEmpty()){
             if(member.getBadgeList().stream().noneMatch(badge -> badge.getBadgeName().equals("인싸 뱃지"))){
                 List<Friend> friendList = friendRepository.getBothFollow(principaldetail.getMember().getSocialId());
@@ -63,8 +66,7 @@ public class FriendService {
                         }
                     }
                     if(friendNumber == 5){
-                        badgeRepository.save(Badge
-                                .builder()
+                        badgeList.add(Badge.realBadgeBuilder()
                                 .badgeName("인싸 뱃지")
                                 .member(member)
                                 .createdAt(LocalDateTime.now().toLocalDate())
@@ -74,7 +76,17 @@ public class FriendService {
                 }
             }
         }
-
+        if(member.getBadgeList().size()>4){
+            if(member.getBadgeList().stream().noneMatch(b->b.getBadgeName().equals("인싸 뱃지"))){
+                badgeList.add(Badge.realBadgeBuilder()
+                        .badgeName("뱃지 왕 뱃지")
+                        .member(member)
+                        .createdAt(LocalDate.now())
+                        .badgeNumber(5)
+                        .build());
+            }
+        }
+        if(!badgeList.isEmpty()) badgeRepository.saveAll(badgeList);
         return ResponseEntity.ok().body(FriendResponseDto.builder()
                 .followCheck(true)
                 .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"팔로우를 신청하셨습니다."))

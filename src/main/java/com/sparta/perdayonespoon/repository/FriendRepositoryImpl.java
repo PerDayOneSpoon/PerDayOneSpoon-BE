@@ -49,9 +49,7 @@ public class FriendRepositoryImpl implements FriendRepositoryCustom{
     @Override
     public List<Friend> getBothFollow(String socialId){
         return jpaQueryFactory
-                .select(
-                        friend
-                )
+                .select(friend)
                 .from(friend)
                 .where(friend.followerId.eq(socialId).or(friend.followingId.eq(socialId)))
                 .fetch();

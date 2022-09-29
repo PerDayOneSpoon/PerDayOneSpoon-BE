@@ -18,17 +18,15 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequiredArgsConstructor
 @RestController
 public class BadgeController {
-
     private final BadgeService badgeService;
 
     @ApiOperation(value = "나의 뱃지 목록 조회 API", notes = "뱃지 페이지에서 모은 뱃지를 보여주는 api ")
     @ApiImplicitParam(name = "Authorization",  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름")
     @ApiResponses(
             @ApiResponse(code = 200, message = "API 정상 작동",response = MemberResponseDto.class,
-                    responseHeaders = @ResponseHeader(name = "Authorization", description = "accesstoken이 담기는 헤더의 이름", response = TokenDto.class)
-                            ))
+                    responseHeaders = @ResponseHeader(name = "Authorization", description = "accesstoken이 담기는 헤더의 이름", response = TokenDto.class)))
     @GetMapping("/badge")
-    public ResponseEntity getMyBadge(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
-        return badgeService.getMyBadge(principaldetail);
+    public ResponseEntity getAllBadge(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
+        return badgeService.checkAllBadge(principaldetail);
     }
 }

@@ -28,17 +28,22 @@ public class Badge {
     @Column
     private LocalDate createdAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Builder
+    @Builder(builderClassName = "realBadge", builderMethodName = "realBadgeBuilder")
     public Badge(String badgeName,long badgeNumber, LocalDate createdAt,Member member){
         this.badgeName = badgeName;
         this.badgeNumber = badgeNumber;
         this.createdAt = createdAt;
         this.member=member;
         this.member.getBadgeList().add(this);
+    }
+
+    @Builder(builderClassName = "fakeBadge", builderMethodName = "fakeBadgeBuilder")
+    public Badge(String badgeName){
+        this.badgeName = badgeName;
     }
 }

@@ -36,6 +36,8 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
+
+
     @Override
     public List<MemberSearchDto> getMember(MemberSearchCondition condition,String socialId){
         return queryFactory
@@ -73,12 +75,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                         JPAExpressions.select(friend.count()).from(friend).where(friend.followingId.eq(socialId)).groupBy(friend.followingId)))
                 .from(member)
                 .where(member.socialId.eq(socialId))
-                .leftJoin(member.badgeList,badge).fetchJoin()
-//                .leftJoin(member.goalList,goal).fetchJoin()
-//                .where(goal.socialId.eq(socialId))
-//                .groupBy(goal.socialId,goal.achievementCheck)
-//                .having(goal.achievementCheck.eq(true))
-                .fetchOne();
+                .fetchFirst();
     }
 
     @Override

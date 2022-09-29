@@ -9,7 +9,6 @@ import com.sparta.perdayonespoon.domain.dto.request.GoalDto;
 import com.sparta.perdayonespoon.domain.dto.response.AchivementResponseDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.EveryTwoDaysGoalDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.TodayGoalsDto;
-import com.sparta.perdayonespoon.domain.dto.response.PrivateBadgeCheckDto;
 import com.sparta.perdayonespoon.domain.dto.response.rate.GoalRateDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.GoalResponseDto;
 import com.sparta.perdayonespoon.domain.dto.response.rate.WeekRateDto;
@@ -17,6 +16,7 @@ import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.repository.BadgeRepository;
 import com.sparta.perdayonespoon.repository.GoalRepository;
 import com.sparta.perdayonespoon.repository.MemberRepository;
+import com.sparta.perdayonespoon.util.BadgeUtil;
 import com.sparta.perdayonespoon.util.GenerateMsg;
 import com.sparta.perdayonespoon.util.GetCharacterUrl;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +28,8 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -56,24 +58,33 @@ public class MainService {
             sunday = LocalDateTime.now().minusDays(day);
             saturday = LocalDateTime.now().plusDays(6-day);
             goalRateDtos = goalRepository.getRateGoal(sunday,saturday,principaldetail.getMember().getSocialId());
-            goalRateDtos.stream().sorted(Comparator.comparing(GoalRateDto::getDayString).thenComparing(GoalRateDto::isCheckGoal)).forEach(this::setRate);
+            goalRateDtos.stream()
+                    .sorted(Comparator.comparing(GoalRateDto::getDayString).thenComparing(GoalRateDto::isCheckGoal))
+                    .forEach(this::setRate);
         }else if(day == 6){
             sunday = LocalDateTime.now().minusDays(day);
             saturday = LocalDateTime.now();
             goalRateDtos = goalRepository.getRateGoal(sunday,saturday,principaldetail.getMember().getSocialId());
-            goalRateDtos.stream().sorted(Comparator.comparing(GoalRateDto::getDayString).thenComparing(GoalRateDto::isCheckGoal)).forEach(this::setRate);
+            goalRateDtos.stream()
+                    .sorted(Comparator.comparing(GoalRateDto::getDayString).thenComparing(GoalRateDto::isCheckGoal))
+                    .forEach(this::setRate);
         }else {
             sunday = LocalDateTime.now();
             saturday = LocalDateTime.now().plusDays(6);
             goalRateDtos = goalRepository.getRateGoal(sunday,saturday,principaldetail.getMember().getSocialId());
-            goalRateDtos.stream().sorted(Comparator.comparing(GoalRateDto::getDayString).thenComparing(GoalRateDto::isCheckGoal)).forEach(this::setRate);
+            goalRateDtos.stream()
+                    .sorted(Comparator.comparing(GoalRateDto::getDayString).thenComparing(GoalRateDto::isCheckGoal))
+                    .forEach(this::setRate);
         }
         if(!socialst.isEmpty() && !goalst.isEmpty()){
             socialst.clear();
             goalst.clear();
         }
         List<WeekRateDto> weekRateDtoList ;
-        weekRateDtoList = goalRateDtos.stream().filter(this::checkgoalgetday).map(GoalRateDto::getWeekRateDto).collect(Collectors.toList());
+        weekRateDtoList = goalRateDtos.stream()
+                .filter(this::checkgoalgetday)
+                .map(GoalRateDto::getWeekRateDto)
+                .collect(Collectors.toList());
         if(weekRateDtoList.isEmpty())
             weekRateDtoList = new ArrayList<>();
         for(int y=1; y<=7; y++){
@@ -147,7 +158,6 @@ public class MainService {
     }
     // TODO : 달력 날짜 받기X 주간 달성도 리턴하기
     public ResponseEntity CreateGoal(GoalDto goalDto, Principaldetail principaldetail) {
-        int sunday = LocalDateTime.now().getDayOfWeek().getValue();
         String goalFlag = UUID.randomUUID().toString();
         if(goalDto.getTitle() == null) {
             throw new IllegalArgumentException("제목을 입력해주세요");
@@ -178,24 +188,6 @@ public class MainService {
             } else if (!badgeMap.get("privateBadge")){
                 getPrivateBadge(member, badgeList);
             }
-            // 일요일 체크 / 월.일로 체크해서 퐁당퐁당 뱃지 지급
-            if(sunday == 7){
-                if(member.getBadgeList().stream().noneMatch(badge->badge.getBadgeName().equals("퐁당 퐁당 뱃지"))){
-                    LocalDate monday = LocalDate.now().minusDays(sunday-1);
-                    List<EveryTwoDaysGoalDto> everyTwoDaysGoalDtoList = goalRepository.getTheseWeeksGoals(monday,LocalDate.now(),principaldetail.getMember().getSocialId());
-                    if(everyTwoDaysGoalDtoList.size() == 4) {
-                        if (4 == everyTwoDaysGoalDtoList.stream().map(EveryTwoDaysGoalDto::getCurrentDay).filter(d -> d == 1 || d == 3 || d == 5 || d == 7).count()) {
-                            badgeList.add(Badge
-                                    .builder()
-                                    .badgeName("퐁당 퐁당 뱃지")
-                                    .member(member)
-                                    .createdAt(LocalDateTime.now().toLocalDate())
-                                    .badgeNumber(3)
-                                    .build());
-                        }
-                    }
-                }
-            }
             // 컴백 뱃지 없으면 false 있으면 true
             if(!badgeMap.containsKey("comebackBadge")) {
                 if(!member.getGoalList().isEmpty()) {
@@ -205,19 +197,11 @@ public class MainService {
                 getComebackBadge(member, badgeList);
             }
             if(member.getBadgeList().size()>=5){
-                if(member.getBadgeList().stream().noneMatch(badge -> badge.getBadgeName().equals("뱃지 왕 뱃지"))){
-                    badgeList.add(Badge
-                            .builder()
-                            .badgeName("뱃지 왕 뱃지")
-                            .member(member)
-                            .createdAt(LocalDateTime.now().toLocalDate())
-                            .badgeNumber(5)
-                            .build());}
+                checkKingBadge(member, badgeList);
             }
             if(!badgeList.isEmpty()) {
                 badgeRepository.saveAll(badgeList);
             }
-
             while(period -->0){
                     goalList.add(Goal.builder()
                     .achievementCheck(goalDto.achievementCheck)
@@ -256,24 +240,32 @@ public class MainService {
             throw new IllegalArgumentException("하루에 최대 5개까지만 습관 생성이 가능합니다.");
     }
 
+    private void checkKingBadge(Member member, List<Badge> badgeList) {
+        if(member.getBadgeList().stream().noneMatch(badge -> badge.getBadgeName().equals("뱃지 왕 뱃지"))){
+            badgeList.add(Badge.realBadgeBuilder()
+                    .badgeName("뱃지 왕 뱃지")
+                    .member(member)
+                    .createdAt(LocalDate.now())
+                    .badgeNumber(5)
+                    .build());}
+    }
+
     private void getWelcomeBadge(Member member, List<Badge> badgeList) {
-        badgeList.add(Badge
-                .builder()
+        badgeList.add(Badge.realBadgeBuilder()
                 .badgeName("웰컴 뱃지")
                 .member(member)
-                .createdAt(LocalDateTime.now().toLocalDate())
+                .createdAt(LocalDate.now())
                 .badgeNumber(1)
                 .build());
     }
 
     private void getPrivateBadge(Member member, List<Badge> badgeList) {
         List<String> privateBadgeCheckDtoList = member.getGoalList().stream().filter(Goal::isPrivateCheck).map(Goal::getGoalFlag).distinct().collect(Collectors.toList());
-        if (privateBadgeCheckDtoList.size() >= 10) {
-            badgeList.add(Badge
-                    .builder()
+        if (privateBadgeCheckDtoList.size() >= 9) {
+            badgeList.add(Badge.realBadgeBuilder()
                     .badgeName("프라이빗 뱃지")
                     .member(member)
-                    .createdAt(LocalDateTime.now().toLocalDate())
+                    .createdAt(LocalDate.now())
                     .badgeNumber(2)
                     .build());
         }
@@ -286,11 +278,10 @@ public class MainService {
         LocalDate today = LocalDate.now();
         Period pe = Period.between(latestDay, today);
         if (pe.getDays() >= 7) {
-            badgeList.add(Badge
-                    .builder()
+            badgeList.add(Badge.realBadgeBuilder()
                     .badgeName("컴백 뱃지")
                     .member(member)
-                    .createdAt(LocalDateTime.now().toLocalDate())
+                    .createdAt(LocalDate.now())
                     .badgeNumber(4)
                     .build());
         }
@@ -352,6 +343,7 @@ public class MainService {
         List<Badge> badgeList = new ArrayList<>();
         Map<String, Boolean> badgeMap = new HashMap<>();
         if(!goal.getMember().getBadgeList().isEmpty()){
+            badgeMap.put("plopBadge",goal.getMember().getBadgeList().stream().anyMatch(f->f.getBadgeName().equals("퐁당 퐁당 뱃지")));
             badgeMap.put("earlyBirdBadge",goal.getMember().getBadgeList().stream().anyMatch(f->f.getBadgeName().equals("얼리버드 뱃지")));
             badgeMap.put("owlBirdBadge",goal.getMember().getBadgeList().stream().anyMatch(f->f.getBadgeName().equals("올빼미 뱃지")));
             badgeMap.put("shortTimeBadge",goal.getMember().getBadgeList().stream().anyMatch(f->f.getBadgeName().equals("단타 뱃지")));
@@ -364,77 +356,263 @@ public class MainService {
         }
         LocalTime earlyStart = LocalTime.of(4, 59, 59);
         LocalTime earlyEnd = LocalTime.of(7, 0, 1);
-        LocalTime dawnStart = LocalTime.of(10,59,59);
+        LocalTime dawnStart = LocalTime.of(22,59,59);
         LocalTime dawnEnd = LocalTime.of(2,0,1);
         LocalTime shortTime = LocalTime.of(0,3,1);
-        LocalTime longTime = LocalTime.of(4,0,1);
-        if(!badgeMap.containsKey("earlyBirdBadge")){
+        LocalTime longTime = LocalTime.of(1,59,59);
+        if(!badgeMap.containsKey("plopBadge")){
+            checkPlopBadge(goal, badgeList);
+        }else if(!badgeMap.get("plopBadge")){
+            checkPlopBadge(goal, badgeList);
+        }
+        if(!badgeMap.containsKey("earlyBirdBadge")){ //얼리버드 뱃지
             earlyMorningBadge(goal, badgeList, earlyStart, earlyEnd);
         }else if (!badgeMap.get("earlyBirdBadge")){
             earlyMorningBadge(goal, badgeList, earlyStart, earlyEnd);
         }
-        if(!badgeMap.containsKey("owlBirdBadge")){
+        if(!badgeMap.containsKey("owlBirdBadge")){ //올빼미 뱃지
             owlBadge(goal, badgeList, dawnStart, dawnEnd);
         }else if (!badgeMap.get("owlBirdBadge")){
             owlBadge(goal, badgeList, dawnStart, dawnEnd);
         }
-        if(!badgeMap.containsKey("shortTimeBadge")){
+        if(!badgeMap.containsKey("shortTimeBadge")){  //단타 뱃지
             shortBadge(goal, badgeList, shortTime);
         }else if (!badgeMap.get("shortTimeBadge")){
             shortBadge(goal, badgeList, shortTime);
         }
-        if(!badgeMap.containsKey("longTimeBadge")){
+        if(!badgeMap.containsKey("longTimeBadge")){   //장타 뱃지
             longBadge(goal, badgeList, longTime);
         }else if (!badgeMap.get("longTimeBadge")){
             longBadge(goal, badgeList, longTime);
         }
+        if(!badgeMap.containsKey("minBadge")){    //미니멈 뱃지
+            checkMinBadge(goal, badgeList);
+        }else if(!badgeMap.get("minBadge")){
+            checkMinBadge(goal, badgeList);
+        }
+        if(!badgeMap.containsKey("maxBadge")){    //맥시멈 뱃지
+            checkMaxBadge(goal,badgeList);
+        }else if (!badgeMap.get("maxBadge")){
+            checkMaxBadge(goal,badgeList);
+        }
+        if(goal.getMember().getBadgeList().size()>=5){
+            checkKingBadge(goal.getMember(),badgeList);
+        }
+        if(!badgeMap.containsKey("shortWayBadge")){ //단거리 뱃지
+            int shortWay = 10;
+            int continueCnt = getContinueCnt(goal, shortWay);
+            judgeBadge(goal, badgeList, shortWay, continueCnt);
+        }else if (!badgeMap.get("shortWayBadge")){
+            int shortWay = 10;
+            int continueCnt = getContinueCnt(goal, shortWay);
+            judgeBadge(goal, badgeList, shortWay, continueCnt);
+        }
+        if(!badgeMap.containsKey("middleWayBadge")){
+            int middleWay = 20;
+            int continueCnt = getContinueCnt(goal, middleWay);
+            judgeBadge(goal, badgeList, middleWay, continueCnt);
+        }else if(!badgeMap.get("middleWayBadge")){
+            int middleWay = 20;
+            int continueCnt = getContinueCnt(goal, middleWay);
+            judgeBadge(goal, badgeList, middleWay, continueCnt);
+        } if(!badgeMap.containsKey("longWayBadge")){
+            int longWay = 30;
+            int continueCnt = getContinueCnt(goal, longWay);
+            judgeBadge(goal, badgeList, longWay, continueCnt);
+        }else if(!badgeMap.get("longWayBadge")){
+            int longWay = 30;
+            int continueCnt = getContinueCnt(goal, longWay);
+            judgeBadge(goal, badgeList, longWay, continueCnt);
+        }
         if(!badgeList.isEmpty())
             badgeRepository.saveAll(badgeList);
     }
+
+    private void checkPlopBadge(Goal goal, List<Badge> badgeList) {
+        Badge badge = BadgeUtil.plopBadge(goal);
+        if(!badge.getBadgeName().equals("가짜 뱃지")){
+            badgeList.add(badge);
+        }
+    }
+
     private void earlyMorningBadge(Goal goal, List<Badge> badgeList, LocalTime earlyStart, LocalTime earlyEnd) {
         if(LocalTime.now().isAfter(earlyStart) && LocalTime.now().isBefore(earlyEnd)){
-            badgeList.add(Badge.builder()
-                    .badgeNumber(9)
+            badgeList.add(Badge.realBadgeBuilder()
+                    .badgeNumber(7)
                     .badgeName("얼리 버드 뱃지")
                     .member(goal.getMember())
-                    .createdAt(LocalDateTime.now().toLocalDate())
+                    .createdAt(LocalDate.now())
                     .build());
         }
     }
 
     private void owlBadge(Goal goal, List<Badge> badgeList, LocalTime dawnStart, LocalTime dawnEnd) {
-        if(LocalTime.now().isAfter(dawnStart) && LocalTime.now().isBefore(dawnEnd)){
-            badgeList.add(Badge.builder()
+        if(LocalTime.now().isAfter(dawnStart) || LocalTime.now().isBefore(dawnEnd)){
+            badgeList.add(Badge.realBadgeBuilder()
                     .badgeName("올빼미 뱃지")
-                    .badgeNumber(10)
+                    .badgeNumber(8)
                     .member(goal.getMember())
-                    .createdAt(LocalDateTime.now().toLocalDate())
+                    .createdAt(LocalDate.now())
                     .build());
         }
     }
 
     private void shortBadge(Goal goal, List<Badge> badgeList, LocalTime shortTime) {
         if(LocalTime.parse(goal.getTime()).isBefore(shortTime)){
-            badgeList.add(Badge.builder()
+            badgeList.add(Badge.realBadgeBuilder()
                     .member(goal.getMember())
                     .badgeName("단타 뱃지")
-                    .badgeNumber(13)
-                    .createdAt(LocalDateTime.now().toLocalDate())
+                    .badgeNumber(16)
+                    .createdAt(LocalDate.now())
                     .build());
         }
     }
 
     private void longBadge(Goal goal, List<Badge> badgeList, LocalTime longTime) {
         if(LocalTime.parse(goal.getTime()).isAfter(longTime)){
-            badgeList.add(Badge.builder()
-                    .badgeNumber(14)
+            badgeList.add(Badge.realBadgeBuilder()
+                    .badgeNumber(17)
                     .badgeName("장타 뱃지")
                     .member(goal.getMember())
-                    .createdAt(LocalDateTime.now().toLocalDate())
+                    .createdAt(LocalDate.now())
                     .build());
         }
     }
 
+    private void checkMinBadge(Goal goal, List<Badge> badgeList) {
+        List<Goal> goalList = goal.getMember().getGoalList()
+                .stream()
+                .sorted(Comparator.comparing(Goal::getCurrentDate).reversed())
+                .limit(28)
+                .collect(Collectors.toList());
+        if(goalList.stream().allMatch(Goal::isAchievementCheck) && goalList.size() >= 7){
+            boolean sufficeBadge = isSufficeBadge(goalList);
+            if(sufficeBadge){
+                badgeList.add(Badge.realBadgeBuilder()
+                        .member(goal.getMember())
+                        .badgeName("미니멈 뱃지")
+                        .badgeNumber(14)
+                        .createdAt(LocalDate.now())
+                        .build());
+            }
+        }
+    }
+
+    private void checkMaxBadge(Goal goal, List<Badge> badgeList) {
+        List<Goal> goalList = goal.getMember().getGoalList()
+                .stream()
+                .sorted(Comparator.comparing(Goal::getCurrentDate).reversed())
+                .limit(35)
+                .collect(Collectors.toList());
+        int size = goalList.size();
+        boolean sufficeBadge = false;
+        if(goalList.stream().allMatch(Goal::isAchievementCheck) && size == 35){
+            for(int i= 0; i<size; i++ ){
+                if(i%5<4){
+                    if(!goalList.get(i).getCurrentDate().toLocalDate().equals(goalList.get(i+1).getCurrentDate().toLocalDate())){
+                        sufficeBadge = false;
+                        break;
+                    }
+                }else if (i != size-1){
+                    if(goalList.get(i).getCurrentDate().toLocalDate().equals(goalList.get(i+1).getCurrentDate().toLocalDate())) {
+                        sufficeBadge = false;
+                        break;
+                    }
+                }
+                sufficeBadge = true;
+            }if(sufficeBadge){
+                badgeList.add(Badge.realBadgeBuilder()
+                        .member(goal.getMember())
+                        .badgeName("맥시멈 뱃지")
+                        .badgeNumber(15)
+                        .createdAt(LocalDate.now())
+                        .build());
+            }
+        }
+    }
+
+    private boolean isSufficeBadge(List<Goal> goalList) {
+        int limit = goalList.size();
+        Queue<LocalDateTime> checkDate = new LinkedList<>();
+        int minCheckCnt=1;
+        int sameDateCnt = 1;
+        boolean sufficeBadge = false;
+        for(int i=0; i<limit; i++){
+            if(checkDate.isEmpty()){
+                checkDate.offer(goalList.get(i).getCurrentDate());
+            }
+            else {
+                if(!checkDate.peek().equals(goalList.get(i).getCurrentDate())) {
+                    checkDate.poll();
+                    checkDate.offer(goalList.get(i).getCurrentDate());
+                    minCheckCnt++;
+                    if (minCheckCnt > 7) {
+                        break;
+                    }
+                    if(sameDateCnt == 5){
+                        break;
+                    } else sameDateCnt = 1;
+                }else sameDateCnt++;
+            }
+        }
+        if(minCheckCnt == 7) {
+            sufficeBadge = true;
+        }
+        return sufficeBadge;
+    }
+
+
+    private int getContinueCnt(Goal goal, int standardWay) {
+        List<LocalDate> goalDateList = goal.getMember().getGoalList()
+                .stream()
+                .filter(Goal::isAchievementCheck)
+                .sorted(Comparator.comparing(Goal::getCurrentDate).reversed())
+                .map(g->g.getCurrentDate().toLocalDate()).distinct()
+                .collect(Collectors.toList());
+        int size = goalDateList.size();
+        int continueCnt = 1;
+        if(size>=10){
+            for(int i=0; i<size-1; i++){
+                if(Period.between(goalDateList.get(i),goalDateList.get(i+1)).getDays()>1){
+                    continueCnt = 0;
+                    break;
+                }
+                else{
+                    if(continueCnt > standardWay -1)
+                        break;
+                    else continueCnt++;
+                }
+            }
+        }
+        return continueCnt;
+    }
+
+    private void judgeBadge(Goal goal, List<Badge> badgeList, int standardWay, int continueCnt) {
+        if(continueCnt == standardWay && continueCnt == 10) {
+            badgeList.add(Badge.realBadgeBuilder()
+                    .member(goal.getMember())
+                    .createdAt(LocalDate.now())
+                    .badgeName("단거리 뱃지")
+                    .badgeNumber(11)
+                    .build());
+        }
+        else if(continueCnt == standardWay && continueCnt == 20) {
+            badgeList.add(Badge.realBadgeBuilder()
+                    .member(goal.getMember())
+                    .createdAt(LocalDate.now())
+                    .badgeName("중거리 뱃지")
+                    .badgeNumber(12)
+                    .build());
+        }
+        else if(continueCnt == standardWay && continueCnt == 30){
+            badgeList.add(Badge.realBadgeBuilder()
+                    .member(goal.getMember())
+                    .createdAt(LocalDate.now())
+                    .badgeName("장거리 뱃지")
+                    .badgeNumber(13)
+                    .build());
+        }
+    }
 
     public ResponseEntity deleteGoals(Principaldetail principaldetail, String deleteFlag) {
         List<Goal> goalList = goalRepository.getCategoryGoals(principaldetail.getMember().getSocialId(),deleteFlag);

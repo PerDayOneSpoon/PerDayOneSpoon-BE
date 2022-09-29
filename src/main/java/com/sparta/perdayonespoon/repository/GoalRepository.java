@@ -9,6 +9,4 @@ import java.util.Optional;
 public interface GoalRepository extends JpaRepository<Goal, Long>, GoalRepositoryCustom {
     List<Goal> findAllBySocialId(String socialId);
 
-    Optional<Goal> findByIdAndSocialId(long goalId, String socialId);
-
 }
