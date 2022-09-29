@@ -56,8 +56,16 @@ public class Member extends  Timestamped {
     @JsonManagedReference
     private Image image;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<badge> badgeList;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL , fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Badge> badgeList;
+
+    @OneToMany(mappedBy = "member" , cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Goal> goalList;
+
+    @Column(columnDefinition = "Integer Default 0",nullable = false)
+    private int heartClickCnt;
 
     @Builder
     public Member(Long id,String email, String password,String socialCode, String nickname, String socialId, Authority authority,Image image) {
@@ -84,5 +92,12 @@ public class Member extends  Timestamped {
     }
 
     public void SetImage(Image image){ this.image = image;}
+
+    public void addClickCnt(){
+        heartClickCnt++;
+    }
+    public void minusClickCnt(){
+        heartClickCnt--;
+    }
 }
 

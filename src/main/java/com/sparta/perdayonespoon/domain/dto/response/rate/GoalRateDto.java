@@ -26,7 +26,6 @@ public class GoalRateDto {
 
     @QueryProjection
     public GoalRateDto(String dayofweek , boolean checkGoal, long totalcount){
-//        dayString = dayofweek.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
         whatsDay = LocalDate.parse(dayofweek).getDayOfWeek().getValue();
         dayString = LocalDate.parse(dayofweek).getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
         this.checkGoal=checkGoal;

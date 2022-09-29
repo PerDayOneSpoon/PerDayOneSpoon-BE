@@ -3,6 +3,8 @@ package com.sparta.perdayonespoon.repository;
 import com.sparta.perdayonespoon.domain.Goal;
 import com.sparta.perdayonespoon.domain.Heart;
 import com.sparta.perdayonespoon.domain.dto.CountDto;
+import com.sparta.perdayonespoon.domain.dto.response.Goal.EveryTwoDaysGoalDto;
+import com.sparta.perdayonespoon.domain.dto.response.PrivateBadgeCheckDto;
 import com.sparta.perdayonespoon.domain.dto.response.calendar.CalendarGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.TodayGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.rate.GoalRateDto;
@@ -32,5 +34,11 @@ public interface GoalRepositoryCustom  {
 
     List<Goal> getCategoryGoals(String socialId, String deleteFlag);
 
+    List<PrivateBadgeCheckDto> getPrivateGoalCnt(String socialId);
 
+    List<EveryTwoDaysGoalDto> getTheseWeeksGoals(LocalDate startDay, LocalDate endDay, String socialId);
+
+    LocalDateTime getLatestGoals(String socialId);
+
+    Optional<Goal> findOldGoal(Long id, String socialId);
 }

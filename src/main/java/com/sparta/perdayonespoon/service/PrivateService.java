@@ -1,9 +1,12 @@
 package com.sparta.perdayonespoon.service;
 
+import com.sparta.perdayonespoon.domain.Badge;
 import com.sparta.perdayonespoon.domain.Goal;
+import com.sparta.perdayonespoon.domain.Member;
 import com.sparta.perdayonespoon.domain.dto.request.PrivateDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.GoalResponseDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
+import com.sparta.perdayonespoon.repository.BadgeRepository;
 import com.sparta.perdayonespoon.repository.GoalRepository;
 import com.sparta.perdayonespoon.util.GenerateMsg;
 import com.sparta.perdayonespoon.util.GetCharacterUrl;
@@ -12,30 +15,54 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PrivateService {
+
+    private final BadgeRepository badgeRepository;
     private final GoalRepository goalRepository;
     public ResponseEntity changePrivateCheck(Principaldetail principaldetail, PrivateDto privateDto, String goalFlag) {
         List<Goal> goalList = goalRepository.getCategoryGoals(principaldetail.getMember().getSocialId(),goalFlag);
         List<GoalResponseDto> goalResponseDtoList = new ArrayList<>();
         if(goalList.isEmpty()) throw new IllegalArgumentException("해당 습관이 없습니다.");
         goalList.forEach(goal -> changePrivate(goal,privateDto.getPrivateCheck(),goalResponseDtoList));
+        Map<String , Boolean> badgeMap = new HashMap<>();
+        Member badgeOwner = goalList.get(0).getMember();
+        List<Badge> badgeList = new ArrayList<>();
+        if(badgeOwner.getBadgeList().stream().noneMatch(b->b.getBadgeName().equals("프라이빗 뱃지"))){
+            List<String> privateBadgeCheckDtoList = badgeOwner.getGoalList().stream().filter(Goal::isPrivateCheck).map(Goal::getGoalFlag).distinct().collect(Collectors.toList());
+            if (privateBadgeCheckDtoList.size() >= 10) {
+                badgeList.add(Badge.realBadgeBuilder()
+                        .badgeName("프라이빗 뱃지")
+                        .member(badgeOwner)
+                        .createdAt(LocalDate.now())
+                        .badgeNumber(2)
+                        .build());
+            }
+        }
+        if(badgeOwner.getBadgeList().size()>=5){
+            if(badgeOwner.getBadgeList().stream().noneMatch(badge -> badge.getBadgeName().equals("뱃지 왕 뱃지"))){
+                badgeList.add(Badge.realBadgeBuilder()
+                        .badgeName("뱃지 왕 뱃지")
+                        .member(badgeOwner)
+                        .createdAt(LocalDate.now())
+                        .badgeNumber(5)
+                        .build());}
+        }
+        if(!badgeList.isEmpty()){
+            badgeRepository.saveAll(badgeList);
+        }
         goalRepository.saveAll(goalList);
         return ResponseEntity.ok().body(goalResponseDtoList);
     }
 
     private void changePrivate(Goal goal,Boolean privateCheck,List<GoalResponseDto> goalResponseDtoList) {
-        if(privateCheck == null){
-            goal.SetPrivateCheck(!goal.isPrivateCheck());
-        }
-        else{
-            goal.SetPrivateCheck(privateCheck);
-        }
+        goal.SetPrivateCheck(Objects.requireNonNullElseGet(privateCheck, () -> !goal.isPrivateCheck()));
         if(goal.isPrivateCheck()) {
             goalResponseDtoList.add(GoalResponseDto
                     .builder()
