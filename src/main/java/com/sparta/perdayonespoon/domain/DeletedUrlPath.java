@@ -7,6 +7,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Table(name = "deletedUrlPath")
 public class DeletedUrlPath {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
