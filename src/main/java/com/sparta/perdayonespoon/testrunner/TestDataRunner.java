@@ -1,17 +1,17 @@
 package com.sparta.perdayonespoon.testrunner;
 
-import com.sparta.perdayonespoon.domain.Authority;
-import com.sparta.perdayonespoon.domain.Image;
-import com.sparta.perdayonespoon.domain.Member;
-import com.sparta.perdayonespoon.repository.MemberRepository;
-import com.sparta.perdayonespoon.util.GetCharacterUrl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-
-import java.util.*;
+//import com.sparta.perdayonespoon.domain.Authority;
+//import com.sparta.perdayonespoon.domain.Image;
+//import com.sparta.perdayonespoon.domain.Member;
+//import com.sparta.perdayonespoon.repository.MemberRepository;
+//import com.sparta.perdayonespoon.util.GetCharacterUrl;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.boot.ApplicationArguments;
+//import org.springframework.boot.ApplicationRunner;
+//import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.stereotype.Component;
+//
+//import java.util.*;
 
 //@Component
 //public class TestDataRunner implements ApplicationRunner {

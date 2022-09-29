@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -52,13 +53,17 @@ public class Goal{
     @Column
     private String goalFlag;
 
-    @OneToMany(mappedBy = "goal",cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @OneToMany(mappedBy = "goal",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonIgnore
-    private List<Heart> heartList = new ArrayList<>();
+    private Set<Heart> heartList;
 
     @Builder
     public Goal(String title, LocalDateTime startDate,LocalDateTime currentDate,LocalDateTime endDate, String time, int category,
-                int characterId, boolean privateCheck, String socialId,boolean achievementCheck,String goalFlag){
+                int characterId, boolean privateCheck, String socialId,boolean achievementCheck,String goalFlag, Member member){
         this.title = title;
         this.category = category;
         this.startDate = startDate;
@@ -70,6 +75,8 @@ public class Goal{
         this.socialId=socialId;
         this.achievementCheck=achievementCheck;
         this.goalFlag = goalFlag;
+        this.member = member;
+        this.member.getGoalList().add(this);
     }
 
     public void SetAchivementCheck(boolean achievementCheck){

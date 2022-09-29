@@ -1,6 +1,7 @@
 package com.sparta.perdayonespoon.repository;
 
 import com.sparta.perdayonespoon.domain.Friend;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

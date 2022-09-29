@@ -20,9 +20,4 @@ public class ImageDto {
         this.uploadImageUrl = uploadImageUrl;
         this.imageName = imageName;
     }
-
-    public void SetTwoproperties(MsgDto msgDto){
-        this.msg = msgDto.getMsg();
-        this.code = msgDto.getCode();
-    }
 }

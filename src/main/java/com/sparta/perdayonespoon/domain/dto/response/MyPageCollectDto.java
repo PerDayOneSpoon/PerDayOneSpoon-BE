@@ -1,8 +1,11 @@
 package com.sparta.perdayonespoon.domain.dto.response;
 
 import com.querydsl.core.annotations.QueryProjection;
+import com.sparta.perdayonespoon.domain.Goal;
 import com.sparta.perdayonespoon.domain.Member;
 import lombok.Data;
+
+import java.util.stream.Collectors;
 
 @Data
 public class MyPageCollectDto {
@@ -24,13 +27,15 @@ public class MyPageCollectDto {
 
     private long followingCnt; // 팔로워한 친구 수
 
+    private int badgeCnt; // 뱃지 개수
+
     private long code;
 
     private String msg;
 
 
     @QueryProjection
-    public MyPageCollectDto(Member member, long goalCnt, long followerCnt, long followingCnt){
+    public MyPageCollectDto(Member member,long goalCnt,long followerCnt, long followingCnt){
         nickname = member.getNickname();
         profileImage = member.getImage().getImgUrl();
         status = member.getStatus();
@@ -40,12 +45,12 @@ public class MyPageCollectDto {
         this.goalCnt = goalCnt;
         this.followerCnt = followerCnt;
         this.followingCnt = followingCnt;
+        badgeCnt = member.getBadgeList().size();
     }
 
     public void SetCodeMsg(MsgDto msgDto){
         code= msgDto.getCode();
         msg=msgDto.getMsg();
     }
-
 
 }
