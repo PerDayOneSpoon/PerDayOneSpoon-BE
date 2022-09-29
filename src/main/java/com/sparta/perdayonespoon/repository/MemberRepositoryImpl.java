@@ -88,6 +88,14 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .leftJoin(member.goalList,goal).fetchJoin()
                 .fetchOne());
     }
+    @Override
+    public List<Member> getTwoMember(String socialId, String friendId){
+        return queryFactory
+                .selectFrom(member)
+                .where(member.socialId.eq(socialId).or(member.socialId.eq(friendId)))
+                .limit(2)
+                .fetch();
+    }
 
 
 

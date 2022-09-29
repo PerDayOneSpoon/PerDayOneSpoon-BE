@@ -10,6 +10,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Table(name = "friend")
 public class Friend {
 
     @Id
@@ -17,10 +18,10 @@ public class Friend {
     private Long id;
 
     @Column
-    private String followerId;
+    private String followingId;
 
     @Column
-    private String followingId;
+    private String followerId;
 
     @Builder
     public Friend(String followerId, String followingId){

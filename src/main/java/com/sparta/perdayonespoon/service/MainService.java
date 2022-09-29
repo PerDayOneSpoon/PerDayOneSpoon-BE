@@ -194,7 +194,9 @@ public class MainService {
                     getComebackBadge(member, badgeList);
                 }
             }else if(!badgeMap.get("comebackBadge")){
-                getComebackBadge(member, badgeList);
+                if(!member.getGoalList().isEmpty()) {
+                    getComebackBadge(member, badgeList);
+                }
             }
             if(member.getBadgeList().size()>=5){
                 checkKingBadge(member, badgeList);
