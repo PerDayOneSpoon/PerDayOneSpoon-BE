@@ -17,4 +17,6 @@ public interface MemberRepositoryCustom {
     MyPageCollectDto getMypageData(String socialId);
 
     Optional<Member> findByMemberId(Long id);
+
+    List<Member> getTwoMember(String socialId, String friendId);
 }

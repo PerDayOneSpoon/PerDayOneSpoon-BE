@@ -2,10 +2,6 @@ package com.sparta.perdayonespoon.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.perdayonespoon.domain.Goal;
-import com.sparta.perdayonespoon.domain.Heart;
-import com.sparta.perdayonespoon.domain.QBadge;
-import com.sparta.perdayonespoon.domain.QMember;
-import com.sparta.perdayonespoon.domain.dto.response.Goal.GoalsAndHeart;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
