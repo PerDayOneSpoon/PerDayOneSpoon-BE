@@ -5,28 +5,28 @@ import com.sparta.perdayonespoon.domain.Goal;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Getter
-@NoArgsConstructor
+@Component
 public class BadgeUtil {
 
-    public static void longBadge(Goal goal, List<Badge> badgeList, LocalTime longTime) {
-        if(LocalTime.parse(goal.getTime()).isAfter(longTime)){
-            badgeList.add(Badge.realBadgeBuilder()
-                    .badgeNumber(14)
-                    .badgeName("장타 뱃지")
-                    .member(goal.getMember())
-                    .createdAt(LocalDate.now())
-                    .build());
-        }
-    }
+//    public static void longBadge(Goal goal, List<Badge> badgeList, LocalTime longTime) {
+//        if(LocalTime.parse(goal.getTime()).isAfter(longTime)){
+//            badgeList.add(Badge.realBadgeBuilder()
+//                    .badgeNumber(14)
+//                    .badgeName("장타 뱃지")
+//                    .member(goal.getMember())
+//                    .createdAt(LocalDate.now())
+//                    .build());
+//        }
+//    }
 
-    public static Badge plopBadge(Goal goal) {
+    public Badge plopBadge(Goal goal) {
         int plopPoint =0;
         if(goal.getCategory() == 3){
             List<Goal>goalList = goal.getMember().getGoalList()
@@ -88,7 +88,7 @@ public class BadgeUtil {
         return Badge.fakeBadgeBuilder().badgeName("가짜 뱃지").build();
     }
 
-    private static Badge makePlopBadge(Goal goal) {
+    private Badge makePlopBadge(Goal goal) {
         return Badge.realBadgeBuilder()
                 .badgeNumber(3)
                 .badgeName("퐁당 퐁당 뱃지")
@@ -97,7 +97,7 @@ public class BadgeUtil {
                 .build();
     }
 
-    public static String getBadgeExplain(int badgeNumber){
+    public String getBadgeExplain(int badgeNumber){
         switch (badgeNumber){
             case 1: return "처음으로 습관을 만들면 받을 수 있을지도 몰라요";
             case 2: return "비밀이 많아지다 보면 받을 수 있을지도 몰라요";
@@ -120,7 +120,7 @@ public class BadgeUtil {
         }
     }
 
-    public static String getBadgeUrl(int badgeNumber){
+    public String getBadgeUrl(int badgeNumber){
         switch (badgeNumber){
             case 1: return "https://perday-onespoon.s3.ap-northeast-2.amazonaws.com/badge/1.png";
             case 2: return "https://perday-onespoon.s3.ap-northeast-2.amazonaws.com/badge/2.png";
@@ -144,7 +144,7 @@ public class BadgeUtil {
         }
     }
 
-    public static String getBadgeName(int badgeNumber){
+    public String getBadgeName(int badgeNumber){
         switch (badgeNumber){
             case 1: return "웰컴 뱃지";
             case 2: return "프라이빗 뱃지";

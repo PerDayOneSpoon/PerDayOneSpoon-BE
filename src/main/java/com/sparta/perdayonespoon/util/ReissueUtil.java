@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ReissueUtil {
+
+    private final MsgUtil msgUtil;
     private final RefreshTokenRepository refreshTokenRepository;
     private final TokenProvider tokenProvider;
 
@@ -30,7 +32,7 @@ public class ReissueUtil {
             headers.set("Authorization", "Bearer " + tokenDto.getAccessToken());
             headers.set("RefreshToken", twoFieldDto.getRefreshToken().getValue());
             headers.set("Access-Token-Expire-Time", String.valueOf(tokenDto.getAccessTokenExpiresIn()));
-            return ResponseEntity.ok().headers(headers).body(GenerateMsg.getMsg(SuccessMsg.RE_GENERATE_TOKEN.getCode(), SuccessMsg.RE_GENERATE_TOKEN.getMsg()));
+            return ResponseEntity.ok().headers(headers).body(msgUtil.getMsg(SuccessMsg.RE_GENERATE_TOKEN.getCode(), SuccessMsg.RE_GENERATE_TOKEN.getMsg()));
         }
         else
             throw new IllegalArgumentException("리프레쉬 토큰이 유효하지 않습니다.");

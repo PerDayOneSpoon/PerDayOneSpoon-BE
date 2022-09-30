@@ -17,8 +17,8 @@ import com.sparta.perdayonespoon.repository.BadgeRepository;
 import com.sparta.perdayonespoon.repository.GoalRepository;
 import com.sparta.perdayonespoon.repository.MemberRepository;
 import com.sparta.perdayonespoon.util.BadgeUtil;
-import com.sparta.perdayonespoon.util.GenerateMsg;
 import com.sparta.perdayonespoon.util.GetCharacterUrl;
+import com.sparta.perdayonespoon.util.MsgUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,15 +28,14 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class MainService {
 
-
+    private final MsgUtil msgUtil;
+    private final BadgeUtil badgeUtil;
     private final MemberRepository memberRepository;
 
     private final BadgeRepository badgeRepository;
@@ -109,7 +108,7 @@ public class MainService {
         AchivementResponseDto achivementResponseDto = AchivementResponseDto.builder()
                 .weekRateDtoList(weekRateDtoList)
                 .todayGoalsDtoList(todayGoalsDtoList)
-                .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"주간 습관 확인에 성공하셨습니다. 힘내세요!"))
+                .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK,"주간 습관 확인에 성공하셨습니다. 힘내세요!"))
                 .weekStartDate(sunday.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
                 .weekEndDate(saturday.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
                 .currentDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
@@ -235,7 +234,7 @@ public class MainService {
                     .privateCheck(Goal.isPrivateCheck())
                     .time(Goal.getTime())
                     .goalFlag(Goal.getGoalFlag())
-                    .msgDto(GenerateMsg.getMsg(SuccessMsg.CREATE_GOALS.getCode(), SuccessMsg.CREATE_GOALS.getMsg()))
+                    .msgDto(msgUtil.getMsg(SuccessMsg.CREATE_GOALS.getCode(), SuccessMsg.CREATE_GOALS.getMsg()))
                     .build()));
             return ResponseEntity.ok(goalResponseDtoList);
         }
@@ -329,7 +328,7 @@ public class MainService {
                 .achievementCheck(goal.isAchievementCheck())
                 .id(goal.getId())
                 .privateCheck(goal.isPrivateCheck())
-                .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"습관 달성 축하드립니다.!!! 고생 많으셨어요"))
+                .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK,"습관 달성 축하드립니다.!!! 고생 많으셨어요"))
                 .socialId(goal.getSocialId())
                 .characterId(goal.getCharacterId())
                 .time(goal.getTime())
@@ -431,7 +430,7 @@ public class MainService {
     }
 
     private void checkPlopBadge(Goal goal, List<Badge> badgeList) {
-        Badge badge = BadgeUtil.plopBadge(goal);
+        Badge badge = badgeUtil.plopBadge(goal);
         if(!badge.getBadgeName().equals("가짜 뱃지")){
             badgeList.add(badge);
         }
@@ -626,6 +625,6 @@ public class MainService {
             category = goalList.get(0).getCategory();
             goalRepository.deleteAll(goalList);
         }
-        return ResponseEntity.ok().body(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"만드셨던"+ category +"일치의 습관을 모두 삭제하셨습니다."));
+        return ResponseEntity.ok().body(msgUtil.getMsg(HttpServletResponse.SC_OK,"만드셨던"+ category +"일치의 습관을 모두 삭제하셨습니다."));
     }
 }

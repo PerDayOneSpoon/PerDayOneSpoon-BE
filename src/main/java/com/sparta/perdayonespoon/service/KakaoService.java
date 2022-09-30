@@ -17,9 +17,9 @@ import com.sparta.perdayonespoon.mapper.MemberMapper;
 import com.sparta.perdayonespoon.repository.ImageRepository;
 import com.sparta.perdayonespoon.repository.MemberRepository;
 import com.sparta.perdayonespoon.repository.RefreshTokenRepository;
-import com.sparta.perdayonespoon.util.GenerateHeader;
-import com.sparta.perdayonespoon.util.GenerateMsg;
+import com.sparta.perdayonespoon.util.HeaderUtil;
 import com.sparta.perdayonespoon.util.MailUtil;
+import com.sparta.perdayonespoon.util.MsgUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -42,6 +42,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class KakaoService {
+
+    private final MsgUtil msgUtil;
+    private final HeaderUtil headerUtil;
 
     private final MailUtil mailUtil;
 
@@ -84,13 +87,13 @@ public class KakaoService {
         TokenDto tokenDto = generateToken(member);
 
         // 리턴할 헤더 제작
-        HttpHeaders httpHeaders = GenerateHeader.getHttpHeaders(tokenDto);
+        HttpHeaders httpHeaders = headerUtil.getHttpHeaders(tokenDto);
 
         // 리턴할 바디 제작
         MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member);
 
         //리턴 바디 상태 코드 및 메세지 넣기
-        memberResponseDto.setTwoField(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"로그인이 성공하셨습니다."));
+        memberResponseDto.setTwoField(msgUtil.getMsg(HttpServletResponse.SC_OK,"로그인이 성공하셨습니다."));
 
         return ResponseEntity.ok().headers(httpHeaders).body(memberResponseDto);
     }

@@ -1,15 +1,13 @@
 package com.sparta.perdayonespoon.util;
 
 import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Component;
 
-@Getter
-@NoArgsConstructor
-public class GenerateHeader {
+@Component
+public class HeaderUtil {
 
-    public static HttpHeaders getHttpHeaders(TokenDto tokenDto){
+    public HttpHeaders getHttpHeaders(TokenDto tokenDto){
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set("Authorization", "Bearer " + tokenDto.getAccessToken());
         httpHeaders.set("RefreshToken", tokenDto.getRefreshToken());

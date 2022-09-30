@@ -8,7 +8,7 @@ import com.sparta.perdayonespoon.domain.dto.response.MyPageCollectDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.mapper.MemberMapper;
 import com.sparta.perdayonespoon.repository.*;
-import com.sparta.perdayonespoon.util.GenerateMsg;
+import com.sparta.perdayonespoon.util.MsgUtil;
 import com.sparta.perdayonespoon.util.Scalr_Resize_S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +22,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class MyPageService {
+
+    private final MsgUtil msgUtil;
     private final GoalRepository goalRepository;
     private final FriendRepository friendRepository;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -32,7 +34,7 @@ public class MyPageService {
     public ResponseEntity getProfile(Principaldetail principaldetail) {
         //TODO 이룬 목표 개수 , 팔로워한 친구 수 , 팔로우한 친구 수 3개가 가야함 추후엔 뱃지까지 follower -> 나를 팔로우한 사람 following 내가 팔로우한거 이렇게
         MyPageCollectDto myPageCollectDto = memberRepository.getMypageData(principaldetail.getMember().getSocialId());
-        myPageCollectDto.SetCodeMsg(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"프로필 조회에 성공하셨습니다."));
+        myPageCollectDto.SetCodeMsg(msgUtil.getMsg(HttpServletResponse.SC_OK,"프로필 조회에 성공하셨습니다."));
         return ResponseEntity.ok(myPageCollectDto);
     }
 
@@ -41,7 +43,7 @@ public class MyPageService {
                 .map(this::delete)
                 .orElseThrow(() -> new IllegalArgumentException("이미 로그아웃한 사용자입니다."));
         //(6)
-        return ResponseEntity.ok(GenerateMsg.getMsg(HttpServletResponse.SC_OK,principaldetail.getMember().getNickname()+"님 로그아웃에 성공하셨습니다."));
+        return ResponseEntity.ok(msgUtil.getMsg(HttpServletResponse.SC_OK,principaldetail.getMember().getNickname()+"님 로그아웃에 성공하셨습니다."));
     }
     public ResponseEntity deleteMember(Principaldetail principaldetail) {
         refreshTokenRepository.findByKey(principaldetail.getMember().getSocialId())
@@ -56,7 +58,7 @@ public class MyPageService {
         friendRepository.deleteAll(friends);
         friendRepository.deleteAll(friendList);
         goalRepository.deleteAll(goalList);
-        return ResponseEntity.ok(GenerateMsg.getMsg(HttpServletResponse.SC_OK,principaldetail.getMember().getNickname()+"님 회원탈퇴 성공하셨습니다."));
+        return ResponseEntity.ok(msgUtil.getMsg(HttpServletResponse.SC_OK,principaldetail.getMember().getNickname()+"님 회원탈퇴 성공하셨습니다."));
     }
 
     private boolean delete(RefreshToken refreshToken){
@@ -131,7 +133,7 @@ public class MyPageService {
             member.getImage().SetTwoField(s3Dto);
         }
         MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member);
-        memberResponseDto.setTwoField(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"프로필 변경에 성공하셨습니다."));
+        memberResponseDto.setTwoField(msgUtil.getMsg(HttpServletResponse.SC_OK,"프로필 변경에 성공하셨습니다."));
         return ResponseEntity.ok(memberResponseDto);
     }
 }

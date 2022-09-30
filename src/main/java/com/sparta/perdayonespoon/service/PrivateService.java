@@ -8,8 +8,8 @@ import com.sparta.perdayonespoon.domain.dto.response.Goal.GoalResponseDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.repository.BadgeRepository;
 import com.sparta.perdayonespoon.repository.GoalRepository;
-import com.sparta.perdayonespoon.util.GenerateMsg;
 import com.sparta.perdayonespoon.util.GetCharacterUrl;
+import com.sparta.perdayonespoon.util.MsgUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PrivateService {
 
+    private final MsgUtil msgUtil;
     private final BadgeRepository badgeRepository;
     private final GoalRepository goalRepository;
     public ResponseEntity changePrivateCheck(Principaldetail principaldetail, PrivateDto privateDto, String goalFlag) {
@@ -31,7 +32,6 @@ public class PrivateService {
         List<GoalResponseDto> goalResponseDtoList = new ArrayList<>();
         if(goalList.isEmpty()) throw new IllegalArgumentException("해당 습관이 없습니다.");
         goalList.forEach(goal -> changePrivate(goal,privateDto.getPrivateCheck(),goalResponseDtoList));
-        Map<String , Boolean> badgeMap = new HashMap<>();
         Member badgeOwner = goalList.get(0).getMember();
         List<Badge> badgeList = new ArrayList<>();
         if(badgeOwner.getBadgeList().stream().noneMatch(b->b.getBadgeName().equals("프라이빗 뱃지"))){
@@ -76,7 +76,7 @@ public class PrivateService {
                     .currentdate(goal.getCurrentDate().format((DateTimeFormatter.ofPattern("yyyy년 MM월 dd일"))).substring(0, 13))
                     .title(goal.getTitle())
                     .socialId(goal.getSocialId())
-                    .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK, "나만보기로 설정하셨습니다."))
+                    .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK, "나만보기로 설정하셨습니다."))
                     .build());
         }
         goalResponseDtoList.add(GoalResponseDto
@@ -91,7 +91,7 @@ public class PrivateService {
                 .currentdate(goal.getCurrentDate().format((DateTimeFormatter.ofPattern("yyyy년 MM월 dd일"))).substring(0, 13))
                 .title(goal.getTitle())
                 .socialId(goal.getSocialId())
-                .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK, "공개보기로 설정하셨습니다."))
+                .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK, "공개보기로 설정하셨습니다."))
                 .build());
     }
 }

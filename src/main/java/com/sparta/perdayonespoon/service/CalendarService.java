@@ -12,7 +12,7 @@ import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.repository.FriendRepository;
 import com.sparta.perdayonespoon.repository.GoalRepository;
 import com.sparta.perdayonespoon.repository.MemberRepository;
-import com.sparta.perdayonespoon.util.GenerateMsg;
+import com.sparta.perdayonespoon.util.MsgUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,6 +28,7 @@ import java.util.*;
 @Service
 public class CalendarService {
 
+    private final MsgUtil msgUtil;
     private final MemberRepository memberRepository;
 
     private final FriendRepository friendRepository;
@@ -42,7 +43,7 @@ public class CalendarService {
         peopleList.add(0,FriendDto.builder().isMe(true).id(myMember.getId()).socialId(myMember.getSocialId()).nickname(myMember.getNickname()).status(myMember.getStatus()).profileImage(myMember.getImage().getImgUrl()).build());
         CalendarUniteDto calenderUniteDto = CalendarUniteDto.builder()
                 .peopleList(peopleList)
-                .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"금일 캘린더 조회에 성공하셨습니다.!"))
+                .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK,"금일 캘린더 조회에 성공하셨습니다.!"))
                 .build();
         return ResponseEntity.ok().body(calenderUniteDto);
     }
@@ -115,7 +116,7 @@ public class CalendarService {
             CalendarFriendUniteDto calenderFriendUniteDto = CalendarFriendUniteDto.builder().startDate(startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                     .endDate(endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                     .monthCalenderDtoList(monthGoalsDtoList)
-                    .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK, "친구 캘린더 조회에 성공하셨습니다.!"))
+                    .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK, "친구 캘린더 조회에 성공하셨습니다.!"))
                     .build();
             return ResponseEntity.ok().body(calenderFriendUniteDto);
         }
@@ -124,7 +125,7 @@ public class CalendarService {
             CalendarFriendUniteDto calenderFriendUniteDto = CalendarFriendUniteDto.builder().startDate(startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                     .endDate(endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                     .monthCalenderDtoList(monthGoalsDtoList)
-                    .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK, principaldetail.getMember().getNickname() + "의 캘린더 조회에 성공하셨습니다.!"))
+                    .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK, principaldetail.getMember().getNickname() + "의 캘린더 조회에 성공하셨습니다.!"))
                     .build();
             return ResponseEntity.ok().body(calenderFriendUniteDto);
         }
@@ -159,7 +160,7 @@ public class CalendarService {
             CalendarFriendUniteDto calenderFriendUniteDto = CalendarFriendUniteDto.builder().startDate(startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                     .endDate(endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                     .monthCalenderDtoList(monthGoalsDtoList)
-                    .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK, "친구 캘린더 조회에 성공하셨습니다.!"))
+                    .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK, "친구 캘린더 조회에 성공하셨습니다.!"))
                     .build();
             return ResponseEntity.ok().body(calenderFriendUniteDto);
         }
@@ -167,7 +168,7 @@ public class CalendarService {
             CalendarFriendUniteDto calenderFriendUniteDto = CalendarFriendUniteDto.builder().startDate(startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                     .endDate(endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                     .monthCalenderDtoList(monthGoalsDtoList)
-                    .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK, principaldetail.getMember().getNickname() + "의 캘린더 조회에 성공하셨습니다.!"))
+                    .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK, principaldetail.getMember().getNickname() + "의 캘린더 조회에 성공하셨습니다.!"))
                     .build();
             return ResponseEntity.ok().body(calenderFriendUniteDto);
         }
