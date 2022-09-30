@@ -106,6 +106,8 @@ dependencies {
 
     // Quartz Scheduler
     implementation 'org.springframework.boot:spring-boot-starter-quartz'
+    // Spring Batch
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
 
 //	//엘라스틱서치
 //	implementation 'org.springframework.data:spring-data-elasticsearch:4.2.2'
