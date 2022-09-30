@@ -28,6 +28,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -131,6 +132,7 @@ public class KakaoService {
         return oauthToken; //(8)
     }
 
+    @Transactional
     public Member saveUser(String access_token) throws MessagingException, IOException {
         KakaoProfile profile = findProfile(access_token);
         //(2)

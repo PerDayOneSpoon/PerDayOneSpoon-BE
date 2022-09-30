@@ -152,7 +152,7 @@ public class BadgeUtil {
             case 4: return "컴백 뱃지";
             case 5: return "뱃지 왕 뱃지";
             case 6: return "인싸 뱃지";
-            case 7: return "얼리버드 뱃지";
+            case 7: return "얼리 버드 뱃지";
             case 8: return "올빼미 뱃지";
             case 9: return "긍정 뱃지";
             case 10: return "매력 뱃지";

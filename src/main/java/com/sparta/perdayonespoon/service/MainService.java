@@ -1,9 +1,6 @@
 package com.sparta.perdayonespoon.service;
 
-import com.sparta.perdayonespoon.domain.Badge;
-import com.sparta.perdayonespoon.domain.Goal;
-import com.sparta.perdayonespoon.domain.Member;
-import com.sparta.perdayonespoon.domain.SuccessMsg;
+import com.sparta.perdayonespoon.domain.*;
 import com.sparta.perdayonespoon.domain.dto.CountDto;
 import com.sparta.perdayonespoon.domain.dto.request.GoalDto;
 import com.sparta.perdayonespoon.domain.dto.response.AchivementResponseDto;
@@ -15,6 +12,8 @@ import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.repository.BadgeRepository;
 import com.sparta.perdayonespoon.repository.GoalRepository;
 import com.sparta.perdayonespoon.repository.MemberRepository;
+import com.sparta.perdayonespoon.sse.NotificationType;
+import com.sparta.perdayonespoon.sse.service.NotificationService;
 import com.sparta.perdayonespoon.util.BadgeUtil;
 import com.sparta.perdayonespoon.util.GetCharacterUrl;
 import com.sparta.perdayonespoon.util.MsgUtil;
@@ -33,6 +32,7 @@ import java.util.stream.Collectors;
 @Service
 public class MainService {
 
+    private final NotificationService notificationService;
     private final MsgUtil msgUtil;
     private final BadgeUtil badgeUtil;
     private final MemberRepository memberRepository;
@@ -154,7 +154,8 @@ public class MainService {
         }
     }
     // TODO : 달력 날짜 받기X 주간 달성도 리턴하기
-    public ResponseEntity CreateGoal(GoalDto goalDto, Principaldetail principaldetail) {
+    @Transactional
+    public ResponseEntity<List<GoalResponseDto>> CreateGoal(GoalDto goalDto, Principaldetail principaldetail) {
         String goalFlag = UUID.randomUUID().toString();
         if(goalDto.getTitle() == null) {
             throw new IllegalArgumentException("제목을 입력해주세요");
@@ -174,7 +175,7 @@ public class MainService {
 
         int x=0;
         List<Goal> goalList = new ArrayList<>();
-        if(checkdate(LocalTime.parse(goalDto.time),goalDto.category,principaldetail.getMember().getSocialId())){
+        if(checkdate(LocalTime.parse(goalDto.time),principaldetail.getMember().getSocialId())){
             LocalDateTime localDateTime = LocalDateTime.now();
             LocalDateTime endDate = localDateTime.plusDays(goalDto.category);
             int period = Period.between(localDateTime.toLocalDate(),endDate.toLocalDate()).getDays();
@@ -257,7 +258,9 @@ public class MainService {
                     .build());}
     }
 
-    private void getWelcomeBadge(Member member, List<Badge> badgeList) {
+    public void getWelcomeBadge(Member member, List<Badge> badgeList) {
+        String message = "축하드려요 웰컴뱃지를 얻으셨군요?!";
+        notificationService.send(BadgeSseDto.builder().message(message).member(member).notificationType(NotificationType.Badge).build());
         badgeList.add(Badge.realBadgeBuilder()
                 .badgeName("웰컴 뱃지")
                 .member(member)
@@ -293,7 +296,7 @@ public class MainService {
                     .build());
         }
     }
-    private boolean checkdate (LocalTime time, long category,String socialId){
+    private boolean checkdate (LocalTime time,String socialId){
         LocalDateTime localDateTime = LocalDateTime.now();
         Optional<CountDto> countDto = goalRepository.getCountGoal(localDateTime,socialId);
         if(countDto.isPresent()) {
@@ -315,6 +318,7 @@ public class MainService {
             throw new IllegalArgumentException("금일을 넘는 목표는 생성할 수 없습니다. 다시 생성해 주세요");
     }
 
+    @Transactional
     public ResponseEntity<GoalResponseDto> ChangeGoal(long goalId,Boolean achievement,Principaldetail principaldetail) {
         if(achievement == null){
             throw new IllegalArgumentException("통신시 달성여부가 보내져야 합니다.");
@@ -349,7 +353,7 @@ public class MainService {
         Map<String, Boolean> badgeMap = new HashMap<>();
         if(!goal.getMember().getBadgeList().isEmpty()){
             badgeMap.put("plopBadge",goal.getMember().getBadgeList().stream().anyMatch(f->f.getBadgeName().equals("퐁당 퐁당 뱃지")));
-            badgeMap.put("earlyBirdBadge",goal.getMember().getBadgeList().stream().anyMatch(f->f.getBadgeName().equals("얼리버드 뱃지")));
+            badgeMap.put("earlyBirdBadge",goal.getMember().getBadgeList().stream().anyMatch(f->f.getBadgeName().equals("얼리 버드 뱃지")));
             badgeMap.put("owlBirdBadge",goal.getMember().getBadgeList().stream().anyMatch(f->f.getBadgeName().equals("올빼미 뱃지")));
             badgeMap.put("shortTimeBadge",goal.getMember().getBadgeList().stream().anyMatch(f->f.getBadgeName().equals("단타 뱃지")));
             badgeMap.put("longTimeBadge",goal.getMember().getBadgeList().stream().anyMatch(f->f.getBadgeName().equals("장타 뱃지")));
@@ -464,6 +468,11 @@ public class MainService {
 
     private void shortBadge(Goal goal, List<Badge> badgeList, LocalTime shortTime) {
         if(LocalTime.parse(goal.getTime()).isBefore(shortTime)){
+            String message = "단타 뱃지를 얻으셨군요 축하드려요!";
+            notificationService.send(BadgeSseDto.builder()
+                    .notificationType(NotificationType.Badge)
+                    .message(message).member(goal.getMember())
+                    .build());
             badgeList.add(Badge.realBadgeBuilder()
                     .member(goal.getMember())
                     .badgeName("단타 뱃지")

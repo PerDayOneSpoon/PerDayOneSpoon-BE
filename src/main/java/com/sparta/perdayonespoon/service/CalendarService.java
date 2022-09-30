@@ -16,6 +16,8 @@ import com.sparta.perdayonespoon.util.MsgUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
@@ -30,9 +32,7 @@ public class CalendarService {
 
     private final MsgUtil msgUtil;
     private final MemberRepository memberRepository;
-
     private final FriendRepository friendRepository;
-
     private final GoalRepository goalRepository;
 
     //TODO : 여기는 캘린더를 들어왔을때 모든걸 보여주는 함수
@@ -48,30 +48,29 @@ public class CalendarService {
         return ResponseEntity.ok().body(calenderUniteDto);
     }
 
-    private void CollectSameDate(CalendarGoalsDto calenderGoalsDtoList,Map<String,List<String>> twolist, Stack<String> daycheck, List<MonthCalendarDto> monthCalenderDtoList,Stack<Long> id) {
+    private void CollectSameDate(CalendarGoalsDto calenderGoalsDtoList,Map<String,List<String>> twolist, Queue<String> daycheck, List<MonthCalendarDto> monthCalenderDtoList,Queue<Long> id) {
         if(twolist.containsKey(calenderGoalsDtoList.getCurrentDate())) {
             twolist.get(calenderGoalsDtoList.getCurrentDate()).add(calenderGoalsDtoList.getCharactorColor());
         }
         else {
             if(daycheck.isEmpty()) {
-                id.push(calenderGoalsDtoList.getId());
-                daycheck.push(calenderGoalsDtoList.getCurrentDate());
+                id.offer(calenderGoalsDtoList.getId());
+                daycheck.offer(calenderGoalsDtoList.getCurrentDate());
                 List<String> charactorColors = new ArrayList<>();
                 charactorColors.add(calenderGoalsDtoList.getCharactorColor());
                 twolist.put(calenderGoalsDtoList.getCurrentDate(), charactorColors);
             }
             else
             {
-                monthCalenderDtoList.add(MonthCalendarDto.builder().id(id.pop()).currentDate(daycheck.peek()).charactorColorlist(twolist.get(daycheck.pop())).build());
-                daycheck.push(calenderGoalsDtoList.getCurrentDate());
-                id.push(calenderGoalsDtoList.getId());
+                monthCalenderDtoList.add(MonthCalendarDto.builder().id(id.poll()).currentDate(daycheck.element()).charactorColorlist(twolist.get(daycheck.poll())).build());
+                daycheck.offer(calenderGoalsDtoList.getCurrentDate());
+                id.offer(calenderGoalsDtoList.getId());
                 List<String> charactorColors = new ArrayList<>();
                 charactorColors.add(calenderGoalsDtoList.getCharactorColor());
                 twolist.put(calenderGoalsDtoList.getCurrentDate(), charactorColors);
             }
         }
     }
-
     //TODO :  캘린더에서 특정 날짜 눌러서 데이터 나오는거 통합 api 적용
     public ResponseEntity findMemberSpecificDate(CalendarRequestDto calendarRequestDto, Principaldetail principaldetail) {
         assert calendarRequestDto.getCalendarDate() != null;
@@ -93,8 +92,8 @@ public class CalendarService {
     public ResponseEntity getFriendCalendar(Long friendId , Principaldetail principaldetail) {
         HashMap<String, List<String>> twolist = new LinkedHashMap<>();
         List<MonthCalendarDto> monthGoalsDtoList = new ArrayList<>();
-        Stack<String> dayCheck = new Stack<>();
-        Stack<Long> id = new Stack<>();
+        Queue<String> dayCheck = new LinkedList<>();
+        Queue<Long> id = new LinkedList<>();
         LocalDate today = LocalDate.now();
         LocalDate startDate = today.with(TemporalAdjusters.firstDayOfMonth());
         LocalDate endDate = today.with(TemporalAdjusters.lastDayOfMonth());
@@ -110,7 +109,7 @@ public class CalendarService {
 
         calendarGoalsDtoList.forEach(calendarGoalsDto->CollectSameDate(calendarGoalsDto,twolist,dayCheck,monthGoalsDtoList,id));
         if(!dayCheck.isEmpty()) {
-            monthGoalsDtoList.add(MonthCalendarDto.builder().id(id.pop()).currentDate(dayCheck.peek()).charactorColorlist(twolist.get(dayCheck.pop())).build());
+            monthGoalsDtoList.add(MonthCalendarDto.builder().id(id.poll()).currentDate(dayCheck.element()).charactorColorlist(twolist.get(dayCheck.poll())).build());
         }
         if(!Objects.equals(friendId, principaldetail.getMember().getId())) {
             CalendarFriendUniteDto calenderFriendUniteDto = CalendarFriendUniteDto.builder().startDate(startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
@@ -138,8 +137,8 @@ public class CalendarService {
         }
         String [] yearOrMonth = calendarRequestDto.getCalendarYearAndMonth().split("-");
         List<MonthCalendarDto> monthGoalsDtoList = new ArrayList<>();
-        Stack<String> dayCheck = new Stack<>();
-        Stack<Long> id = new Stack<>();
+        Queue<String> dayCheck = new LinkedList<>();
+        Queue<Long> id = new LinkedList<>();
         LocalDate localDate = LocalDate.now().withYear(Integer.parseInt(yearOrMonth[0])).withMonth(Integer.parseInt(yearOrMonth[1]));
         LocalDate startDate = localDate.with(TemporalAdjusters.firstDayOfMonth());
         LocalDate endDate = localDate.with(TemporalAdjusters.lastDayOfMonth());
@@ -154,7 +153,7 @@ public class CalendarService {
         }
         calendarGoalsDtoList.forEach(calendarGoalsDto->CollectSameDate(calendarGoalsDto,twolist,dayCheck,monthGoalsDtoList,id));
         if(!dayCheck.isEmpty()) {
-            monthGoalsDtoList.add(MonthCalendarDto.builder().id(id.pop()).currentDate(dayCheck.peek()).charactorColorlist(twolist.get(dayCheck.pop())).build());
+            monthGoalsDtoList.add(MonthCalendarDto.builder().id(id.poll()).currentDate(dayCheck.element()).charactorColorlist(twolist.get(dayCheck.poll())).build());
         }
         if(!Objects.equals(calendarRequestDto.getMemberId(), principaldetail.getMember().getId())) {
             CalendarFriendUniteDto calenderFriendUniteDto = CalendarFriendUniteDto.builder().startDate(startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))

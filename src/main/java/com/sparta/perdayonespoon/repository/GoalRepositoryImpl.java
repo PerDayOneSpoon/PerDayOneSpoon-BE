@@ -240,11 +240,11 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
     @Override
     public Optional<Goal> findOldGoal(Long id, String socialId){
         return Optional.ofNullable(queryFactory
-                .selectDistinct(goal)
+                .select(goal)
                 .from(goal)
                 .where(goal.id.eq(id),goal.socialId.eq(socialId))
-                .leftJoin(goal.member,member).fetchJoin()
-                .leftJoin(member.badgeList,badge).fetchJoin()
+                .innerJoin(goal.member,member).fetchJoin()
+                .leftJoin(member.badgeList,badge)
                 .fetchOne());
     }
 
