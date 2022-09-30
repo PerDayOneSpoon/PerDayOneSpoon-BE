@@ -3,14 +3,12 @@ package com.sparta.perdayonespoon.domain.dto.response.Goal;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.querydsl.core.annotations.QueryProjection;
 
-import com.sparta.perdayonespoon.domain.Heart;
 import com.sparta.perdayonespoon.util.GetCharacterUrl;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @Data
 public class TodayGoalsDto {

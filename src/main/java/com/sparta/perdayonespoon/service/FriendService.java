@@ -10,7 +10,7 @@ import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.repository.BadgeRepository;
 import com.sparta.perdayonespoon.repository.FriendRepository;
 import com.sparta.perdayonespoon.repository.MemberRepository;
-import com.sparta.perdayonespoon.util.GenerateMsg;
+import com.sparta.perdayonespoon.util.MsgUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 @Service
 public class FriendService {
 
+    private final MsgUtil msgUtil;
     private final BadgeRepository badgeRepository;
     private final MemberRepository memberRepository;
     private final FriendRepository friendRepository;
@@ -76,7 +77,7 @@ public class FriendService {
         if(!badgeList.isEmpty()) badgeRepository.saveAll(badgeList);
         return ResponseEntity.ok().body(FriendResponseDto.builder()
                 .followCheck(true)
-                .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"팔로우를 신청하셨습니다."))
+                .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK,"팔로우를 신청하셨습니다."))
                 .build());
     }
 
@@ -127,7 +128,7 @@ public class FriendService {
                 .orElseThrow(() -> new IllegalArgumentException("이미 팔로우를 취소하셨습니다."));
         return ResponseEntity.ok().body(FriendResponseDto.builder()
                 .followCheck(false)
-                .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"팔로우를 끊으셨습니다."))
+                .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK,"팔로우를 끊으셨습니다."))
                 .build());
     }
 
@@ -145,7 +146,7 @@ public class FriendService {
         List<FriendDto> friendDtoList = friendRepository.getFollowerList(principaldetail.getMember().getSocialId());
         return ResponseEntity.ok().body(FollowResponseDto.builder()
                 .friendDtoList(friendDtoList)
-                .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK, "팔로우한 친구목록 조회에 성공하셨습니다."))
+                .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK, "팔로우한 친구목록 조회에 성공하셨습니다."))
                 .build());
     }
 
@@ -154,7 +155,7 @@ public class FriendService {
         List<FriendDto> friendDtoList = friendRepository.getFollowingList(principaldetail.getMember().getSocialId());
         return ResponseEntity.ok().body(FollowResponseDto.builder()
                 .friendDtoList(friendDtoList)
-                .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK, "나를 팔로우한 친구목록 조회에 성공하셨습니다."))
+                .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK, "나를 팔로우한 친구목록 조회에 성공하셨습니다."))
                 .build());
     }
 
@@ -164,7 +165,7 @@ public class FriendService {
                 .orElseThrow(() -> new IllegalArgumentException("이미 팔로잉을 끊으셨습니다."));
         return ResponseEntity.ok().body(FriendResponseDto.builder()
                 .followCheck(false)
-                .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"팔로잉을 끊으셨습니다."))
+                .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK,"팔로잉을 끊으셨습니다."))
                 .build());
     }
 }

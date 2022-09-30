@@ -9,7 +9,7 @@ import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.repository.BadgeRepository;
 import com.sparta.perdayonespoon.repository.HeartRepository;
 import com.sparta.perdayonespoon.repository.MemberRepository;
-import com.sparta.perdayonespoon.util.GenerateMsg;
+import com.sparta.perdayonespoon.util.MsgUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 @Service
 public class HeartService {
 
+    private final MsgUtil msgUtil;
     private final BadgeRepository badgeRepository;
     private final HeartRepository heartRepository;
 
@@ -51,7 +52,7 @@ public class HeartService {
             HeartResponseDto heartResponseDto = HeartResponseDto.builder()
                     .heartCnt(goalList.get(0).getHeartList().size())
                     .heartCheck(true)
-                    .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"친구를 응원하셨습니다.!!"))
+                    .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK,"친구를 응원하셨습니다.!!"))
                     .build();
 
             List<Badge> badgeList = new ArrayList<>();
@@ -116,7 +117,7 @@ public class HeartService {
             HeartResponseDto heartResponseDto = HeartResponseDto.builder()
                     .heartCnt(goalList.get(0).getHeartList().size())
                     .heartCheck(false)
-                    .msgDto(GenerateMsg.getMsg(HttpServletResponse.SC_OK, "친구응원을 취소하셨습니다."))
+                    .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK, "친구응원을 취소하셨습니다."))
                     .build();
             member.minusClickCnt();
             return ResponseEntity.ok().body(heartResponseDto);
