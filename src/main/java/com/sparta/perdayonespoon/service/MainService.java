@@ -7,7 +7,6 @@ import com.sparta.perdayonespoon.domain.SuccessMsg;
 import com.sparta.perdayonespoon.domain.dto.CountDto;
 import com.sparta.perdayonespoon.domain.dto.request.GoalDto;
 import com.sparta.perdayonespoon.domain.dto.response.AchivementResponseDto;
-import com.sparta.perdayonespoon.domain.dto.response.Goal.EveryTwoDaysGoalDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.TodayGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.rate.GoalRateDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.GoalResponseDto;
@@ -39,19 +38,17 @@ public class MainService {
     private final MemberRepository memberRepository;
 
     private final BadgeRepository badgeRepository;
-    private static Stack<String> socialst = new Stack<>();
-    private static Set<Integer> daylist = new HashSet<>();
-    private static Stack<Boolean> goalst = new Stack<>();
-    private static double truecount =0;
-    private static double totalcount = 0;
-    private static long period=0;
+    private static double totalCount = 0;
     private final GoalRepository goalRepository;
 
     @Transactional(readOnly = true)
     public ResponseEntity getGoal(Principaldetail principaldetail) {
         LocalDateTime sunday;
         LocalDateTime saturday;
+        Queue<String> socialSt = new LinkedList<>();
+        Queue<Boolean> goalSt = new LinkedList<>();
         int day = LocalDate.now().getDayOfWeek().getValue();
+        Set<Integer> dayList = new HashSet<>();
         List<GoalRateDto> goalRateDtos;
         if(day != 6 && day != 7) {
             sunday = LocalDateTime.now().minusDays(day);
@@ -59,36 +56,36 @@ public class MainService {
             goalRateDtos = goalRepository.getRateGoal(sunday,saturday,principaldetail.getMember().getSocialId());
             goalRateDtos.stream()
                     .sorted(Comparator.comparing(GoalRateDto::getDayString).thenComparing(GoalRateDto::isCheckGoal))
-                    .forEach(this::setRate);
+                    .forEach(g->setRate(g,socialSt,goalSt));
         }else if(day == 6){
             sunday = LocalDateTime.now().minusDays(day);
             saturday = LocalDateTime.now();
             goalRateDtos = goalRepository.getRateGoal(sunday,saturday,principaldetail.getMember().getSocialId());
             goalRateDtos.stream()
                     .sorted(Comparator.comparing(GoalRateDto::getDayString).thenComparing(GoalRateDto::isCheckGoal))
-                    .forEach(this::setRate);
+                    .forEach(g->setRate(g,socialSt,goalSt));
         }else {
             sunday = LocalDateTime.now();
             saturday = LocalDateTime.now().plusDays(6);
             goalRateDtos = goalRepository.getRateGoal(sunday,saturday,principaldetail.getMember().getSocialId());
             goalRateDtos.stream()
                     .sorted(Comparator.comparing(GoalRateDto::getDayString).thenComparing(GoalRateDto::isCheckGoal))
-                    .forEach(this::setRate);
+                    .forEach(g->setRate(g,socialSt,goalSt));
         }
-        if(!socialst.isEmpty() && !goalst.isEmpty()){
-            socialst.clear();
-            goalst.clear();
+        if(!socialSt.isEmpty() && !goalSt.isEmpty()){
+            socialSt.clear();
+            goalSt.clear();
         }
         List<WeekRateDto> weekRateDtoList ;
         weekRateDtoList = goalRateDtos.stream()
-                .filter(this::checkgoalgetday)
+                .filter(W->checkgoalgetday(W,dayList))
                 .map(GoalRateDto::getWeekRateDto)
                 .collect(Collectors.toList());
         if(weekRateDtoList.isEmpty())
             weekRateDtoList = new ArrayList<>();
         for(int y=1; y<=7; y++){
-            if(!daylist.isEmpty()) {
-                if (!daylist.contains(y)) {
+            if(!dayList.isEmpty()) {
+                if (!dayList.contains(y)) {
                     if(y == 7){
                         weekRateDtoList.add(0,WeekRateDto.builder().id(0).rate(0).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());
                     }
@@ -101,8 +98,8 @@ public class MainService {
                 }
                 else weekRateDtoList.add(WeekRateDto.builder().rate(0).id(y).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());}
         }
-        if(!daylist.isEmpty()){
-            daylist.clear();
+        if(!dayList.isEmpty()){
+            dayList.clear();
         }
         List<TodayGoalsDto> todayGoalsDtoList = goalRepository.getTodayGoal(LocalDateTime.now(),principaldetail.getMember().getSocialId());
         AchivementResponseDto achivementResponseDto = AchivementResponseDto.builder()
@@ -115,43 +112,44 @@ public class MainService {
                 .build();
         return ResponseEntity.ok(achivementResponseDto);
     }
-    private boolean checkgoalgetday(GoalRateDto goalRateDto){
+    private boolean checkgoalgetday(GoalRateDto goalRateDto, Set<Integer> dayList){
         if(goalRateDto.isCheckGoal()){
-            daylist.add(goalRateDto.getWhatsDay());
+            dayList.add(goalRateDto.getWhatsDay());
             return true;
         }
         return false;
     }
     //Todo: true false가 다 존재할땐 기능하지만 개별적으로 존재할때 기능이 동작할지 의문?
-    private void setRate(GoalRateDto goalRateDto) {
-        if (socialst.isEmpty() && goalst.isEmpty()) {
-            socialst.push(goalRateDto.getDayString());
-            goalst.push(goalRateDto.isCheckGoal());
-            totalcount = goalRateDto.getTotalcount();
+    private void setRate(GoalRateDto goalRateDto, Queue<String> socialSt, Queue<Boolean> goalSt) {
+        double trueCount;
+        if (socialSt.isEmpty() && goalSt.isEmpty()) {
+            socialSt.offer(goalRateDto.getDayString());
+            goalSt.offer(goalRateDto.isCheckGoal());
+            totalCount = goalRateDto.getTotalcount();
             if (goalRateDto.isCheckGoal()) {
-                truecount = goalRateDto.getTotalcount();
-                goalRateDto.setTotalcount((long) totalcount);
-                goalRateDto.setRate(Math.round((truecount / totalcount) * 100));
+                trueCount = goalRateDto.getTotalcount();
+                goalRateDto.setTotalcount((long) totalCount);
+                goalRateDto.setRate(Math.round((trueCount / totalCount) * 100));
             }
-        } else if (socialst.peek().equals(goalRateDto.getDayString()) && goalst.peek() == !goalRateDto.isCheckGoal()) {
-            socialst.pop();
-            goalst.pop();
-            totalcount += goalRateDto.getTotalcount();
+        } else if (socialSt.element().equals(goalRateDto.getDayString()) && goalSt.element() == !goalRateDto.isCheckGoal()) {
+            socialSt.poll();
+            goalSt.poll();
+            totalCount += goalRateDto.getTotalcount();
             if (goalRateDto.isCheckGoal()) {
-                truecount = goalRateDto.getTotalcount();
-                goalRateDto.setTotalcount((long) totalcount);
-                goalRateDto.setRate(Math.round((truecount / totalcount) * 100));
+                trueCount = goalRateDto.getTotalcount();
+                goalRateDto.setTotalcount((long) totalCount);
+                goalRateDto.setRate(Math.round((trueCount / totalCount) * 100));
             }
-        } else if (!socialst.peek().equals(goalRateDto.getDayString())) {
-            socialst.pop();
-            goalst.pop();
-            socialst.add(goalRateDto.getDayString());
-            goalst.add(goalRateDto.isCheckGoal());
-            totalcount = goalRateDto.getTotalcount();
+        } else if (!socialSt.element().equals(goalRateDto.getDayString())) {
+            socialSt.poll();
+            goalSt.poll();
+            socialSt.offer(goalRateDto.getDayString());
+            goalSt.offer(goalRateDto.isCheckGoal());
+            totalCount = goalRateDto.getTotalcount();
             if (goalRateDto.isCheckGoal()) {
-                truecount = goalRateDto.getTotalcount();
-                goalRateDto.setTotalcount((long) totalcount);
-                goalRateDto.setRate(Math.round((truecount / totalcount) * 100));
+                trueCount = goalRateDto.getTotalcount();
+                goalRateDto.setTotalcount((long) totalCount);
+                goalRateDto.setRate(Math.round((trueCount / totalCount) * 100));
             }
         }
     }
@@ -165,15 +163,22 @@ public class MainService {
         }
         Member member = memberRepository.findByMemberId(principaldetail.getMember().getId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 유저가 없습니다."));
+
         Map<String , Boolean> badgeMap = new HashMap<>();
+
         if(!member.getBadgeList().isEmpty()) {
             badgeMap.put("welcomeBadge",member.getBadgeList().stream().anyMatch(badge -> badge.getBadgeName().equals("웰컴 뱃지")));
             badgeMap.put("privateBadge",member.getBadgeList().stream().anyMatch(badge -> badge.getBadgeName().equals("프라이빗 벳지")));
             badgeMap.put("comebackBadge",member.getBadgeList().stream().anyMatch(badge -> badge.getBadgeName().equals("컴백 뱃지")));
         }
+
         int x=0;
         List<Goal> goalList = new ArrayList<>();
         if(checkdate(LocalTime.parse(goalDto.time),goalDto.category,principaldetail.getMember().getSocialId())){
+            LocalDateTime localDateTime = LocalDateTime.now();
+            LocalDateTime endDate = localDateTime.plusDays(goalDto.category);
+            int period = Period.between(localDateTime.toLocalDate(),endDate.toLocalDate()).getDays();
+
             // 웰컴뱃지 없으면 false 있으면 true
             List<Badge> badgeList = new ArrayList<>();
             if(!badgeMap.containsKey("welcomeBadge")) {
@@ -220,6 +225,7 @@ public class MainService {
                     .build());
                 x++;
             }
+
             goalRepository.saveAll(goalList);
             List<GoalResponseDto> goalResponseDtoList = new ArrayList<>();
             goalList.forEach(Goal -> goalResponseDtoList.add(GoalResponseDto.builder()
@@ -289,8 +295,6 @@ public class MainService {
     }
     private boolean checkdate (LocalTime time, long category,String socialId){
         LocalDateTime localDateTime = LocalDateTime.now();
-        LocalDateTime endDate = localDateTime.plusDays(category);
-        period = Period.between(localDateTime.toLocalDate(),endDate.toLocalDate()).getDays();
         Optional<CountDto> countDto = goalRepository.getCountGoal(localDateTime,socialId);
         if(countDto.isPresent()) {
             if (countDto.get().getTotalCount() >= 5) {

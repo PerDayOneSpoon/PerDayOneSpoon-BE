@@ -30,6 +30,7 @@ public class MyPageService {
     private final DeletedUrlPathRepository deletedUrlPathRepository;
     private final MemberRepository memberRepository;
     private final Scalr_Resize_S3Uploader scalr_resize_s3Uploader;
+
     @Transactional(readOnly = true)
     public ResponseEntity getProfile(Principaldetail principaldetail) {
         //TODO 이룬 목표 개수 , 팔로워한 친구 수 , 팔로우한 친구 수 3개가 가야함 추후엔 뱃지까지 follower -> 나를 팔로우한 사람 following 내가 팔로우한거 이렇게

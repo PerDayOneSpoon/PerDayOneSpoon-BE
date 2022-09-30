@@ -33,7 +33,7 @@ public class BadgeService {
                 badgeResponseDtoList.add(BadgeResponseDto.formBadgeBuilder()
                         .badgeInfo(badgeUtil.getBadgeExplain(i))
                         .badgeName(badgeUtil.getBadgeName(i))
-                        .badgeUrl(badgeUtil.getBadgeUrl(i))
+                        .badgeUrl(badgeUtil.getBadgeUrl(18))
                         .badgeNumber(i)
                         .build());
             }
@@ -54,7 +54,7 @@ public class BadgeService {
                     badgeResponseDtoList.add(BadgeResponseDto.formBadgeBuilder()
                             .badgeInfo(badgeUtil.getBadgeExplain(i))
                             .badgeName(badgeUtil.getBadgeName(i))
-                            .badgeUrl(badgeUtil.getBadgeUrl(i))
+                            .badgeUrl(badgeUtil.getBadgeUrl(18))
                             .badgeNumber(i)
                             .build());
                 }
