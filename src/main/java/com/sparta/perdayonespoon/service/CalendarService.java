@@ -3,6 +3,7 @@ import com.sparta.perdayonespoon.domain.Member;
 import com.sparta.perdayonespoon.domain.dto.request.CalendarRequestDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.DayGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.TodayGoalsDto;
+import com.sparta.perdayonespoon.domain.dto.response.MsgDto;
 import com.sparta.perdayonespoon.domain.dto.response.calendar.CalendarFriendUniteDto;
 import com.sparta.perdayonespoon.domain.dto.response.calendar.CalendarGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.calendar.CalendarUniteDto;
@@ -12,13 +13,9 @@ import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.repository.FriendRepository;
 import com.sparta.perdayonespoon.repository.GoalRepository;
 import com.sparta.perdayonespoon.repository.MemberRepository;
-import com.sparta.perdayonespoon.util.MsgUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.event.TransactionPhase;
-import org.springframework.transaction.event.TransactionalEventListener;
-
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,21 +26,19 @@ import java.util.*;
 @RequiredArgsConstructor
 @Service
 public class CalendarService {
-
-    private final MsgUtil msgUtil;
     private final MemberRepository memberRepository;
     private final FriendRepository friendRepository;
     private final GoalRepository goalRepository;
 
     //TODO : 여기는 캘린더를 들어왔을때 모든걸 보여주는 함수
-    public ResponseEntity getAlldate(Principaldetail principaldetail) {
+    public ResponseEntity<CalendarUniteDto> getAlldate(Principaldetail principaldetail) {
         List<FriendDto> peopleList = friendRepository.getFollowerList(principaldetail.getMember().getSocialId());
         Member myMember = memberRepository.findBySocialId(principaldetail.getMember().getSocialId()).orElseThrow(
                 () ->new IllegalArgumentException("해당 유저가 없습니다"));
         peopleList.add(0,FriendDto.builder().isMe(true).id(myMember.getId()).socialId(myMember.getSocialId()).nickname(myMember.getNickname()).status(myMember.getStatus()).profileImage(myMember.getImage().getImgUrl()).build());
         CalendarUniteDto calenderUniteDto = CalendarUniteDto.builder()
                 .peopleList(peopleList)
-                .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK,"금일 캘린더 조회에 성공하셨습니다.!"))
+                .msgDto(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("금일 캘린더 조회에 성공하셨습니다.!").build())
                 .build();
         return ResponseEntity.ok().body(calenderUniteDto);
     }
@@ -72,7 +67,7 @@ public class CalendarService {
         }
     }
     //TODO :  캘린더에서 특정 날짜 눌러서 데이터 나오는거 통합 api 적용
-    public ResponseEntity findMemberSpecificDate(CalendarRequestDto calendarRequestDto, Principaldetail principaldetail) {
+    public ResponseEntity<DayGoalsDto> findMemberSpecificDate(CalendarRequestDto calendarRequestDto, Principaldetail principaldetail) {
         assert calendarRequestDto.getCalendarDate() != null;
         boolean isMe = false;
         LocalDate localDate = LocalDate.parse(calendarRequestDto.getCalendarDate());
@@ -115,7 +110,7 @@ public class CalendarService {
             CalendarFriendUniteDto calenderFriendUniteDto = CalendarFriendUniteDto.builder().startDate(startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                     .endDate(endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                     .monthCalenderDtoList(monthGoalsDtoList)
-                    .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK, "친구 캘린더 조회에 성공하셨습니다.!"))
+                    .msgDto(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("친구 캘린더 조회에 성공하셨습니다.!").build())
                     .build();
             return ResponseEntity.ok().body(calenderFriendUniteDto);
         }
@@ -124,7 +119,7 @@ public class CalendarService {
             CalendarFriendUniteDto calenderFriendUniteDto = CalendarFriendUniteDto.builder().startDate(startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                     .endDate(endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                     .monthCalenderDtoList(monthGoalsDtoList)
-                    .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK, principaldetail.getMember().getNickname() + "의 캘린더 조회에 성공하셨습니다.!"))
+                    .msgDto(MsgDto.builder().code(HttpServletResponse.SC_OK).msg(principaldetail.getMember().getNickname() + "의 캘린더 조회에 성공하셨습니다.!").build())
                     .build();
             return ResponseEntity.ok().body(calenderFriendUniteDto);
         }
@@ -159,7 +154,7 @@ public class CalendarService {
             CalendarFriendUniteDto calenderFriendUniteDto = CalendarFriendUniteDto.builder().startDate(startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                     .endDate(endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                     .monthCalenderDtoList(monthGoalsDtoList)
-                    .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK, "친구 캘린더 조회에 성공하셨습니다.!"))
+                    .msgDto(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("친구 캘린더 조회에 성공하셨습니다.!").build())
                     .build();
             return ResponseEntity.ok().body(calenderFriendUniteDto);
         }
@@ -167,7 +162,7 @@ public class CalendarService {
             CalendarFriendUniteDto calenderFriendUniteDto = CalendarFriendUniteDto.builder().startDate(startDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                     .endDate(endDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
                     .monthCalenderDtoList(monthGoalsDtoList)
-                    .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK, principaldetail.getMember().getNickname() + "의 캘린더 조회에 성공하셨습니다.!"))
+                    .msgDto(MsgDto.builder().code(HttpServletResponse.SC_OK).msg(principaldetail.getMember().getNickname() + "의 캘린더 조회에 성공하셨습니다.!").build())
                     .build();
             return ResponseEntity.ok().body(calenderFriendUniteDto);
         }

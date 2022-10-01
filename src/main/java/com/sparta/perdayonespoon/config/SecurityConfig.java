@@ -76,6 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/login/naver").permitAll()
                 .antMatchers(HttpMethod.GET,"/login/health").permitAll()
                 .antMatchers(HttpMethod.POST,"/login/reissue").permitAll()
+//                .antMatchers(HttpMethod.GET,"/sse/subscribe").permitAll()
 //                .antMatchers("/api/**").permitAll()
                 .anyRequest().authenticated()   // 나머지 API 는 전부 인증 필요
                 // spring security 동작 중 우리가 등록한 jwt 필터에서 tokenprovider를 사용할 수 있게 저용

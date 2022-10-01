@@ -1,15 +1,18 @@
 package com.sparta.perdayonespoon.service;
 
 import com.sparta.perdayonespoon.domain.Badge;
+import com.sparta.perdayonespoon.domain.BadgeSseDto;
 import com.sparta.perdayonespoon.domain.Goal;
 import com.sparta.perdayonespoon.domain.Member;
 import com.sparta.perdayonespoon.domain.dto.request.PrivateDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.GoalResponseDto;
+import com.sparta.perdayonespoon.domain.dto.response.MsgDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.repository.BadgeRepository;
 import com.sparta.perdayonespoon.repository.GoalRepository;
+import com.sparta.perdayonespoon.sse.NotificationType;
+import com.sparta.perdayonespoon.sse.service.NotificationService;
 import com.sparta.perdayonespoon.util.GetCharacterUrl;
-import com.sparta.perdayonespoon.util.MsgUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,8 +26,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PrivateService {
-
-    private final MsgUtil msgUtil;
+    private final NotificationService notificationService;
     private final BadgeRepository badgeRepository;
     private final GoalRepository goalRepository;
     public ResponseEntity changePrivateCheck(Principaldetail principaldetail, PrivateDto privateDto, String goalFlag) {
@@ -37,6 +39,12 @@ public class PrivateService {
         if(badgeOwner.getBadgeList().stream().noneMatch(b->b.getBadgeName().equals("프라이빗 뱃지"))){
             List<String> privateBadgeCheckDtoList = badgeOwner.getGoalList().stream().filter(Goal::isPrivateCheck).map(Goal::getGoalFlag).distinct().collect(Collectors.toList());
             if (privateBadgeCheckDtoList.size() >= 10) {
+                String message = "축하합니다! 🔏 프라이빗 뱃지를 획득하셨습니다.";
+                notificationService.send(BadgeSseDto.builder()
+                        .notificationType(NotificationType.Badge)
+                        .message(message)
+                        .member(badgeOwner)
+                        .build());
                 badgeList.add(Badge.realBadgeBuilder()
                         .badgeName("프라이빗 뱃지")
                         .member(badgeOwner)
@@ -47,6 +55,12 @@ public class PrivateService {
         }
         if(badgeOwner.getBadgeList().size()>=5){
             if(badgeOwner.getBadgeList().stream().noneMatch(badge -> badge.getBadgeName().equals("뱃지 왕 뱃지"))){
+                String message = "축하합니다! 👑 뱃지 왕 뱃지를 획득하셨습니다.";
+                notificationService.send(BadgeSseDto.builder()
+                        .notificationType(NotificationType.Badge)
+                        .message(message)
+                        .member(badgeOwner)
+                        .build());
                 badgeList.add(Badge.realBadgeBuilder()
                         .badgeName("뱃지 왕 뱃지")
                         .member(badgeOwner)
@@ -76,7 +90,7 @@ public class PrivateService {
                     .currentdate(goal.getCurrentDate().format((DateTimeFormatter.ofPattern("yyyy년 MM월 dd일"))).substring(0, 13))
                     .title(goal.getTitle())
                     .socialId(goal.getSocialId())
-                    .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK, "나만보기로 설정하셨습니다."))
+                    .msgDto(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("나만보기로 설정하셨습니다.").build())
                     .build());
         }
         goalResponseDtoList.add(GoalResponseDto
@@ -91,7 +105,7 @@ public class PrivateService {
                 .currentdate(goal.getCurrentDate().format((DateTimeFormatter.ofPattern("yyyy년 MM월 dd일"))).substring(0, 13))
                 .title(goal.getTitle())
                 .socialId(goal.getSocialId())
-                .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK, "공개보기로 설정하셨습니다."))
+                .msgDto(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("공개보기로 설정하셨습니다.").build())
                 .build());
     }
 }

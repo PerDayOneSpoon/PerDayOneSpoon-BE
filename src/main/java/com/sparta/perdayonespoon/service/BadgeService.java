@@ -1,12 +1,12 @@
 package com.sparta.perdayonespoon.service;
 
 import com.sparta.perdayonespoon.domain.Badge;
+import com.sparta.perdayonespoon.domain.dto.response.MsgDto;
 import com.sparta.perdayonespoon.domain.dto.response.badge.BadgeListDto;
 import com.sparta.perdayonespoon.domain.dto.response.badge.BadgeResponseDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.repository.BadgeRepository;
 import com.sparta.perdayonespoon.util.BadgeUtil;
-import com.sparta.perdayonespoon.util.MsgUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,8 +17,6 @@ import java.util.*;
 @RequiredArgsConstructor
 @Service
 public class BadgeService {
-
-    private final MsgUtil msgUtil;
     private final BadgeUtil badgeUtil;
     private final BadgeRepository badgeRepository;
 
@@ -62,7 +60,7 @@ public class BadgeService {
         }
         return ResponseEntity.ok().body(BadgeListDto.builder()
                 .badgeResponseDtoList(badgeResponseDtoList)
-                .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK,"뱃지 리스트 조회에 성공하셨습니다."))
+                .msgDto(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("뱃지 리스트 조회에 성공하셨습니다.").build())
                 .build()
         );
     }

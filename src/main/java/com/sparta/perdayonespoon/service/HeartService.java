@@ -1,15 +1,14 @@
 package com.sparta.perdayonespoon.service;
 
-import com.sparta.perdayonespoon.domain.Badge;
-import com.sparta.perdayonespoon.domain.Goal;
-import com.sparta.perdayonespoon.domain.Heart;
-import com.sparta.perdayonespoon.domain.Member;
+import com.sparta.perdayonespoon.domain.*;
 import com.sparta.perdayonespoon.domain.dto.HeartResponseDto;
+import com.sparta.perdayonespoon.domain.dto.response.MsgDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.repository.BadgeRepository;
 import com.sparta.perdayonespoon.repository.HeartRepository;
 import com.sparta.perdayonespoon.repository.MemberRepository;
-import com.sparta.perdayonespoon.util.MsgUtil;
+import com.sparta.perdayonespoon.sse.NotificationType;
+import com.sparta.perdayonespoon.sse.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,8 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class HeartService {
-
-    private final MsgUtil msgUtil;
+    private final NotificationService notificationService;
     private final BadgeRepository badgeRepository;
     private final HeartRepository heartRepository;
 
@@ -52,7 +50,7 @@ public class HeartService {
             HeartResponseDto heartResponseDto = HeartResponseDto.builder()
                     .heartCnt(goalList.get(0).getHeartList().size())
                     .heartCheck(true)
-                    .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK,"친구를 응원하셨습니다.!!"))
+                    .msgDto(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("친구를 응원하셨습니다.!!").build())
                     .build();
 
             List<Badge> badgeList = new ArrayList<>();
@@ -60,6 +58,12 @@ public class HeartService {
             Member badgeOwner = goalList.get(0).getMember();
             if(member.getHeartClickCnt() >= 10){
                 if(member.getBadgeList().stream().noneMatch(b->b.getBadgeName().equals("긍정 뱃지"))){
+                    String message = "축하합니다! 🛫 긍정 뱃지를 획득하셨습니다.";
+                    notificationService.send(BadgeSseDto.builder()
+                            .notificationType(NotificationType.Badge)
+                            .message(message)
+                            .member(member)
+                            .build());
                     badgeList.add(Badge.realBadgeBuilder()
                             .badgeName("긍정 뱃지")
                             .badgeNumber(9)
@@ -70,6 +74,12 @@ public class HeartService {
             }
             if(goalList.get(0).getHeartList().size() >= 10){
                 if(badgeOwner.getBadgeList().stream().noneMatch(b->b.getBadgeName().equals("매력 뱃지"))){
+                    String message = "축하합니다! 💘 매력 뱃지를 획득하셨습니다.";
+                    notificationService.send(BadgeSseDto.builder()
+                            .notificationType(NotificationType.Badge)
+                            .message(message)
+                            .member(badgeOwner)
+                            .build());
                     badgeList.add(Badge.realBadgeBuilder()
                             .badgeName("매력 뱃지")
                             .badgeNumber(10)
@@ -80,6 +90,12 @@ public class HeartService {
             }
             if(member.getBadgeList().size()>4){
                 if(member.getBadgeList().stream().noneMatch(b->b.getBadgeName().equals("뱃지 왕 뱃지"))){
+                    String message = "축하합니다! 👑 뱃지 왕 뱃지를 획득하셨습니다.";
+                    notificationService.send(BadgeSseDto.builder()
+                            .notificationType(NotificationType.Badge)
+                            .message(message)
+                            .member(member)
+                            .build());
                     badgeList.add(Badge.realBadgeBuilder()
                             .badgeName("뱃지 왕 뱃지")
                             .member(member)
@@ -90,6 +106,12 @@ public class HeartService {
             }
             if(badgeOwner.getBadgeList().size()>4){
                 if(badgeOwner.getBadgeList().stream().noneMatch(b->b.getBadgeName().equals("뱃지 왕 뱃지"))){
+                    String message = "축하합니다! 👑 뱃지 왕 뱃지를 획득하셨습니다.";
+                    notificationService.send(BadgeSseDto.builder()
+                            .notificationType(NotificationType.Badge)
+                            .message(message)
+                            .member(badgeOwner)
+                            .build());
                     badgeList.add(Badge.realBadgeBuilder()
                             .badgeName("뱃지 왕 뱃지")
                             .member(badgeOwner)
@@ -101,6 +123,12 @@ public class HeartService {
             if(!badgeList.isEmpty()){
                 badgeRepository.saveAll(badgeList);
             }
+            String message = "내 습관에 " + member.getNickname()+"님이 좋아요를 눌렀습니다! 💖";
+            notificationService.send(BadgeSseDto.builder()
+                    .notificationType(NotificationType.Heart)
+                    .message(message)
+                    .member(badgeOwner)
+                    .build());
             return ResponseEntity.ok().body(heartResponseDto);
         }else{
             List<Heart> heartList = goalList.stream()
@@ -108,7 +136,6 @@ public class HeartService {
                     .flatMap(Set::stream)
                     .filter(h->h.getSocialId().equals(principaldetail.getMember().getSocialId()))
                     .collect(Collectors.toList());
-
             int goalSize = goalList.size();
             for(int i =0; i<goalSize; i++){
                 goalList.get(i).getHeartList().remove(heartList.get(i));
@@ -117,7 +144,7 @@ public class HeartService {
             HeartResponseDto heartResponseDto = HeartResponseDto.builder()
                     .heartCnt(goalList.get(0).getHeartList().size())
                     .heartCheck(false)
-                    .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK, "친구응원을 취소하셨습니다."))
+                    .msgDto(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("친구응원을 취소하셨습니다.").build())
                     .build();
             member.minusClickCnt();
             return ResponseEntity.ok().body(heartResponseDto);
