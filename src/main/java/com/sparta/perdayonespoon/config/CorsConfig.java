@@ -12,7 +12,7 @@ public class CorsConfig {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
-//        config.addAllowedOriginPattern("*");
+        config.addAllowedOriginPattern("*");
         //테스트용 서버
 //        config.addAllowedOrigin("http://localhost:3000/**");
         //실서버
