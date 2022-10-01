@@ -2,6 +2,7 @@ package com.sparta.perdayonespoon.controller;
 
 import com.sparta.perdayonespoon.domain.dto.response.MemberResponseDto;
 import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
+import com.sparta.perdayonespoon.domain.dto.response.badge.BadgeListDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.service.BadgeService;
 import io.swagger.annotations.*;
@@ -26,7 +27,7 @@ public class BadgeController {
             @ApiResponse(code = 200, message = "API 정상 작동",response = MemberResponseDto.class,
                     responseHeaders = @ResponseHeader(name = "Authorization", description = "accesstoken이 담기는 헤더의 이름", response = TokenDto.class)))
     @GetMapping("/badge")
-    public ResponseEntity getAllBadge(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
+    public ResponseEntity<BadgeListDto> getAllBadge(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
         return badgeService.checkAllBadge(principaldetail);
     }
 }

@@ -2,14 +2,17 @@ package com.sparta.perdayonespoon.sse.service;
 
 import com.sparta.perdayonespoon.domain.BadgeSseDto;
 import com.sparta.perdayonespoon.domain.Member;
+import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.sse.NotificationType;
 import com.sparta.perdayonespoon.sse.domain.entity.Notification;
 import com.sparta.perdayonespoon.sse.domain.repository.EmitterRepository;
 import com.sparta.perdayonespoon.sse.domain.repository.NotificationRepository;
 import com.sparta.perdayonespoon.sse.dto.NotificationDto;
+import com.sparta.perdayonespoon.sse.dto.NotificationDumyDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -27,7 +30,8 @@ public class NotificationService {
 
 //    private final ChatMessageRepository messageRepository;
 
-    public SseEmitter subscribe(Long userId, String lastEventId)  {
+    public SseEmitter subscribe(Member member, String lastEventId)  {
+        Long userId = member.getId();
         //emitter 하나하나 에 고유의 값을 주기 위해
         String emitterId = makeTimeIncludeId(userId);
 
@@ -39,12 +43,35 @@ public class NotificationService {
         //emitter의 시간이 만료된 후 레포에서 삭제
         emitter.onCompletion(() -> emitterRepository.deleteById(emitterId));
         emitter.onTimeout(() -> emitterRepository.deleteById(emitterId));
+        if(!emitterRepository.findAllEmitterStartWithByMemberId(member.getSocialId()).isEmpty()){
+            log.info("여기 오긴 왔냐?");
+            SseEmitter sseEmitter = emitterRepository.findAllEmitterStartWithByMemberId(member.getSocialId()).get(member.getSocialId()+1);
+            String message = member.getNickname()+ "님 회원가입을 환영합니다. 발송된 이메일도 확인해보세요!! 📧";
+            BadgeSseDto badgeSseDto =BadgeSseDto.builder()
+                    .notificationType(NotificationType.Notice)
+                    .message(message)
+                    .member(member)
+                    .build();
+            SseEmitter.SseEventBuilder eventBuilder = SseEmitter.event()
+                    .reconnectTime(500)
+                    .data(badgeSseDto,MediaType.APPLICATION_JSON);
+            try{
+                emitter.send(eventBuilder);
+            }catch (IOException exception) {
+                emitterRepository.deleteById(emitterId);
+                log.error("sse 연결오류!!!", exception);
+            }
+            emitterRepository.deleteAllEmitterStartWithId(member.getSocialId());
+        }
 
         // 503 에러를 방지하기 위해 처음 연결 진행 시 더미 데이터를 전달
         String eventId = makeTimeIncludeId(userId);
+        NotificationDumyDto notificationDumyDto = NotificationDumyDto.builder()
+                .lastEventId(eventId)
+                .build();
 
         // 수 많은 이벤트 들을 구분하기 위해 이벤트 ID에 시간을 통해 구분을 해줌
-        sendNotification(emitter, eventId, emitterId, "EventStream Created. [userId=" + userId + "]");
+        sendNotification(emitter, eventId, emitterId, notificationDumyDto);
 
         // 클라이언트가 미수신한 Event 목록이 존재할 경우 전송하여 Event 유실을 예방
         if (hasLostData(lastEventId)) {
@@ -64,11 +91,12 @@ public class NotificationService {
 
     // 유효시간이 다 지난다면 503 에러가 발생하기 때문에 더미데이터를 발행
     private void sendNotification(SseEmitter emitter, String eventId, String emitterId, Object data) {
+        SseEmitter.SseEventBuilder eventBuilder = SseEmitter.event()
+                .id(eventId)
+                .reconnectTime(500)
+                .data(data,MediaType.APPLICATION_JSON);
         try {
-            emitter.send(SseEmitter.event()
-                    .reconnectTime(500)
-                    .name("sse")
-                    .data(data,MediaType.APPLICATION_JSON));
+            emitter.send(eventBuilder);
         } catch (IOException exception) {
             emitterRepository.deleteById(emitterId);
             log.error("sse 연결오류!!!", exception);
@@ -86,6 +114,7 @@ public class NotificationService {
         eventCaches.entrySet().stream()
                 .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
                 .forEach(entry -> sendNotification(emitter, entry.getKey(), emitterId, entry.getValue()));
+
     }
 
     // =============================================
@@ -146,5 +175,9 @@ public class NotificationService {
                 .receiver(sender)
                 .isRead(false) // 현재 읽음상태
                 .build();
+    }
+
+    public ResponseEntity getAllSse(Principaldetail principaldetail) {
+        return ResponseEntity.ok().body("이거잖아");
     }
 }

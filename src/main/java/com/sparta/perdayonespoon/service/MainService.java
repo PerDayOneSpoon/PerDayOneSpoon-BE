@@ -5,6 +5,7 @@ import com.sparta.perdayonespoon.domain.dto.CountDto;
 import com.sparta.perdayonespoon.domain.dto.request.GoalDto;
 import com.sparta.perdayonespoon.domain.dto.response.AchivementResponseDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.TodayGoalsDto;
+import com.sparta.perdayonespoon.domain.dto.response.MsgDto;
 import com.sparta.perdayonespoon.domain.dto.response.rate.GoalRateDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.GoalResponseDto;
 import com.sparta.perdayonespoon.domain.dto.response.rate.WeekRateDto;
@@ -16,7 +17,6 @@ import com.sparta.perdayonespoon.sse.NotificationType;
 import com.sparta.perdayonespoon.sse.service.NotificationService;
 import com.sparta.perdayonespoon.util.BadgeUtil;
 import com.sparta.perdayonespoon.util.GetCharacterUrl;
-import com.sparta.perdayonespoon.util.MsgUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 public class MainService {
 
     private final NotificationService notificationService;
-    private final MsgUtil msgUtil;
     private final BadgeUtil badgeUtil;
     private final MemberRepository memberRepository;
 
@@ -105,7 +104,7 @@ public class MainService {
         AchivementResponseDto achivementResponseDto = AchivementResponseDto.builder()
                 .weekRateDtoList(weekRateDtoList)
                 .todayGoalsDtoList(todayGoalsDtoList)
-                .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK,"주간 습관 확인에 성공하셨습니다. 힘내세요!"))
+                .msgDto(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("주간 습관 확인에 성공하셨습니다. 힘내세요!").build())
                 .weekStartDate(sunday.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
                 .weekEndDate(saturday.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
                 .currentDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
@@ -121,24 +120,21 @@ public class MainService {
     }
     //Todo: true false가 다 존재할땐 기능하지만 개별적으로 존재할때 기능이 동작할지 의문?
     private void setRate(GoalRateDto goalRateDto, Queue<String> socialSt, Queue<Boolean> goalSt) {
-        double trueCount;
         if (socialSt.isEmpty() && goalSt.isEmpty()) {
             socialSt.offer(goalRateDto.getDayString());
             goalSt.offer(goalRateDto.isCheckGoal());
             totalCount = goalRateDto.getTotalcount();
             if (goalRateDto.isCheckGoal()) {
-                trueCount = goalRateDto.getTotalcount();
                 goalRateDto.setTotalcount((long) totalCount);
-                goalRateDto.setRate(Math.round((trueCount / totalCount) * 100));
+                goalRateDto.setRate(Math.round(((double) goalRateDto.getTotalcount() / totalCount) * 100));
             }
         } else if (socialSt.element().equals(goalRateDto.getDayString()) && goalSt.element() == !goalRateDto.isCheckGoal()) {
             socialSt.poll();
             goalSt.poll();
             totalCount += goalRateDto.getTotalcount();
             if (goalRateDto.isCheckGoal()) {
-                trueCount = goalRateDto.getTotalcount();
                 goalRateDto.setTotalcount((long) totalCount);
-                goalRateDto.setRate(Math.round((trueCount / totalCount) * 100));
+                goalRateDto.setRate(Math.round(((double) goalRateDto.getTotalcount() / totalCount) * 100));
             }
         } else if (!socialSt.element().equals(goalRateDto.getDayString())) {
             socialSt.poll();
@@ -147,9 +143,8 @@ public class MainService {
             goalSt.offer(goalRateDto.isCheckGoal());
             totalCount = goalRateDto.getTotalcount();
             if (goalRateDto.isCheckGoal()) {
-                trueCount = goalRateDto.getTotalcount();
                 goalRateDto.setTotalcount((long) totalCount);
-                goalRateDto.setRate(Math.round((trueCount / totalCount) * 100));
+                goalRateDto.setRate(Math.round(((double) goalRateDto.getTotalcount() / totalCount) * 100));
             }
         }
     }
@@ -241,7 +236,7 @@ public class MainService {
                     .privateCheck(Goal.isPrivateCheck())
                     .time(Goal.getTime())
                     .goalFlag(Goal.getGoalFlag())
-                    .msgDto(msgUtil.getMsg(SuccessMsg.CREATE_GOALS.getCode(), SuccessMsg.CREATE_GOALS.getMsg()))
+                    .msgDto(MsgDto.builder().code(SuccessMsg.CREATE_GOALS.getCode()).msg(SuccessMsg.CREATE_GOALS.getMsg()).build())
                     .build()));
             return ResponseEntity.ok(goalResponseDtoList);
         }
@@ -250,6 +245,12 @@ public class MainService {
 
     private void checkKingBadge(Member member, List<Badge> badgeList) {
         if(member.getBadgeList().stream().noneMatch(badge -> badge.getBadgeName().equals("뱃지 왕 뱃지"))){
+            String message = "축하합니다! 👑 뱃지 왕 뱃지를 획득하셨습니다.";
+            notificationService.send(BadgeSseDto.builder()
+                    .notificationType(NotificationType.Badge)
+                    .message(message)
+                    .member(member)
+                    .build());
             badgeList.add(Badge.realBadgeBuilder()
                     .badgeName("뱃지 왕 뱃지")
                     .member(member)
@@ -259,8 +260,12 @@ public class MainService {
     }
 
     public void getWelcomeBadge(Member member, List<Badge> badgeList) {
-        String message = "축하드려요 웰컴뱃지를 얻으셨군요?!";
-        notificationService.send(BadgeSseDto.builder().message(message).member(member).notificationType(NotificationType.Badge).build());
+        String message = "축하합니다! 🐣 웰컴 뱃지를 획득하셨습니다.";
+        notificationService.send(BadgeSseDto.builder()
+                .notificationType(NotificationType.Badge)
+                .message(message)
+                .member(member)
+                .build());
         badgeList.add(Badge.realBadgeBuilder()
                 .badgeName("웰컴 뱃지")
                 .member(member)
@@ -272,6 +277,12 @@ public class MainService {
     private void getPrivateBadge(Member member, List<Badge> badgeList) {
         List<String> privateBadgeCheckDtoList = member.getGoalList().stream().filter(Goal::isPrivateCheck).map(Goal::getGoalFlag).distinct().collect(Collectors.toList());
         if (privateBadgeCheckDtoList.size() >= 9) {
+            String message = "축하합니다! 🔏 프라이빗 뱃지를 획득하셨습니다.";
+            notificationService.send(BadgeSseDto.builder()
+                    .notificationType(NotificationType.Badge)
+                    .message(message)
+                    .member(member)
+                    .build());
             badgeList.add(Badge.realBadgeBuilder()
                     .badgeName("프라이빗 뱃지")
                     .member(member)
@@ -284,10 +295,15 @@ public class MainService {
     private void getComebackBadge(Member member, List<Badge> badgeList) {
         LocalDate latestDay = member.getGoalList().stream().sorted(Comparator.comparing(Goal::getCurrentDate).reversed()).map(Goal::getCurrentDate).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("목표가 존재하지 않습니다.")).toLocalDate();
-//               LocalDate latestDay = goalRepository.getLatestGoals(principaldetail.getMember().getSocialId()).toLocalDate();
         LocalDate today = LocalDate.now();
         Period pe = Period.between(latestDay, today);
         if (pe.getDays() >= 7) {
+            String message = "축하합니다! 7️⃣ 컴백 뱃지를 획득하셨습니다.";
+            notificationService.send(BadgeSseDto.builder()
+                    .notificationType(NotificationType.Badge)
+                    .message(message)
+                    .member(member)
+                    .build());
             badgeList.add(Badge.realBadgeBuilder()
                     .badgeName("컴백 뱃지")
                     .member(member)
@@ -328,6 +344,23 @@ public class MainService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 습관이 존재하지 않습니다."));
         CheckAndGiveBadge(goal);
 
+        if(goal.getTitle().length()<=8) {
+            String message = goal.getTitle() + "습관을 달성하셨습니다. 🎯";
+            notificationService.send(BadgeSseDto.builder()
+                    .notificationType(NotificationType.Complete)
+                    .message(message)
+                    .member(goal.getMember())
+                    .build());
+        }
+        else {
+            String message = goal.getTitle().substring(0, 8) + "... 습관을 달성하셨습니다. 🎯";
+            notificationService.send(BadgeSseDto.builder()
+                    .notificationType(NotificationType.Complete)
+                    .message(message)
+                    .member(goal.getMember())
+                    .build());
+        }
+
         return ResponseEntity.ok().body(GoalResponseDto.builder()
                 .currentdate(goal.getCurrentDate().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
                 .startDate(goal.getStartDate().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
@@ -336,7 +369,7 @@ public class MainService {
                 .achievementCheck(goal.isAchievementCheck())
                 .id(goal.getId())
                 .privateCheck(goal.isPrivateCheck())
-                .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK,"습관 달성 축하드립니다.!!! 고생 많으셨어요"))
+                .msgDto(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("습관 달성 축하드립니다.!!! 고생 많으셨어요").build())
                 .socialId(goal.getSocialId())
                 .characterId(goal.getCharacterId())
                 .time(goal.getTime())
@@ -347,6 +380,7 @@ public class MainService {
         goal.SetAchivementCheck(achievement);
         return goalRepository.save(goal);
     }
+
 
     private void CheckAndGiveBadge(Goal goal) {
         List<Badge> badgeList = new ArrayList<>();
@@ -440,12 +474,24 @@ public class MainService {
     private void checkPlopBadge(Goal goal, List<Badge> badgeList) {
         Badge badge = badgeUtil.plopBadge(goal);
         if(!badge.getBadgeName().equals("가짜 뱃지")){
+            String message = "축하합니다! 🐬 퐁당 퐁당 뱃지를 획득하셨습니다.";
+            notificationService.send(BadgeSseDto.builder()
+                    .notificationType(NotificationType.Badge)
+                    .message(message)
+                    .member(goal.getMember())
+                    .build());
             badgeList.add(badge);
         }
     }
 
     private void earlyMorningBadge(Goal goal, List<Badge> badgeList, LocalTime earlyStart, LocalTime earlyEnd) {
         if(LocalTime.now().isAfter(earlyStart) && LocalTime.now().isBefore(earlyEnd)){
+            String message = "축하합니다! 🐤 얼리 버드 뱃지를 획득하셨습니다.";
+            notificationService.send(BadgeSseDto.builder()
+                    .notificationType(NotificationType.Badge)
+                    .message(message)
+                    .member(goal.getMember())
+                    .build());
             badgeList.add(Badge.realBadgeBuilder()
                     .badgeNumber(7)
                     .badgeName("얼리 버드 뱃지")
@@ -457,6 +503,12 @@ public class MainService {
 
     private void owlBadge(Goal goal, List<Badge> badgeList, LocalTime dawnStart, LocalTime dawnEnd) {
         if(LocalTime.now().isAfter(dawnStart) || LocalTime.now().isBefore(dawnEnd)){
+            String message = "축하합니다! 🦉 올빼미 뱃지를 획득하셨습니다.";
+            notificationService.send(BadgeSseDto.builder()
+                    .notificationType(NotificationType.Badge)
+                    .message(message)
+                    .member(goal.getMember())
+                    .build());
             badgeList.add(Badge.realBadgeBuilder()
                     .badgeName("올빼미 뱃지")
                     .badgeNumber(8)
@@ -468,10 +520,11 @@ public class MainService {
 
     private void shortBadge(Goal goal, List<Badge> badgeList, LocalTime shortTime) {
         if(LocalTime.parse(goal.getTime()).isBefore(shortTime)){
-            String message = "단타 뱃지를 얻으셨군요 축하드려요!";
+            String message = "축하합니다! 🍜 단타 뱃지를 획득하셨습니다.";
             notificationService.send(BadgeSseDto.builder()
                     .notificationType(NotificationType.Badge)
-                    .message(message).member(goal.getMember())
+                    .message(message)
+                    .member(goal.getMember())
                     .build());
             badgeList.add(Badge.realBadgeBuilder()
                     .member(goal.getMember())
@@ -484,6 +537,12 @@ public class MainService {
 
     private void longBadge(Goal goal, List<Badge> badgeList, LocalTime longTime) {
         if(LocalTime.parse(goal.getTime()).isAfter(longTime)){
+            String message = "축하합니다! 🕑 장타 뱃지를 획득하셨습니다.";
+            notificationService.send(BadgeSseDto.builder()
+                    .notificationType(NotificationType.Badge)
+                    .message(message)
+                    .member(goal.getMember())
+                    .build());
             badgeList.add(Badge.realBadgeBuilder()
                     .badgeNumber(17)
                     .badgeName("장타 뱃지")
@@ -502,6 +561,12 @@ public class MainService {
         if(goalList.stream().allMatch(Goal::isAchievementCheck) && goalList.size() >= 7){
             boolean sufficeBadge = isSufficeBadge(goalList);
             if(sufficeBadge){
+                String message = "축하합니다! ⭐ 미니멈 뱃지를 획득하셨습니다.";
+                notificationService.send(BadgeSseDto.builder()
+                        .notificationType(NotificationType.Badge)
+                        .message(message)
+                        .member(goal.getMember())
+                        .build());
                 badgeList.add(Badge.realBadgeBuilder()
                         .member(goal.getMember())
                         .badgeName("미니멈 뱃지")
@@ -535,6 +600,12 @@ public class MainService {
                 }
                 sufficeBadge = true;
             }if(sufficeBadge){
+                String message = "축하합니다! 🌟 맥시멈 뱃지를 획득하셨습니다";
+                notificationService.send(BadgeSseDto.builder()
+                        .notificationType(NotificationType.Badge)
+                        .message(message)
+                        .member(goal.getMember())
+                        .build());
                 badgeList.add(Badge.realBadgeBuilder()
                         .member(goal.getMember())
                         .badgeName("맥시멈 뱃지")
@@ -603,6 +674,12 @@ public class MainService {
 
     private void judgeBadge(Goal goal, List<Badge> badgeList, int standardWay, int continueCnt) {
         if(continueCnt == standardWay && continueCnt == 10) {
+            String message = "축하합니다! 🥉 단거리 뱃지를 획득하셨습니다.";
+            notificationService.send(BadgeSseDto.builder()
+                    .notificationType(NotificationType.Badge)
+                    .message(message)
+                    .member(goal.getMember())
+                    .build());
             badgeList.add(Badge.realBadgeBuilder()
                     .member(goal.getMember())
                     .createdAt(LocalDate.now())
@@ -611,6 +688,12 @@ public class MainService {
                     .build());
         }
         else if(continueCnt == standardWay && continueCnt == 20) {
+            String message = "축하합니다! 🥈 중거리 뱃지를 획득하셨습니다.";
+            notificationService.send(BadgeSseDto.builder()
+                    .notificationType(NotificationType.Badge)
+                    .message(message)
+                    .member(goal.getMember())
+                    .build());
             badgeList.add(Badge.realBadgeBuilder()
                     .member(goal.getMember())
                     .createdAt(LocalDate.now())
@@ -619,6 +702,12 @@ public class MainService {
                     .build());
         }
         else if(continueCnt == standardWay && continueCnt == 30){
+            String message = "축하합니다! 🥇 장거리 뱃지를 획득하셨습니다.";
+            notificationService.send(BadgeSseDto.builder()
+                    .notificationType(NotificationType.Badge)
+                    .message(message)
+                    .member(goal.getMember())
+                    .build());
             badgeList.add(Badge.realBadgeBuilder()
                     .member(goal.getMember())
                     .createdAt(LocalDate.now())
@@ -638,6 +727,6 @@ public class MainService {
             category = goalList.get(0).getCategory();
             goalRepository.deleteAll(goalList);
         }
-        return ResponseEntity.ok().body(msgUtil.getMsg(HttpServletResponse.SC_OK,"만드셨던"+ category +"일치의 습관을 모두 삭제하셨습니다."));
+        return ResponseEntity.ok().body(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("만드셨던"+ category +"일치의 습관을 모두 삭제하셨습니다."));
     }
 }

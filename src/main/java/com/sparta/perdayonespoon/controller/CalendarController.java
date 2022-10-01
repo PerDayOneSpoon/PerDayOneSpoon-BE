@@ -1,8 +1,10 @@
 package com.sparta.perdayonespoon.controller;
 
 import com.sparta.perdayonespoon.domain.dto.request.CalendarRequestDto;
+import com.sparta.perdayonespoon.domain.dto.response.Goal.DayGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.MemberResponseDto;
 import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
+import com.sparta.perdayonespoon.domain.dto.response.calendar.CalendarUniteDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.service.CalendarService;
 import io.swagger.annotations.*;
@@ -26,7 +28,7 @@ public class CalendarController {
                     responseHeaders = {@ResponseHeader(name = "Authorization", description = "accesstoken이 담기는 헤더의 이름", response = TokenDto.class),
                                        @ResponseHeader(name = "refreshtoken", description = "refreshtoken이 담기는 헤더의 이름", response = TokenDto.class)})})
     @GetMapping("/calendar")
-    public ResponseEntity getAllDate(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
+    public ResponseEntity<CalendarUniteDto> getAllDate(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
         return calendarService.getAlldate(principaldetail);
     }
 
@@ -41,7 +43,7 @@ public class CalendarController {
                     responseHeaders = {@ResponseHeader(name = "Authorization", description = "accesstoken이 담기는 헤더의 이름", response = TokenDto.class),
                             @ResponseHeader(name = "refreshtoken", description = "refreshtoken이 담기는 헤더의 이름", response = TokenDto.class)})})
     @GetMapping("/calendar/member/{calendarDate}")
-    public ResponseEntity findMemberSpecificDate(@ModelAttribute CalendarRequestDto calendarRequestDto, @ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
+    public ResponseEntity<DayGoalsDto> findMemberSpecificDate(@ModelAttribute CalendarRequestDto calendarRequestDto, @ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
         return calendarService.findMemberSpecificDate(calendarRequestDto,principaldetail);
     }
 

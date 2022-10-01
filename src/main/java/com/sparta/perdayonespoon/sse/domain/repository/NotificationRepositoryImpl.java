@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public class NotificationRepositoryImpl implements  NotificationRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
+
+
 }

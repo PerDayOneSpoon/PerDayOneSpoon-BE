@@ -53,7 +53,7 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
                         goal.currentDate.stringValue().substring(0,10),
                         goal.count()))
                 .from(goal)
-                .where(GoalCurrentEq(currentDate.getDayOfMonth()),
+                .where(GoalCurrentEq(currentDate.getDayOfYear()),
                         GoalSocialEq(socialId))
                 .groupBy(goal.currentDate.stringValue().substring(0,10))
                 .fetchOne());
@@ -120,7 +120,7 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
                         goal.privateCheck,
                         goal.achievementCheck))
                 .from(goal)
-                .where(goal.currentDate.dayOfMonth().between(startDate.getDayOfMonth(),endDate.getDayOfMonth()),
+                .where(goal.currentDate.dayOfYear().between(startDate.getDayOfYear(),endDate.getDayOfYear()),
                         GoalSocialEq(socialId))
                 .orderBy(goal.currentDate.asc())
                 .fetch();
@@ -164,7 +164,7 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
                         goal.achievementCheck))
                 .from(goal)
                 .rightJoin(member).on(goal.socialId.eq(member.socialId),member.id.eq(goalId))
-                .where(goal.currentDate.dayOfMonth().between(startDate.getDayOfMonth(),endDate.getDayOfMonth()),
+                .where(goal.currentDate.dayOfYear().between(startDate.getDayOfYear(),endDate.getDayOfYear()),
                         GoalPrivateEq(privateCheck))
                 .orderBy(goal.currentDate.asc())
                 .fetch();
@@ -185,10 +185,8 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
                         goal.achievementCheck))
                 .from(goal)
                 .rightJoin(member).on(goal.socialId.eq(member.socialId),member.id.eq(goalId))
-                .where(goal.currentDate.dayOfMonth().between(startDate.getDayOfMonth(),endDate.getDayOfMonth()),
-                        GoalPrivateEq(privateCheck),
-                        goal.currentDate.month().eq(middleDate.getMonthValue()),
-                        goal.currentDate.year().eq(middleDate.getYear()))
+                .where(goal.currentDate.dayOfYear().between(startDate.getDayOfYear(),endDate.getDayOfYear()),
+                        GoalPrivateEq(privateCheck))
                 .orderBy(goal.currentDate.asc())
                 .fetch();
     }
@@ -257,7 +255,7 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
     }
 
     private BooleanExpression GoalCurrentEq(int currentDate) {
-        return isEmpty(currentDate) ? null : goal.currentDate.dayOfMonth().eq(currentDate);
+        return isEmpty(currentDate) ? null : goal.currentDate.dayOfYear().eq(currentDate);
     }
 
     private BooleanExpression GoalPrivateEq(boolean privateCheck) {

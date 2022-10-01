@@ -1,12 +1,12 @@
-package com.sparta.perdayonespoon.controller;
+package com.sparta.perdayonespoon.auth.controller;
 
 import com.sparta.perdayonespoon.domain.dto.request.TokenSearchCondition;
 import com.sparta.perdayonespoon.domain.dto.response.MemberResponseDto;
 import com.sparta.perdayonespoon.domain.dto.response.MsgDto;
 import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
-import com.sparta.perdayonespoon.service.GoogleService;
-import com.sparta.perdayonespoon.service.KakaoService;
-import com.sparta.perdayonespoon.service.NaverService;
+import com.sparta.perdayonespoon.auth.service.GoogleService;
+import com.sparta.perdayonespoon.auth.service.KakaoService;
+import com.sparta.perdayonespoon.auth.service.NaverService;
 import com.sparta.perdayonespoon.util.ReissueUtil;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +40,7 @@ public class AuthController {
                                        @ResponseHeader(name = "refreshtoken", description = "refreshtoken이 담기는 헤더의 이름", response = TokenDto.class)}),
     })
     @GetMapping("/kakao") // (3)
-    public ResponseEntity getkakaoLogin(@RequestParam("code") String code) throws MessagingException, IOException {//(4)
+    public ResponseEntity<MemberResponseDto> getkakaoLogin(@RequestParam("code") String code) throws MessagingException, IOException {//(4)
         return kakaoService.login(code);
     }
 
@@ -52,7 +52,7 @@ public class AuthController {
                                        @ResponseHeader(name = "refreshtoken", description = "refreshtoken이 담기는 헤더의 이름", response = TokenDto.class)}),
     })
     @GetMapping("/google") // (3)
-    public ResponseEntity getgoogleLogin(@RequestParam("code") String code) throws MessagingException, IOException { //(4)
+    public ResponseEntity<MemberResponseDto> getgoogleLogin(@RequestParam("code") String code) throws MessagingException, IOException { //(4)
         return googleService.login(code);
     }
     @ApiOperation(value = "네이버 로그인 API", notes = "네이버 로그인 하는 apI ")
@@ -66,7 +66,7 @@ public class AuthController {
                                        @ResponseHeader(name = "refreshtoken", description = "refreshtoken이 담기는 헤더의 이름", response = TokenDto.class)}),
     })
     @GetMapping("/naver") // (3)
-    public ResponseEntity getnaverLogin(@RequestParam("code") String code,
+    public ResponseEntity<MemberResponseDto> getnaverLogin(@RequestParam("code") String code,
                                         @Nullable @RequestParam(value = "state") String state) { //(4)
         return naverService.login(code,state);
     }
@@ -77,15 +77,15 @@ public class AuthController {
             @ApiResponse(code = 200, message = "API 정상 작동",response = MsgDto.class,responseHeaders = @ResponseHeader(name = "accesstoken", description = "accesstoken이 재발행되어 담기는 헤더의 이름", response = TokenDto.class))
     })
     @PostMapping("/reissue")  //재발급을 위한 로직
-    public ResponseEntity reissue(@ApiIgnore @RequestHeader(value = "refreshtoken", required = false) String refreshtoken){
+    public ResponseEntity<MsgDto> reissue(@ApiIgnore @RequestHeader(value = "refreshtoken", required = false) String refreshtoken){
         TokenSearchCondition tokenSearchCondition = new TokenSearchCondition();
         tokenSearchCondition.setRefreshtoken(refreshtoken);
         return reissueUtil.regenerateToken(tokenSearchCondition);
     }
 
     @GetMapping("/health")
-    public ResponseEntity healthCheck() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> healthCheck() {
+        return ResponseEntity.ok().body("무중단");
     }
 
 }

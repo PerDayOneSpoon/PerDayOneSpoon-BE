@@ -1,16 +1,19 @@
 package com.sparta.perdayonespoon.service;
 
 import com.sparta.perdayonespoon.domain.Badge;
+import com.sparta.perdayonespoon.domain.BadgeSseDto;
 import com.sparta.perdayonespoon.domain.Friend;
 import com.sparta.perdayonespoon.domain.Member;
 import com.sparta.perdayonespoon.domain.dto.response.FriendResponseDto;
+import com.sparta.perdayonespoon.domain.dto.response.MsgDto;
 import com.sparta.perdayonespoon.domain.follow.FollowResponseDto;
 import com.sparta.perdayonespoon.domain.follow.FriendDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.repository.BadgeRepository;
 import com.sparta.perdayonespoon.repository.FriendRepository;
 import com.sparta.perdayonespoon.repository.MemberRepository;
-import com.sparta.perdayonespoon.util.MsgUtil;
+import com.sparta.perdayonespoon.sse.NotificationType;
+import com.sparta.perdayonespoon.sse.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,8 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class FriendService {
-
-    private final MsgUtil msgUtil;
+    private final NotificationService notificationService;
     private final BadgeRepository badgeRepository;
     private final MemberRepository memberRepository;
     private final FriendRepository friendRepository;
@@ -75,9 +77,15 @@ public class FriendService {
             kingBadge(friendMember, badgeList);
         }
         if(!badgeList.isEmpty()) badgeRepository.saveAll(badgeList);
+        String message = badgeOwner.getNickname()+"님이 팔로우를 했습니다. 🥏";
+        notificationService.send(BadgeSseDto.builder()
+                .notificationType(NotificationType.Follower)
+                .message(message)
+                .member(friendMember)
+                .build());
         return ResponseEntity.ok().body(FriendResponseDto.builder()
                 .followCheck(true)
-                .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK,"팔로우를 신청하셨습니다."))
+                .msgDto(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("팔로우를 신청하셨습니다.").build())
                 .build());
     }
 
@@ -101,6 +109,12 @@ public class FriendService {
                 }
             }
             if(friendNumber >= 5){
+                String message = "축하합니다! 🧑‍🤝‍🧑 인싸 뱃지를 획득하셨습니다.";
+                notificationService.send(BadgeSseDto.builder()
+                        .notificationType(NotificationType.Badge)
+                        .message(message)
+                        .member(badgeOwner)
+                        .build());
                 badgeList.add(Badge.realBadgeBuilder()
                         .badgeName("인싸 뱃지")
                         .member(badgeOwner)
@@ -113,6 +127,12 @@ public class FriendService {
 
     private void kingBadge(Member badgeOwner, List<Badge> badgeList) {
         if(badgeOwner.getBadgeList().stream().noneMatch(b->b.getBadgeName().equals("뱃지 왕 뱃지"))){
+            String message = "축하합니다! 👑 뱃지 왕 뱃지를 획득하셨습니다.";
+            notificationService.send(BadgeSseDto.builder()
+                    .notificationType(NotificationType.Badge)
+                    .message(message)
+                    .member(badgeOwner)
+                    .build());
             badgeList.add(Badge.realBadgeBuilder()
                     .badgeName("뱃지 왕 뱃지")
                     .member(badgeOwner)
@@ -128,7 +148,7 @@ public class FriendService {
                 .orElseThrow(() -> new IllegalArgumentException("이미 팔로우를 취소하셨습니다."));
         return ResponseEntity.ok().body(FriendResponseDto.builder()
                 .followCheck(false)
-                .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK,"팔로우를 끊으셨습니다."))
+                .msgDto(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("팔로우를 끊으셨습니다.").build())
                 .build());
     }
 
@@ -146,7 +166,7 @@ public class FriendService {
         List<FriendDto> friendDtoList = friendRepository.getFollowerList(principaldetail.getMember().getSocialId());
         return ResponseEntity.ok().body(FollowResponseDto.builder()
                 .friendDtoList(friendDtoList)
-                .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK, "팔로우한 친구목록 조회에 성공하셨습니다."))
+                .msgDto(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("팔로우한 친구목록 조회에 성공하셨습니다.").build())
                 .build());
     }
 
@@ -155,7 +175,7 @@ public class FriendService {
         List<FriendDto> friendDtoList = friendRepository.getFollowingList(principaldetail.getMember().getSocialId());
         return ResponseEntity.ok().body(FollowResponseDto.builder()
                 .friendDtoList(friendDtoList)
-                .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK, "나를 팔로우한 친구목록 조회에 성공하셨습니다."))
+                .msgDto(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("나를 팔로우한 친구목록 조회에 성공하셨습니다.").build())
                 .build());
     }
 
@@ -165,7 +185,7 @@ public class FriendService {
                 .orElseThrow(() -> new IllegalArgumentException("이미 팔로잉을 끊으셨습니다."));
         return ResponseEntity.ok().body(FriendResponseDto.builder()
                 .followCheck(false)
-                .msgDto(msgUtil.getMsg(HttpServletResponse.SC_OK,"팔로잉을 끊으셨습니다."))
+                .msgDto(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("팔로잉을 끊으셨습니다.").build())
                 .build());
     }
 }
