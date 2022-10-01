@@ -12,9 +12,9 @@ public class CorsConfig {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOriginPattern("*");
+//        config.addAllowedOriginPattern("*");
         //테스트용 서버
-        config.addAllowedOrigin("http://localhost:3000/**");
+//        config.addAllowedOrigin("http://localhost:3000/**");
         //실서버
         config.addAllowedOrigin("https://www.perday-onespoon.com/");
         config.setAllowCredentials(true);
