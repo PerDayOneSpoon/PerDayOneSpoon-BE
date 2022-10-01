@@ -11,10 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -24,10 +21,10 @@ import java.io.IOException;
 @Api(tags="알림 REST API")
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(allowedHeaders = "*",exposedHeaders = "*",originPatterns = "*",methods = RequestMethod.GET,origins = "https://www.perday-onespoon.com")
 public class NotificationController {
     private final NotificationService notificationService;
 
-    @CrossOrigin(allowCredentials = "true",allowedHeaders = "*",exposedHeaders = "*",originPatterns = "*")
     @ApiOperation(value = "알림 구독", notes = "알림을 구독한다.")
     @ApiImplicitParam(name = "Authorization",  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름")
     @ApiResponses(
