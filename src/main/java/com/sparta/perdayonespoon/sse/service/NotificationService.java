@@ -76,8 +76,9 @@ public class NotificationService {
         // 클라이언트가 미수신한 Event 목록이 존재할 경우 전송하여 Event 유실을 예방
         if (hasLostData(lastEventId)) {
             sendLostData(lastEventId, userId, emitterId, emitter);
+        }else if(hasOutData(userId)){
+            sendOutData(userId,emitterId,emitter);
         }
-
         return emitter;
     }
 
@@ -108,13 +109,21 @@ public class NotificationService {
         return !lastEventId.isEmpty();
     }
 
+    private boolean hasOutData(Long userId) {
+        return !emitterRepository.findAllEventCacheStartWithByMemberId(String.valueOf(userId)).isEmpty();
+    }
+    private void sendOutData(Long userId, String emitterId, SseEmitter emitter){
+        Map<String, Object> eventCaches = emitterRepository.findAllEventCacheStartWithByMemberId(String.valueOf(userId));
+        eventCaches.forEach((key, value) -> sendNotification(emitter,key,emitterId,value));
+    }
+
     // 받지못한 데이터가 있다면 last - event - id를 기준으로 그 뒤의 데이터를 추출해 알림을 보내주면 된다.
     private void sendLostData(String lastEventId, Long userId, String emitterId, SseEmitter emitter) {
         Map<String, Object> eventCaches = emitterRepository.findAllEventCacheStartWithByMemberId(String.valueOf(userId));
+        emitterRepository.deleteAllEventCacheStartWithId(String.valueOf(userId));
         eventCaches.entrySet().stream()
                 .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
                 .forEach(entry -> sendNotification(emitter, entry.getKey(), emitterId, entry.getValue()));
-
     }
 
     // =============================================
@@ -140,7 +149,7 @@ public class NotificationService {
         Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByMemberId(receiverId);
         emitters.forEach(
                 (key, emitter) -> {
-                    emitterRepository.saveEventCache(key, notification);
+                    emitterRepository.saveEventCache(key, notificationDto);
                     sendNotification(emitter, eventId, key, notificationDto);
                 }
         );
