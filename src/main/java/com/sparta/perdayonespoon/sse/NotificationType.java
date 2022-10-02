@@ -11,7 +11,9 @@ public enum NotificationType {
     Complete("habitAlarm"),
     Follower("followerAlarm"),
     Heart("heartAlarm"),
-    Notice("noticeAlarm");
+    Notice("noticeAlarm"),
+
+    Comment("commentAlarm");
 
     private String typeMsg;
 

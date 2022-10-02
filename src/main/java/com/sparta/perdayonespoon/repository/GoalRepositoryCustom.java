@@ -22,7 +22,11 @@ public interface GoalRepositoryCustom  {
 
     List<TodayGoalsDto> getTodayGoal(LocalDateTime currentDate, String socialId);
 
+    List<Goal> getMyTodayGoal(LocalDateTime localDateTime, String socialId);
+
     List<TodayGoalsDto> getFriendTodayGoal(LocalDateTime currentDate, Long friendId,String socialId, boolean privateCheck);
+
+    List<Goal> getFollwerTodayGoal(LocalDateTime localDateTime, Long friendId, boolean privateCheck);
 
     List<CalendarGoalsDto> getMyCalendar(LocalDate startDate, LocalDate endDate, String socialId);
 
@@ -33,12 +37,6 @@ public interface GoalRepositoryCustom  {
     List<CalendarGoalsDto> getFriendSpecificCalendar(LocalDate startDate, LocalDate endDate,LocalDate middleDate,boolean privateCheck, Long goalId);
 
     List<Goal> getCategoryGoals(String socialId, String deleteFlag);
-
-    List<PrivateBadgeCheckDto> getPrivateGoalCnt(String socialId);
-
-    List<EveryTwoDaysGoalDto> getTheseWeeksGoals(LocalDate startDay, LocalDate endDay, String socialId);
-
-    LocalDateTime getLatestGoals(String socialId);
 
     Optional<Goal> findOldGoal(Long id, String socialId);
 }

@@ -3,6 +3,8 @@ package com.sparta.perdayonespoon.repository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sparta.perdayonespoon.comment.domain.entity.Comment;
+import com.sparta.perdayonespoon.comment.domain.entity.QComment;
 import com.sparta.perdayonespoon.domain.Goal;
 import com.sparta.perdayonespoon.domain.dto.CountDto;
 import com.sparta.perdayonespoon.domain.dto.QCountDto;
@@ -23,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static com.sparta.perdayonespoon.comment.domain.entity.QComment.comment;
 import static com.sparta.perdayonespoon.domain.QBadge.badge;
 import static com.sparta.perdayonespoon.domain.QGoal.goal;
 import static com.sparta.perdayonespoon.domain.QHeart.heart;
@@ -81,6 +84,18 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
                         GoalSocialEq(socialId))
                 .fetch();
     }
+    @Override
+    public List<Goal> getMyTodayGoal(LocalDateTime currentDate, String socialId){
+        return queryFactory
+                .selectDistinct(goal)
+                .from(goal)
+                .where(goal.currentDate.dayOfYear().eq(currentDate.getDayOfYear()),
+                        GoalSocialEq(socialId))
+                .join(goal.member,member).fetchJoin()
+                .leftJoin(goal.heartList,heart).fetchJoin()
+                .leftJoin(goal.commentList,comment)
+                .fetch();
+    }
 
     @Override
     public List<TodayGoalsDto> getFriendTodayGoal(LocalDateTime currentDate,Long friendId,String socialId, boolean privateCheck){
@@ -105,6 +120,20 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
                         GoalPrivateEq(privateCheck))
                 .fetch();
     }
+
+    @Override
+    public List<Goal> getFollwerTodayGoal(LocalDateTime currentDate, Long friendId, boolean privateCheck){
+        return queryFactory
+                .selectDistinct(goal)
+                .from(goal)
+                .where(goal.currentDate.dayOfYear().eq(currentDate.getDayOfYear()),
+                        GoalPrivateEq(privateCheck),goal.member.id.eq(friendId))
+                .join(goal.member,member).fetchJoin()
+                .leftJoin(goal.heartList,heart).fetchJoin()
+                .leftJoin(goal.commentList,comment)
+                .fetch();
+    }
+
 
     @Override
     public List<CalendarGoalsDto> getMyCalendar(LocalDate startDate, LocalDate endDate, String socialId){
@@ -197,42 +226,6 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
                 .selectFrom(goal)
                 .where(GoalSocialEq(socialId),GoalFlagEq(deleteFlag))
                 .fetch();
-    }
-
-    @Override
-    public List<PrivateBadgeCheckDto> getPrivateGoalCnt(String socialId){
-        return queryFactory
-                .selectDistinct(new QPrivateBadgeCheckDto(
-                        goal.goalFlag))
-                .from(goal)
-                .where(goal.socialId.eq(socialId))
-                .groupBy(goal.goalFlag)
-                .having(goal.privateCheck.eq(true))
-                .fetch();
-    }
-
-    @Override
-    public List<EveryTwoDaysGoalDto> getTheseWeeksGoals(LocalDate startDay, LocalDate endDay, String socialId){
-        return queryFactory
-                .selectDistinct(new QEveryTwoDaysGoalDto(
-                        goal.currentDate,
-                        goal.achievementCheck))
-                .from(goal)
-                .where(goal.currentDate.dayOfYear().between(startDay.getDayOfYear(),endDay.getDayOfYear()),
-                        goal.socialId.eq(socialId),
-                        goal.achievementCheck.eq(true))
-                .fetch();
-    }
-
-    @Override
-    public LocalDateTime getLatestGoals(String socialId){
-        return queryFactory
-                .selectDistinct(goal.currentDate)
-                .from(goal)
-                .where(goal.socialId.eq(socialId))
-                .groupBy(goal.currentDate)
-                .orderBy(goal.currentDate.desc())
-                .fetchFirst();
     }
 
     @Override

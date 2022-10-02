@@ -123,7 +123,7 @@ public class HeartService {
             if(!badgeList.isEmpty()){
                 badgeRepository.saveAll(badgeList);
             }
-            if(goalList.get(0).getTitle().length()<=6) {
+            if(goalList.get(0).getTitle().length() <= 8) {
                 String message = goalList.get(0).getTitle()+"에 " + member.getNickname() + "님이 좋아요를 눌렀습니다!";
                 notificationService.send(BadgeSseDto.builder()
                         .notificationType(NotificationType.Heart)
@@ -131,7 +131,7 @@ public class HeartService {
                         .member(badgeOwner)
                         .build());
             }else {
-                String message = goalList.get(0).getTitle().substring(0,6)+"...에 " + member.getNickname() + "님이 좋아요를 눌렀습니다!";
+                String message = goalList.get(0).getTitle().substring(0,8)+"...에 " + member.getNickname() + "님이 좋아요를 눌렀습니다!";
                 notificationService.send(BadgeSseDto.builder()
                         .notificationType(NotificationType.Heart)
                         .message(message)
