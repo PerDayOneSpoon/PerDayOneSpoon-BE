@@ -114,6 +114,7 @@ public class NotificationService {
     }
     private void sendOutData(Long userId, String emitterId, SseEmitter emitter){
         Map<String, Object> eventCaches = emitterRepository.findAllEventCacheStartWithByMemberId(String.valueOf(userId));
+        emitterRepository.deleteAllEventCacheStartWithId(String.valueOf(userId));
         eventCaches.forEach((key, value) -> sendNotification(emitter,key,emitterId,value));
     }
 
