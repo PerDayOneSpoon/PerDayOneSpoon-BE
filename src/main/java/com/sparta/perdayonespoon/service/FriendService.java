@@ -77,7 +77,7 @@ public class FriendService {
             kingBadge(friendMember, badgeList);
         }
         if(!badgeList.isEmpty()) badgeRepository.saveAll(badgeList);
-        String message = badgeOwner.getNickname()+"님이 팔로우를 했습니다. 🥏";
+        String message = badgeOwner.getNickname()+"님이 팔로우를 했습니다.";
         notificationService.send(BadgeSseDto.builder()
                 .notificationType(NotificationType.Follower)
                 .message(message)

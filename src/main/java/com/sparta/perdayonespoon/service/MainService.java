@@ -349,7 +349,7 @@ public class MainService {
         CheckAndGiveBadge(goal);
 
         if(goal.getTitle().length()<=8) {
-            String message = goal.getTitle() + "습관을 달성하셨습니다. 🎯";
+            String message = goal.getTitle() + " 습관을 달성하셨습니다.";
             notificationService.send(BadgeSseDto.builder()
                     .notificationType(NotificationType.Complete)
                     .message(message)
@@ -357,7 +357,7 @@ public class MainService {
                     .build());
         }
         else {
-            String message = goal.getTitle().substring(0, 8) + "... 습관을 달성하셨습니다. 🎯";
+            String message = goal.getTitle().substring(0, 8) + "... 습관을 달성하셨습니다.";
             notificationService.send(BadgeSseDto.builder()
                     .notificationType(NotificationType.Complete)
                     .message(message)

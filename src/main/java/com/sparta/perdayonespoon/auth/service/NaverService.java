@@ -135,12 +135,6 @@ public class NaverService {
             image.setMember(member);
             imageRepository.save(image);
             emitterRepository.save(member.getSocialId()+1,new SseEmitter(45000L));
-//            String message = member.getNickname()+ "님 회원가입을 환영합니다. 발송된 이메일도 확인해보세요!! 📧";
-//            notificationService.send(BadgeSseDto.builder()
-//                    .notificationType(NotificationType.Notice)
-//                    .message(message)
-//                    .member(member)
-//                    .build());
             return member;
         }
 
