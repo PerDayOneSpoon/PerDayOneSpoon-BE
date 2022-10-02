@@ -1,6 +1,7 @@
 package com.sparta.perdayonespoon.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sparta.perdayonespoon.comment.domain.entity.Comment;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -17,6 +17,7 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name="goal")
 public class Goal{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -61,6 +62,9 @@ public class Goal{
     @JsonIgnore
     private Set<Heart> heartList;
 
+    @OneToMany(mappedBy = "goal",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Comment> commentList;
+
     @Builder
     public Goal(String title, LocalDateTime startDate,LocalDateTime currentDate,LocalDateTime endDate, String time, int category,
                 int characterId, boolean privateCheck, String socialId,boolean achievementCheck,String goalFlag, Member member){
@@ -79,7 +83,7 @@ public class Goal{
         this.member.getGoalList().add(this);
     }
 
-    public void SetAchivementCheck(boolean achievementCheck){
+    public void SetAchievementCheck(boolean achievementCheck){
         this.achievementCheck = achievementCheck;
     }
 
