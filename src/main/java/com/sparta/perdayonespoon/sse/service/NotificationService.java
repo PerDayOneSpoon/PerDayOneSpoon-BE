@@ -19,7 +19,9 @@ import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 
 @Slf4j
 @Service
@@ -115,7 +117,18 @@ public class NotificationService {
     private void sendOutData(Long userId, String emitterId, SseEmitter emitter){
         Map<String, Object> eventCaches = emitterRepository.findAllEventCacheStartWithByMemberId(String.valueOf(userId));
         emitterRepository.deleteAllEventCacheStartWithId(String.valueOf(userId));
-        eventCaches.forEach((key, value) -> sendNotification(emitter,key,emitterId,value));
+        Queue<String> queue = new LinkedList<>();
+        eventCaches.forEach((key,value)-> distinctEmitter(key,value,queue,emitter,emitterId));
+    }
+
+    private void distinctEmitter(String key, Object value, Queue<String> queue, SseEmitter emitter, String emitterId) {
+        if(queue.isEmpty()){
+            queue.offer(key);
+            sendNotification(emitter,key,emitterId,value);
+        }else if(!queue.poll().equals(key)){
+            queue.offer(key);
+            sendNotification(emitter,key,emitterId,value);
+        }
     }
 
     // 받지못한 데이터가 있다면 last - event - id를 기준으로 그 뒤의 데이터를 추출해 알림을 보내주면 된다.
