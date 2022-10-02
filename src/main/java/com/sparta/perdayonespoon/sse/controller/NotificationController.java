@@ -21,7 +21,6 @@ import java.io.IOException;
 @Api(tags="알림 REST API")
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(allowedHeaders = "*",exposedHeaders = "*",originPatterns = "*",methods = RequestMethod.GET,origins = "https://www.perday-onespoon.com")
 public class NotificationController {
     private final NotificationService notificationService;
 
@@ -30,9 +29,10 @@ public class NotificationController {
     @ApiResponses(
             @ApiResponse(code = 200, message = "API 정상 작동",response = MemberResponseDto.class,
                     responseHeaders = @ResponseHeader(name = "Authorization", description = "accesstoken이 담기는 헤더의 이름", response = TokenDto.class)))
-    @GetMapping(value = "sse/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "sse/subscribe", consumes = MediaType.ALL_VALUE,produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribe(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail,
-                                @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) throws IOException {
+                                @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId
+                                ) {
 //        HttpHeaders headers = new HttpHeaders();
 //        headers.setCacheControl("no-cache");
 //        headers.setConnection("keep-alive");

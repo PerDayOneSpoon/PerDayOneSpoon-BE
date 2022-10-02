@@ -12,14 +12,8 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import org.springframework.web.cors.CorsUtils;
-
-import javax.sql.DataSource;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -69,7 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().and()
                 .authorizeRequests()
                 .antMatchers("/h2-console/**").permitAll()  // 누구나 h2-console 접속 허용
-                .antMatchers(HttpMethod.OPTIONS, "/api/**").permitAll() // CORS설정 관련 security 열어주기
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll() // CORS설정 관련 security 열어주기
                 .antMatchers(PERMIT_URL_ARRAY).permitAll() // swagger사용을 위해 api 열기
                 .antMatchers("/login/**").permitAll()
                 .antMatchers(HttpMethod.GET,"/login/kakao").permitAll()
@@ -77,8 +71,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/login/naver").permitAll()
                 .antMatchers(HttpMethod.GET,"/login/health").permitAll()
                 .antMatchers(HttpMethod.POST,"/login/reissue").permitAll()
-
-                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 //                .antMatchers(HttpMethod.GET,"/sse/subscribe").permitAll()
 //                .antMatchers("/api/**").permitAll()
                 .anyRequest().authenticated()   // 나머지 API 는 전부 인증 필요
