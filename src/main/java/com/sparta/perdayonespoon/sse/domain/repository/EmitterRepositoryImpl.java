@@ -47,7 +47,7 @@ public class EmitterRepositoryImpl implements EmitterRepository {
     @Override // 회원에게 수신된 모든 이벤트를 찾는다.
     public Map<String, Object> findAllEventCacheStartWithByMemberId(String userId) {
         return eventCache.entrySet().stream()
-                .filter(entry -> entry.getKey().startsWith(userId))
+                .filter(entry -> entry.getKey().startsWith(userId)).distinct()
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 

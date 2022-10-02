@@ -48,6 +48,7 @@ public class NotificationService {
         if(!emitterRepository.findAllEmitterStartWithByMemberId(member.getSocialId()).isEmpty()){
             log.info("여기 오긴 왔냐?");
             SseEmitter sseEmitter = emitterRepository.findAllEmitterStartWithByMemberId(member.getSocialId()).get(member.getSocialId()+1);
+            sseEmitter.complete();
             String message = member.getNickname()+ "님 회원가입을 환영합니다. 발송된 이메일도 확인해보세요!! 📧";
             BadgeSseDto badgeSseDto =BadgeSseDto.builder()
                     .notificationType(NotificationType.Notice)
@@ -78,9 +79,8 @@ public class NotificationService {
         // 클라이언트가 미수신한 Event 목록이 존재할 경우 전송하여 Event 유실을 예방
         if (hasLostData(lastEventId)) {
             sendLostData(lastEventId, userId, emitterId, emitter);
-        }else if(hasOutData(userId)){
-            sendOutData(userId,emitterId,emitter);
         }
+
         return emitter;
     }
 
@@ -96,7 +96,6 @@ public class NotificationService {
     private void sendNotification(SseEmitter emitter, String eventId, String emitterId, Object data) {
         SseEmitter.SseEventBuilder eventBuilder = SseEmitter.event()
                 .id(eventId)
-                .reconnectTime(500)
                 .data(data,MediaType.APPLICATION_JSON);
         try {
             emitter.send(eventBuilder);
@@ -109,26 +108,6 @@ public class NotificationService {
     // Last - event - id 가 존재한다는 것은 받지 못한 데이터가 있다는 것이다.
     private boolean hasLostData(String lastEventId) {
         return !lastEventId.isEmpty();
-    }
-
-    private boolean hasOutData(Long userId) {
-        return !emitterRepository.findAllEventCacheStartWithByMemberId(String.valueOf(userId)).isEmpty();
-    }
-    private void sendOutData(Long userId, String emitterId, SseEmitter emitter){
-        Map<String, Object> eventCaches = emitterRepository.findAllEventCacheStartWithByMemberId(String.valueOf(userId));
-        emitterRepository.deleteAllEventCacheStartWithId(String.valueOf(userId));
-        Queue<String> queue = new LinkedList<>();
-        eventCaches.forEach((key,value)-> distinctEmitter(key,value,queue,emitter,emitterId));
-    }
-
-    private void distinctEmitter(String key, Object value, Queue<String> queue, SseEmitter emitter, String emitterId) {
-        if(queue.isEmpty()){
-            queue.offer(key);
-            sendNotification(emitter,key,emitterId,value);
-        }else if(!queue.poll().equals(key)){
-            queue.offer(key);
-            sendNotification(emitter,key,emitterId,value);
-        }
     }
 
     // 받지못한 데이터가 있다면 last - event - id를 기준으로 그 뒤의 데이터를 추출해 알림을 보내주면 된다.
