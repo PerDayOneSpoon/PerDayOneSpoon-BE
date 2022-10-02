@@ -70,7 +70,7 @@ public class FriendController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "API 정상 작동" , response = FriendResponseDto.class)
     })
-    @DeleteMapping("delete/following/{friendId}")
+    @DeleteMapping("/delete/following/{friendId}")
     public ResponseEntity<FriendResponseDto> deleteFollowerFriend(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail,@PathVariable String friendId){
         return friendService.deleteFollowerFriend(principaldetail,friendId);
     }
@@ -80,7 +80,7 @@ public class FriendController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "API 정상 작동" , response = FriendResponseDto.class)
     })
-    @DeleteMapping("delete/follower/{friendId}")
+    @DeleteMapping("/delete/follower/{friendId}")
     public ResponseEntity<FriendResponseDto> deleteFollowingFriend(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail,@PathVariable String friendId){
         return friendService.deleteFollowingFriend(principaldetail,friendId);
     }

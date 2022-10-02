@@ -28,7 +28,7 @@ public class MyPageController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "API 정상 작동",response = MsgDto.class),
     })
-    @GetMapping("confirm/profile")
+    @GetMapping("/confirm/profile")
     public ResponseEntity getProfile(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
         return myPageService.getProfile(principaldetail);
     }
@@ -38,7 +38,7 @@ public class MyPageController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "API 정상 작동",response = MemberResponseDto.class),
     })
-    @PatchMapping(value = "change/profile", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PatchMapping(value = "/change/profile", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity changeProfile (@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail,
                                          @RequestPart(value = "dto" , required = false) StatusDto statusDto,
                                          @RequestPart(required = false) MultipartFile multipartFile) throws IOException {
@@ -50,7 +50,7 @@ public class MyPageController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "API 정상 작동",response = MsgDto.class),
     })
-    @DeleteMapping("delete/user/logout")
+    @DeleteMapping("/delete/user/logout")
     public ResponseEntity deleteToken (@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
         return myPageService.deleteToken(principaldetail);
     }
@@ -60,7 +60,7 @@ public class MyPageController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "API 정상 작동",response = MsgDto.class),
     })
-    @DeleteMapping("delete/user/register")
+    @DeleteMapping("/delete/user/register")
     public ResponseEntity deleteMember (@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail){
         return myPageService.deleteMember(principaldetail);
     }

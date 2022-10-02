@@ -88,7 +88,7 @@ public class MainService {
                     if(y == 7){
                         weekRateDtoList.add(0,WeekRateDto.builder().id(0).rate(0).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());
                     }
-                    else weekRateDtoList.add(y-1,WeekRateDto.builder().id(y).rate(0).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());
+                    else weekRateDtoList.add(y,WeekRateDto.builder().id(y).rate(0).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());
                 }
             }
             else {
@@ -120,21 +120,24 @@ public class MainService {
     }
     //Todo: true false가 다 존재할땐 기능하지만 개별적으로 존재할때 기능이 동작할지 의문?
     private void setRate(GoalRateDto goalRateDto, Queue<String> socialSt, Queue<Boolean> goalSt) {
+        double truecount;
         if (socialSt.isEmpty() && goalSt.isEmpty()) {
             socialSt.offer(goalRateDto.getDayString());
             goalSt.offer(goalRateDto.isCheckGoal());
             totalCount = goalRateDto.getTotalcount();
             if (goalRateDto.isCheckGoal()) {
+                truecount = goalRateDto.getTotalcount();
                 goalRateDto.setTotalcount((long) totalCount);
-                goalRateDto.setRate(Math.round(((double) goalRateDto.getTotalcount() / totalCount) * 100));
+                goalRateDto.setRate(Math.round((truecount / totalCount) * 100));
             }
         } else if (socialSt.element().equals(goalRateDto.getDayString()) && goalSt.element() == !goalRateDto.isCheckGoal()) {
             socialSt.poll();
             goalSt.poll();
             totalCount += goalRateDto.getTotalcount();
             if (goalRateDto.isCheckGoal()) {
+                truecount = goalRateDto.getTotalcount();
                 goalRateDto.setTotalcount((long) totalCount);
-                goalRateDto.setRate(Math.round(((double) goalRateDto.getTotalcount() / totalCount) * 100));
+                goalRateDto.setRate(Math.round((truecount / totalCount) * 100));
             }
         } else if (!socialSt.element().equals(goalRateDto.getDayString())) {
             socialSt.poll();
@@ -143,8 +146,9 @@ public class MainService {
             goalSt.offer(goalRateDto.isCheckGoal());
             totalCount = goalRateDto.getTotalcount();
             if (goalRateDto.isCheckGoal()) {
+                truecount = goalRateDto.getTotalcount();
                 goalRateDto.setTotalcount((long) totalCount);
-                goalRateDto.setRate(Math.round(((double) goalRateDto.getTotalcount() / totalCount) * 100));
+                goalRateDto.setRate(Math.round((truecount / totalCount) * 100));
             }
         }
     }
@@ -725,8 +729,13 @@ public class MainService {
         }
         else {
             category = goalList.get(0).getCategory();
+            goalList.forEach(this::cutMapping);
             goalRepository.deleteAll(goalList);
         }
-        return ResponseEntity.ok().body(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("만드셨던"+ category +"일치의 습관을 모두 삭제하셨습니다."));
+        return ResponseEntity.ok().body(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("만드셨던"+ category +"일치의 습관을 모두 삭제하셨습니다.").build());
+    }
+
+    private void cutMapping(Goal goal) {
+        goal.getMember().getGoalList().remove(goal);
     }
 }
