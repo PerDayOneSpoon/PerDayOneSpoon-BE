@@ -1,12 +1,13 @@
-package com.sparta.perdayonespoon.service;
+package com.sparta.perdayonespoon.auth.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.perdayonespoon.domain.*;
-import com.sparta.perdayonespoon.auth.GoogleProfile;
-import com.sparta.perdayonespoon.domain.dto.OauthToken;
+import com.sparta.perdayonespoon.auth.dto.GoogleProfile;
+import com.sparta.perdayonespoon.auth.dto.OauthToken;
 import com.sparta.perdayonespoon.domain.dto.response.MemberResponseDto;
+import com.sparta.perdayonespoon.domain.dto.response.MsgDto;
 import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.jwt.TokenProvider;
@@ -14,8 +15,8 @@ import com.sparta.perdayonespoon.mapper.MemberMapper;
 import com.sparta.perdayonespoon.repository.ImageRepository;
 import com.sparta.perdayonespoon.repository.MemberRepository;
 import com.sparta.perdayonespoon.repository.RefreshTokenRepository;
-import com.sparta.perdayonespoon.util.GenerateHeader;
-import com.sparta.perdayonespoon.util.GenerateMsg;
+import com.sparta.perdayonespoon.sse.domain.repository.EmitterRepository;
+import com.sparta.perdayonespoon.util.HeaderUtil;
 import com.sparta.perdayonespoon.util.MailUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
@@ -41,6 +43,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class GoogleService {
+
+    private final EmitterRepository emitterRepository;
+    private final HeaderUtil headerUtil;
 
     private final MailUtil mailUtil;
 
@@ -71,7 +76,9 @@ public class GoogleService {
     @Value("${spring.security.oauth2.client.provider.google.userInfoUri}")
     private String GOOGLE_SNS_User_URL;
 
-    public ResponseEntity login(String code) throws MessagingException, IOException {
+
+    @Transactional
+    public ResponseEntity<MemberResponseDto> login(String code) throws MessagingException, IOException {
         // 인가코드로 토큰받기
         OauthToken oauthToken = getAccessToken(code);
         // 토큰으로 사용자 정보 요청
@@ -79,12 +86,11 @@ public class GoogleService {
         // 사용자 정보를 토대로 토큰발급
         TokenDto tokenDto = generateToken(member);
         // 리턴할 헤더 제작
-        HttpHeaders httpHeaders = GenerateHeader.getHttpHeaders(tokenDto);
+        HttpHeaders httpHeaders = headerUtil.getHttpHeaders(tokenDto);
         // 리턴할 바디 제작
         MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member);
         //리턴 바디 상태 코드 및 메세지 넣기
-        memberResponseDto.setTwoField(GenerateMsg.getMsg(HttpStatus.OK.value(),"로그인이 성공하셨습니다."));
-
+        memberResponseDto.setTwoField(MsgDto.builder().code(HttpStatus.OK.value()).msg("로그인이 성공하셨습니다.").build());
         return ResponseEntity.ok().headers(httpHeaders).body(memberResponseDto);
     }
     private OauthToken getAccessToken(String code) {
@@ -138,6 +144,13 @@ public class GoogleService {
             image.setMember(member);
             imageRepository.save(image);
             mailUtil.RegisterMail(member);
+            emitterRepository.save(member.getSocialId()+1,new SseEmitter(45000L));
+//            String message = member.getNickname()+ "님 회원가입을 환영합니다. 발송된 이메일도 확인해보세요!! 📧";
+//            notificationService.send(BadgeSseDto.builder()
+//                    .notificationType(NotificationType.Notice)
+//                    .message(message)
+//                    .member(member)
+//                    .build());
             return member;
         }
         return checkmember.get();

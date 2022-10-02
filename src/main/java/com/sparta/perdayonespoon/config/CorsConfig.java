@@ -16,7 +16,7 @@ public class CorsConfig {
         //테스트용 서버
         config.addAllowedOrigin("http://localhost:3000/**");
         //실서버
-        config.addAllowedOrigin("https://www.perday-onespoon.com/");
+        config.addAllowedOrigin("https://www.perday-onespoon.com/**");
         config.setAllowCredentials(true);
         //모든 메소드에 관해 허용해주는것
         config.addAllowedMethod("*");

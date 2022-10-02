@@ -2,6 +2,7 @@ package com.sparta.perdayonespoon.util;
 
 import com.sparta.perdayonespoon.domain.SuccessMsg;
 import com.sparta.perdayonespoon.domain.dto.request.TokenSearchCondition;
+import com.sparta.perdayonespoon.domain.dto.response.MsgDto;
 import com.sparta.perdayonespoon.domain.dto.response.TokenDto;
 import com.sparta.perdayonespoon.domain.dto.response.TwoFieldDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
@@ -20,7 +21,7 @@ public class ReissueUtil {
     private final RefreshTokenRepository refreshTokenRepository;
     private final TokenProvider tokenProvider;
 
-    public ResponseEntity regenerateToken(TokenSearchCondition condition){
+    public ResponseEntity<MsgDto> regenerateToken(TokenSearchCondition condition){
         if(tokenProvider.validateToken(condition.getRefreshtoken())){
             TwoFieldDto twoFieldDto = refreshTokenRepository.getMember(condition);
             Principaldetail principaldetail = new Principaldetail(twoFieldDto.getMember());
@@ -30,7 +31,7 @@ public class ReissueUtil {
             headers.set("Authorization", "Bearer " + tokenDto.getAccessToken());
             headers.set("RefreshToken", twoFieldDto.getRefreshToken().getValue());
             headers.set("Access-Token-Expire-Time", String.valueOf(tokenDto.getAccessTokenExpiresIn()));
-            return ResponseEntity.ok().headers(headers).body(GenerateMsg.getMsg(SuccessMsg.RE_GENERATE_TOKEN.getCode(), SuccessMsg.RE_GENERATE_TOKEN.getMsg()));
+            return ResponseEntity.ok().headers(headers).body(MsgDto.builder().code(SuccessMsg.RE_GENERATE_TOKEN.getCode()).msg(SuccessMsg.RE_GENERATE_TOKEN.getMsg()).build());
         }
         else
             throw new IllegalArgumentException("리프레쉬 토큰이 유효하지 않습니다.");

@@ -46,6 +46,11 @@ dependencies {
     //Object Mapper 관련 의존성
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
 
+    testImplementation 'org.apache.httpcomponents:httpclient'
+
+    implementation 'org.apache.commons:commons-text:1.9'
+    implementation 'com.navercorp.lucy:lucy-xss-servlet:2.0.0'
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'

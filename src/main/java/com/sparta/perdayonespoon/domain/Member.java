@@ -38,7 +38,7 @@ public class Member extends  Timestamped {
     private String nickname;
 
     @ApiModelProperty(example = "소셜로그인시 발급되는 소셜 ID")
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String socialId;
 
     @ApiModelProperty(example = "유저를 구분하기 위해 생성한 소셜 코드")
@@ -56,7 +56,7 @@ public class Member extends  Timestamped {
     @JsonManagedReference
     private Image image;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL , fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Badge> badgeList;
 

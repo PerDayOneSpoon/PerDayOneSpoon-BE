@@ -1,12 +1,13 @@
 package com.sparta.perdayonespoon.domain.dto;
 
-import com.sparta.perdayonespoon.domain.dto.response.MsgDto;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class ImageDto {
     private String uploadImageUrl;
     private String imageName;

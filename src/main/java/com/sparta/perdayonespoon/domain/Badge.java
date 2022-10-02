@@ -19,10 +19,10 @@ public class Badge {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(unique = true)
     private String badgeName;
 
-    @Column
+    @Column(unique = true)
     private long badgeNumber;
 
     @Column
