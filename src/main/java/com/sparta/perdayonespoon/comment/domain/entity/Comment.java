@@ -46,4 +46,13 @@ public class Comment extends Timestamped {
         this.profileImage = profileImage;
         this.nickname = nickname;
     }
+
+    public void changeImageandName(String profileImage, String nickname){
+        this.profileImage = profileImage;
+        this.nickname = nickname;
+    }
+
+    public void changeName(String nickname) {
+        this.nickname = nickname;
+    }
 }
