@@ -37,14 +37,18 @@ public class Comment extends Timestamped {
     @Column
     private String nickname;
 
+    @Column
+    private String socialId;
+
     @Builder
-    public Comment(Goal goal, Member member, String content,String profileImage,String nickname){
+    public Comment(Goal goal, Member member, String content,String profileImage,String nickname,String socialId){
         this.goal =goal;
         goal.getCommentList().add(this);
         this.member = member;
         this.content = content;
         this.profileImage = profileImage;
         this.nickname = nickname;
+        this.socialId = socialId;
     }
 
     public void changeImageandName(String profileImage, String nickname){

@@ -42,6 +42,7 @@ public class CommentService {
                 .member(member)
                 .content(commentRequestDto.getContent())
                 .nickname(member.getNickname())
+                .socialId(member.getSocialId())
                 .profileImage(member.getImage().getImgUrl())
                 .build();
         if(!goal.getSocialId().equals(member.getSocialId())) {
