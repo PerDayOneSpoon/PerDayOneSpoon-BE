@@ -4,6 +4,7 @@ package com.sparta.perdayonespoon.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sparta.perdayonespoon.domain.dto.request.StatusDto;
+import com.sparta.perdayonespoon.util.Timestamped;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
@@ -19,7 +20,7 @@ import java.util.List;
 @Table(name = "member")
 @Entity // RDS
 @ApiModel
-public class Member extends  Timestamped {
+public class Member extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

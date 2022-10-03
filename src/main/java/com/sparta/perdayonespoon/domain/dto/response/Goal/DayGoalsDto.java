@@ -8,13 +8,13 @@ import java.util.List;
 @Data
 public class DayGoalsDto {
 
-    private List<TodayGoalsDto> todayGoalsDtoList;
+    private List<SpecificGoalsDto> specificGoalsDtoList;
 
     private boolean isMe;
 
     @Builder
-    public  DayGoalsDto(List<TodayGoalsDto> todayGoalsDtoList, boolean isMe){
-        this.todayGoalsDtoList = todayGoalsDtoList;
+    public  DayGoalsDto(List<SpecificGoalsDto> specificGoalsDtoList, boolean isMe){
+        this.specificGoalsDtoList = specificGoalsDtoList;
         this.isMe = isMe;
     }
 }

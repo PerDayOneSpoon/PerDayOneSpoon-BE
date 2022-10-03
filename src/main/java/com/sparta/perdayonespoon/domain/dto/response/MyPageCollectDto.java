@@ -1,6 +1,7 @@
 package com.sparta.perdayonespoon.domain.dto.response;
 
 import com.querydsl.core.annotations.QueryProjection;
+import com.sparta.perdayonespoon.domain.Badge;
 import com.sparta.perdayonespoon.domain.Goal;
 import com.sparta.perdayonespoon.domain.Member;
 import lombok.Data;
@@ -45,7 +46,7 @@ public class MyPageCollectDto {
         this.goalCnt = goalCnt;
         this.followerCnt = followerCnt;
         this.followingCnt = followingCnt;
-        badgeCnt = member.getBadgeList().size();
+        badgeCnt = (int) member.getBadgeList().stream().map(Badge::getBadgeName).distinct().count();
     }
 
     public void SetCodeMsg(MsgDto msgDto){

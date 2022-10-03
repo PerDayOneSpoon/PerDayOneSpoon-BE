@@ -80,6 +80,7 @@ public class MainService {
                 .filter(W->checkgoalgetday(W,dayList))
                 .map(GoalRateDto::getWeekRateDto)
                 .collect(Collectors.toList());
+
         if(weekRateDtoList.isEmpty())
             weekRateDtoList = new ArrayList<>();
         for(int y=1; y<=7; y++){
@@ -88,14 +89,14 @@ public class MainService {
                     if(y == 7){
                         weekRateDtoList.add(0,WeekRateDto.builder().id(0).rate(0).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());
                     }
-                    else weekRateDtoList.add(y,WeekRateDto.builder().id(y).rate(0).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());
+                    else weekRateDtoList.add(y-1,WeekRateDto.builder().id(y).rate(0).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());
                 }
             }
             else {
                 if(y == 7){
                     weekRateDtoList.add(0,WeekRateDto.builder().rate(0).id(0).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());
                 }
-                else weekRateDtoList.add(WeekRateDto.builder().rate(0).id(y).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());}
+                else weekRateDtoList.add(y-1,WeekRateDto.builder().rate(0).id(y).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());}
         }
         if(!dayList.isEmpty()){
             dayList.clear();
@@ -349,7 +350,7 @@ public class MainService {
         CheckAndGiveBadge(goal);
 
         if(goal.getTitle().length()<=8) {
-            String message = goal.getTitle() + "습관을 달성하셨습니다. 🎯";
+            String message = goal.getTitle() + " 습관을 달성하셨습니다.";
             notificationService.send(BadgeSseDto.builder()
                     .notificationType(NotificationType.Complete)
                     .message(message)
@@ -357,7 +358,7 @@ public class MainService {
                     .build());
         }
         else {
-            String message = goal.getTitle().substring(0, 8) + "... 습관을 달성하셨습니다. 🎯";
+            String message = goal.getTitle().substring(0, 8) + "... 습관을 달성하셨습니다.";
             notificationService.send(BadgeSseDto.builder()
                     .notificationType(NotificationType.Complete)
                     .message(message)
@@ -381,7 +382,7 @@ public class MainService {
     }
 
     private Goal changeCheckGoal(Goal goal,boolean achievement) {
-        goal.SetAchivementCheck(achievement);
+        goal.SetAchievementCheck(achievement);
         return goalRepository.save(goal);
     }
 
@@ -391,7 +392,7 @@ public class MainService {
         Map<String, Boolean> badgeMap = new HashMap<>();
         if(!goal.getMember().getBadgeList().isEmpty()){
             badgeMap.put("plopBadge",goal.getMember().getBadgeList().stream().anyMatch(f->f.getBadgeName().equals("퐁당 퐁당 뱃지")));
-            badgeMap.put("earlyBirdBadge",goal.getMember().getBadgeList().stream().anyMatch(f->f.getBadgeName().equals("얼리 버드 뱃지")));
+            badgeMap.put("earlyBirdBadge",goal.getMember().getBadgeList().stream().anyMatch(f->f.getBadgeName().equals("얼리버드 뱃지")));
             badgeMap.put("owlBirdBadge",goal.getMember().getBadgeList().stream().anyMatch(f->f.getBadgeName().equals("올빼미 뱃지")));
             badgeMap.put("shortTimeBadge",goal.getMember().getBadgeList().stream().anyMatch(f->f.getBadgeName().equals("단타 뱃지")));
             badgeMap.put("longTimeBadge",goal.getMember().getBadgeList().stream().anyMatch(f->f.getBadgeName().equals("장타 뱃지")));
@@ -490,7 +491,7 @@ public class MainService {
 
     private void earlyMorningBadge(Goal goal, List<Badge> badgeList, LocalTime earlyStart, LocalTime earlyEnd) {
         if(LocalTime.now().isAfter(earlyStart) && LocalTime.now().isBefore(earlyEnd)){
-            String message = "축하합니다! 🐤 얼리 버드 뱃지를 획득하셨습니다.";
+            String message = "축하합니다! 🐤 얼리버드 뱃지를 획득하셨습니다.";
             notificationService.send(BadgeSseDto.builder()
                     .notificationType(NotificationType.Badge)
                     .message(message)
@@ -498,7 +499,7 @@ public class MainService {
                     .build());
             badgeList.add(Badge.realBadgeBuilder()
                     .badgeNumber(7)
-                    .badgeName("얼리 버드 뱃지")
+                    .badgeName("얼리버드 뱃지")
                     .member(goal.getMember())
                     .createdAt(LocalDate.now())
                     .build());

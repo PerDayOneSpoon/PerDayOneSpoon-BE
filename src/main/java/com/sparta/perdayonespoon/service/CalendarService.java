@@ -1,7 +1,9 @@
 package com.sparta.perdayonespoon.service;
+import com.sparta.perdayonespoon.domain.Goal;
 import com.sparta.perdayonespoon.domain.Member;
 import com.sparta.perdayonespoon.domain.dto.request.CalendarRequestDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.DayGoalsDto;
+import com.sparta.perdayonespoon.domain.dto.response.Goal.SpecificGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.TodayGoalsDto;
 import com.sparta.perdayonespoon.domain.dto.response.MsgDto;
 import com.sparta.perdayonespoon.domain.dto.response.calendar.CalendarFriendUniteDto;
@@ -72,15 +74,33 @@ public class CalendarService {
         boolean isMe = false;
         LocalDate localDate = LocalDate.parse(calendarRequestDto.getCalendarDate());
         LocalDateTime localDateTime = LocalDateTime.of(localDate.getYear(), localDate.getMonth(), localDate.getDayOfMonth(), 0, 0, 0);
-        List<TodayGoalsDto> todayGoalsDtoList;
+        List<SpecificGoalsDto> specificGoalsDtoList = new ArrayList<>();
+
         if(Objects.equals(calendarRequestDto.getMemberId(), principaldetail.getMember().getId())) {
-            todayGoalsDtoList = goalRepository.getTodayGoal(localDateTime, principaldetail.getMember().getSocialId());
+            List<Goal> goalList = goalRepository.getMyTodayGoal(localDateTime,principaldetail.getMember().getSocialId());
+            goalList.forEach(Goal->convertMySpecificDto(Goal,specificGoalsDtoList,principaldetail.getMember().getNickname()));
         } else {
-            todayGoalsDtoList = goalRepository.getFriendTodayGoal(localDateTime, calendarRequestDto.getMemberId(),principaldetail.getMember().getSocialId(), false);
+            List<Goal> goalList = goalRepository.getFollwerTodayGoal(localDateTime, calendarRequestDto.getMemberId(), false);
+            goalList.forEach(Goal->convertFollowerSpecificDto(Goal,specificGoalsDtoList,principaldetail.getMember()));
         }
+
         if(Objects.equals(calendarRequestDto.getMemberId(), principaldetail.getMember().getId())) isMe = true;
-        DayGoalsDto dayGoalsDto = DayGoalsDto.builder().todayGoalsDtoList(todayGoalsDtoList).isMe(isMe).build();
+        DayGoalsDto dayGoalsDto = DayGoalsDto.builder().specificGoalsDtoList(specificGoalsDtoList).isMe(isMe).build();
         return ResponseEntity.ok().body(dayGoalsDto);
+    }
+
+    private void convertMySpecificDto(Goal goal, List<SpecificGoalsDto> specificGoalsDtoList,String nickname) {
+        specificGoalsDtoList.add(SpecificGoalsDto.MyGoalsBuilder()
+                .goal(goal)
+                .nickname(nickname)
+                .build());
+    }
+    private void convertFollowerSpecificDto(Goal goal, List<SpecificGoalsDto> specificGoalsDtoList, Member member) {
+        specificGoalsDtoList.add(SpecificGoalsDto.FriendGoalsBuilder()
+                .goal(goal)
+                .nickname(member.getNickname())
+                .socialId(member.getSocialId())
+                .build());
     }
 
     //TODO :  캘린더에서 특정 날짜 눌러서 데이터 나오는거 통합 api 적용중이라 추후 삭제될 API
@@ -91,14 +111,16 @@ public class CalendarService {
         Queue<Long> id = new LinkedList<>();
         LocalDate today = LocalDate.now();
         LocalDate startDate = today.with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate previewDate = startDate.minusDays(6);
         LocalDate endDate = today.with(TemporalAdjusters.lastDayOfMonth());
+        LocalDate afterDate = endDate.plusDays(6);
         List<CalendarGoalsDto> calendarGoalsDtoList;
         if(Objects.equals(friendId, principaldetail.getMember().getId())){
-            calendarGoalsDtoList = goalRepository.getMyCalendar(startDate, endDate,principaldetail.getMember().getSocialId());
+            calendarGoalsDtoList = goalRepository.getMyCalendar(previewDate, afterDate,principaldetail.getMember().getSocialId());
         }
         else {
             if (friendId != null) {
-                calendarGoalsDtoList = goalRepository.getFriendCalendar(startDate, endDate, false, friendId);
+                calendarGoalsDtoList = goalRepository.getFriendCalendar(previewDate, afterDate, false, friendId);
             } else throw new IllegalArgumentException("친구 아이디를 입력 하셔야 합니다.!");
         }
 
@@ -136,14 +158,16 @@ public class CalendarService {
         Queue<Long> id = new LinkedList<>();
         LocalDate localDate = LocalDate.now().withYear(Integer.parseInt(yearOrMonth[0])).withMonth(Integer.parseInt(yearOrMonth[1]));
         LocalDate startDate = localDate.with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate previewDate = startDate.minusDays(6);
         LocalDate endDate = localDate.with(TemporalAdjusters.lastDayOfMonth());
+        LocalDate afterDate = endDate.plusDays(6);
         HashMap<String, List<String>> twolist = new LinkedHashMap<>();
         List<CalendarGoalsDto> calendarGoalsDtoList;
         if(Objects.equals(calendarRequestDto.getMemberId(), principaldetail.getMember().getId())){
-            calendarGoalsDtoList = goalRepository.getSpecificCalender(startDate, endDate,localDate,principaldetail.getMember().getSocialId());
+            calendarGoalsDtoList = goalRepository.getSpecificCalender(previewDate, afterDate,principaldetail.getMember().getSocialId());
         }else {
             if (calendarRequestDto.getMemberId() != null) {
-                calendarGoalsDtoList = goalRepository.getFriendSpecificCalendar(startDate, endDate,localDate,false, calendarRequestDto.getMemberId());
+                calendarGoalsDtoList = goalRepository.getFriendSpecificCalendar(previewDate, afterDate,false, calendarRequestDto.getMemberId());
             } else throw new IllegalArgumentException("친구 아이디를 입력 하셔야 합니다.!");
         }
         calendarGoalsDtoList.forEach(calendarGoalsDto->CollectSameDate(calendarGoalsDto,twolist,dayCheck,monthGoalsDtoList,id));

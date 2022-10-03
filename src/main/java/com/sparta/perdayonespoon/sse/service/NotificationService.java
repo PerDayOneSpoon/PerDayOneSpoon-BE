@@ -19,7 +19,9 @@ import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 
 @Slf4j
 @Service
@@ -46,6 +48,7 @@ public class NotificationService {
         if(!emitterRepository.findAllEmitterStartWithByMemberId(member.getSocialId()).isEmpty()){
             log.info("여기 오긴 왔냐?");
             SseEmitter sseEmitter = emitterRepository.findAllEmitterStartWithByMemberId(member.getSocialId()).get(member.getSocialId()+1);
+            sseEmitter.complete();
             String message = member.getNickname()+ "님 회원가입을 환영합니다. 발송된 이메일도 확인해보세요!! 📧";
             BadgeSseDto badgeSseDto =BadgeSseDto.builder()
                     .notificationType(NotificationType.Notice)
@@ -93,7 +96,6 @@ public class NotificationService {
     private void sendNotification(SseEmitter emitter, String eventId, String emitterId, Object data) {
         SseEmitter.SseEventBuilder eventBuilder = SseEmitter.event()
                 .id(eventId)
-                .reconnectTime(500)
                 .data(data,MediaType.APPLICATION_JSON);
         try {
             emitter.send(eventBuilder);
@@ -111,10 +113,10 @@ public class NotificationService {
     // 받지못한 데이터가 있다면 last - event - id를 기준으로 그 뒤의 데이터를 추출해 알림을 보내주면 된다.
     private void sendLostData(String lastEventId, Long userId, String emitterId, SseEmitter emitter) {
         Map<String, Object> eventCaches = emitterRepository.findAllEventCacheStartWithByMemberId(String.valueOf(userId));
+        emitterRepository.deleteAllEventCacheStartWithId(String.valueOf(userId));
         eventCaches.entrySet().stream()
                 .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
                 .forEach(entry -> sendNotification(emitter, entry.getKey(), emitterId, entry.getValue()));
-
     }
 
     // =============================================
@@ -140,7 +142,7 @@ public class NotificationService {
         Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByMemberId(receiverId);
         emitters.forEach(
                 (key, emitter) -> {
-                    emitterRepository.saveEventCache(key, notification);
+                    emitterRepository.saveEventCache(key, notificationDto);
                     sendNotification(emitter, eventId, key, notificationDto);
                 }
         );

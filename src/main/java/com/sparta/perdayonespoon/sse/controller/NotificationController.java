@@ -33,6 +33,7 @@ public class NotificationController {
                                 @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId,
                                 HttpServletResponse httpServletResponse
                                 ) {
+        httpServletResponse.addHeader("Content-Type","text/event-stream");
         httpServletResponse.addHeader("X-Accel-Buffering","no");
 
 //        ResponseEntity.ok().contentType(MediaType.TEXT_EVENT_STREAM)

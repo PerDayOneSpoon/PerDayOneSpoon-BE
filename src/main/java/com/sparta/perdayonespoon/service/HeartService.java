@@ -123,12 +123,21 @@ public class HeartService {
             if(!badgeList.isEmpty()){
                 badgeRepository.saveAll(badgeList);
             }
-            String message = "내 습관에 " + member.getNickname()+"님이 좋아요를 눌렀습니다! 💖";
-            notificationService.send(BadgeSseDto.builder()
-                    .notificationType(NotificationType.Heart)
-                    .message(message)
-                    .member(badgeOwner)
-                    .build());
+            if(goalList.get(0).getTitle().length() <= 8) {
+                String message = goalList.get(0).getTitle()+"에 " + member.getNickname() + "님이 좋아요를 눌렀습니다!";
+                notificationService.send(BadgeSseDto.builder()
+                        .notificationType(NotificationType.Heart)
+                        .message(message)
+                        .member(badgeOwner)
+                        .build());
+            }else {
+                String message = goalList.get(0).getTitle().substring(0,8)+"...에 " + member.getNickname() + "님이 좋아요를 눌렀습니다!";
+                notificationService.send(BadgeSseDto.builder()
+                        .notificationType(NotificationType.Heart)
+                        .message(message)
+                        .member(badgeOwner)
+                        .build());
+            }
             return ResponseEntity.ok().body(heartResponseDto);
         }else{
             List<Heart> heartList = goalList.stream()
@@ -136,6 +145,7 @@ public class HeartService {
                     .flatMap(Set::stream)
                     .filter(h->h.getSocialId().equals(principaldetail.getMember().getSocialId()))
                     .collect(Collectors.toList());
+
             int goalSize = goalList.size();
             for(int i =0; i<goalSize; i++){
                 goalList.get(i).getHeartList().remove(heartList.get(i));
