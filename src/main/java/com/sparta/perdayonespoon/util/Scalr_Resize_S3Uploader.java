@@ -8,12 +8,6 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.drew.imaging.ImageMetadataReader;
-import com.drew.imaging.ImageProcessingException;
-import com.drew.metadata.Directory;
-import com.drew.metadata.Metadata;
-import com.drew.metadata.MetadataException;
-import com.drew.metadata.exif.ExifIFD0Directory;
 import com.sparta.perdayonespoon.domain.dto.S3Dto;
 import lombok.extern.slf4j.Slf4j;
 import org.imgscalr.Scalr;
@@ -22,12 +16,10 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.*;
 import java.io.File;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -75,55 +67,55 @@ public class Scalr_Resize_S3Uploader {
                 .uploadImageUrl(uploadImageUrl)
                 .build();
     }
-
-    private int findOrientation(MultipartFile is) throws IOException{
-        int orientation=1;
-        try {
-            Metadata metadata = ImageMetadataReader.readMetadata(is.getInputStream());
-            Directory directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
-            if(directory!=null) {
-                try {
-                    orientation = directory.getInt(ExifIFD0Directory.TAG_ORIENTATION);
-                } catch (MetadataException me) {
-                    System.out.println("Could not get orientation");
-                }
-            }
-        } catch (ImageProcessingException e) {
-            e.printStackTrace();
-        }
-        return orientation;
-    }
-
-    private BufferedImage rotateImageForMobile(ByteArrayInputStream byteIS, int orientation) throws IOException {
-        BufferedImage bi = ImageIO.read(byteIS);
-        if(orientation == 6){ //정위치
-            return rotateImage(bi, 90);
-        } else if (orientation == 1){ //왼쪽으로 눞였을때
-            return bi;
-        } else if (orientation == 3){//오른쪽으로 눞였을때
-            return rotateImage(bi, 180);
-        } else if (orientation == 8){//180도
-            return rotateImage(bi, 270);
-        } else{
-            return bi;
-        }
-    }
-    public BufferedImage rotateImage(BufferedImage orgImage,int radians) {
-        BufferedImage newImage;
-        if (radians == 90 || radians == 270) {
-            newImage = new BufferedImage(orgImage.getHeight(), orgImage.getWidth(), orgImage.getType());
-        } else if (radians == 180) {
-            newImage = new BufferedImage(orgImage.getWidth(), orgImage.getHeight(), orgImage.getType());
-        } else {
-            return orgImage;
-        }
-        Graphics2D graphics = (Graphics2D) newImage.getGraphics();
-        graphics.rotate(Math. toRadians(radians), newImage.getWidth() / 2, newImage.getHeight() / 2);
-        graphics.translate((newImage.getWidth() - orgImage.getWidth()) / 2, (newImage.getHeight() - orgImage.getHeight()) / 2);
-        graphics.drawImage(orgImage, 0, 0, orgImage.getWidth(), orgImage.getHeight(), null );
-
-        return newImage;
-    }
+//
+//    private int findOrientation(MultipartFile is) throws IOException{
+//        int orientation=1;
+//        try {
+//            Metadata metadata = ImageMetadataReader.readMetadata(is.getInputStream());
+//            Directory directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
+//            if(directory!=null) {
+//                try {
+//                    orientation = directory.getInt(ExifIFD0Directory.TAG_ORIENTATION);
+//                } catch (MetadataException me) {
+//                    System.out.println("Could not get orientation");
+//                }
+//            }
+//        } catch (ImageProcessingException e) {
+//            e.printStackTrace();
+//        }
+//        return orientation;
+//    }
+//
+//    private BufferedImage rotateImageForMobile(ByteArrayInputStream byteIS, int orientation) throws IOException {
+//        BufferedImage bi = ImageIO.read(byteIS);
+//        if(orientation == 6){ //정위치
+//            return rotateImage(bi, 90);
+//        } else if (orientation == 1){ //왼쪽으로 눞였을때
+//            return bi;
+//        } else if (orientation == 3){//오른쪽으로 눞였을때
+//            return rotateImage(bi, 180);
+//        } else if (orientation == 8){//180도
+//            return rotateImage(bi, 270);
+//        } else{
+//            return bi;
+//        }
+//    }
+//    public BufferedImage rotateImage(BufferedImage orgImage,int radians) {
+//        BufferedImage newImage;
+//        if (radians == 90 || radians == 270) {
+//            newImage = new BufferedImage(orgImage.getHeight(), orgImage.getWidth(), orgImage.getType());
+//        } else if (radians == 180) {
+//            newImage = new BufferedImage(orgImage.getWidth(), orgImage.getHeight(), orgImage.getType());
+//        } else {
+//            return orgImage;
+//        }
+//        Graphics2D graphics = (Graphics2D) newImage.getGraphics();
+//        graphics.rotate(Math. toRadians(radians), newImage.getWidth() / 2, newImage.getHeight() / 2);
+//        graphics.translate((newImage.getWidth() - orgImage.getWidth()) / 2, (newImage.getHeight() - orgImage.getHeight()) / 2);
+//        graphics.drawImage(orgImage, 0, 0, orgImage.getWidth(), orgImage.getHeight(), null );
+//
+//        return newImage;
+//    }
 
     // 생성된 로컬 파일 삭제 메소드
     private void removeNewFile(File targetFile) throws IOException {
