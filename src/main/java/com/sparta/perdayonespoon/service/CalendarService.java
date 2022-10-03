@@ -111,14 +111,16 @@ public class CalendarService {
         Queue<Long> id = new LinkedList<>();
         LocalDate today = LocalDate.now();
         LocalDate startDate = today.with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate previewDate = startDate.minusDays(6);
         LocalDate endDate = today.with(TemporalAdjusters.lastDayOfMonth());
+        LocalDate afterDate = endDate.plusDays(6);
         List<CalendarGoalsDto> calendarGoalsDtoList;
         if(Objects.equals(friendId, principaldetail.getMember().getId())){
-            calendarGoalsDtoList = goalRepository.getMyCalendar(startDate, endDate,principaldetail.getMember().getSocialId());
+            calendarGoalsDtoList = goalRepository.getMyCalendar(previewDate, afterDate,principaldetail.getMember().getSocialId());
         }
         else {
             if (friendId != null) {
-                calendarGoalsDtoList = goalRepository.getFriendCalendar(startDate, endDate, false, friendId);
+                calendarGoalsDtoList = goalRepository.getFriendCalendar(previewDate, afterDate, false, friendId);
             } else throw new IllegalArgumentException("친구 아이디를 입력 하셔야 합니다.!");
         }
 
@@ -156,14 +158,16 @@ public class CalendarService {
         Queue<Long> id = new LinkedList<>();
         LocalDate localDate = LocalDate.now().withYear(Integer.parseInt(yearOrMonth[0])).withMonth(Integer.parseInt(yearOrMonth[1]));
         LocalDate startDate = localDate.with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate previewDate = startDate.minusDays(6);
         LocalDate endDate = localDate.with(TemporalAdjusters.lastDayOfMonth());
+        LocalDate afterDate = endDate.plusDays(6);
         HashMap<String, List<String>> twolist = new LinkedHashMap<>();
         List<CalendarGoalsDto> calendarGoalsDtoList;
         if(Objects.equals(calendarRequestDto.getMemberId(), principaldetail.getMember().getId())){
-            calendarGoalsDtoList = goalRepository.getSpecificCalender(startDate, endDate,localDate,principaldetail.getMember().getSocialId());
+            calendarGoalsDtoList = goalRepository.getSpecificCalender(previewDate, afterDate,principaldetail.getMember().getSocialId());
         }else {
             if (calendarRequestDto.getMemberId() != null) {
-                calendarGoalsDtoList = goalRepository.getFriendSpecificCalendar(startDate, endDate,localDate,false, calendarRequestDto.getMemberId());
+                calendarGoalsDtoList = goalRepository.getFriendSpecificCalendar(previewDate, afterDate,false, calendarRequestDto.getMemberId());
             } else throw new IllegalArgumentException("친구 아이디를 입력 하셔야 합니다.!");
         }
         calendarGoalsDtoList.forEach(calendarGoalsDto->CollectSameDate(calendarGoalsDto,twolist,dayCheck,monthGoalsDtoList,id));
