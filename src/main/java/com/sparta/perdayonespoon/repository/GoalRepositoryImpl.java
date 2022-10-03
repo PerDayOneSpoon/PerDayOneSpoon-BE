@@ -156,7 +156,7 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
     }
 
     @Override
-    public List<CalendarGoalsDto> getSpecificCalender(LocalDate startDate, LocalDate endDate, LocalDate middleDate ,String socialId){
+    public List<CalendarGoalsDto> getSpecificCalender(LocalDate startDate, LocalDate endDate,String socialId){
         return queryFactory
                 .select(new QCalendarGoalsDto(
                         goal.id,
@@ -170,8 +170,7 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
                         goal.achievementCheck))
                 .from(goal)
                 .where(goal.currentDate.dayOfYear().between(startDate.getDayOfYear(),endDate.getDayOfYear()),
-                        goal.currentDate.month().eq(middleDate.getMonthValue()),
-                        GoalSocialEq(socialId),goal.currentDate.year().eq(middleDate.getYear()))
+                        GoalSocialEq(socialId))
                 .orderBy(goal.currentDate.asc())
                 .fetch();
     }
@@ -200,7 +199,7 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
     }
 
     @Override
-    public List<CalendarGoalsDto> getFriendSpecificCalendar(LocalDate startDate, LocalDate endDate,LocalDate middleDate,boolean privateCheck, Long goalId){
+    public List<CalendarGoalsDto> getFriendSpecificCalendar(LocalDate startDate, LocalDate endDate,boolean privateCheck, Long goalId){
         return queryFactory.select(
                 new QCalendarGoalsDto(
                         goal.id,
