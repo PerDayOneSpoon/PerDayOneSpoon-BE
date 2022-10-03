@@ -188,7 +188,7 @@ jasypt:
 #    com.tutorial: debug
 logging:
   slack:
-    webhook-uri: ENC(YMpR/Bj0P6U7CdqcE6yjcHPfFBGE3gn1s5OKC8JNuouNFhZKe4BNeYjARveALxargQmuNDcWZ/QosUgTCjJK9ZZ3AWFPC3/sic6Jtd3AgF3VFlPqmhfy+5F1Fmro2UXX)
+    webhook-uri: https://hooks.slack.com/services/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
   config: classpath:logback-spring.xml
 
 # HS512 ????? ??? ??? ??? 512bit, ? 64byte ??? secret key? ???? ??.
