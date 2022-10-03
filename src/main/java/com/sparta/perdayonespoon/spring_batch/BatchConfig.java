@@ -31,13 +31,13 @@ public class BatchConfig {
     public Step step1() {
         return this.stepBuilderFactory.get("step1")
                 .<Object, Object>chunk(10)
-                .reader(reader())
-                .processor(processor())
+                .reader(new CustomReader<>(getItems()))     // getItem 메소드는 임시로 만든것, 필요한 메소드로 교체
+                .processor(processor())     // 중간 가공이 필요할 경우 사용, 필요없으면 삭제
                 .writer(writer())
                 .build();
     }
 
-    private ItemReader<Object> reader() {
-        return
+    private Object getItems() {
     }
+
 }
