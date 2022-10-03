@@ -64,11 +64,11 @@ public class FriendService {
         List<Badge> badgeList = new ArrayList<>();
         if(badgeOwner.getBadgeList().stream().noneMatch(badge -> badge.getBadgeName().equals("인싸 뱃지"))){
             List<Friend> friendList = friendRepository.getBothFollow(principaldetail.getMember().getSocialId());
-            popularBadge(principaldetail, badgeOwner, badgeList, friendList);
+            popularBadge(badgeOwner, badgeList, friendList);
         }
         if(friendMember.getBadgeList().stream().noneMatch(badge -> badge.getBadgeName().equals("인싸 뱃지"))){
-            List<Friend> friendList = friendRepository.getBothFollow(principaldetail.getMember().getSocialId());
-            popularBadge(principaldetail,friendMember,badgeList,friendList);
+            List<Friend> friendList = friendRepository.getBothFollow(friendMember.getSocialId());
+            popularBadge(friendMember,badgeList,friendList);
         }
         if(badgeOwner.getBadgeList().size()>4){
             kingBadge(badgeOwner, badgeList);
@@ -89,18 +89,20 @@ public class FriendService {
                 .build());
     }
 
-    private void popularBadge(Principaldetail principaldetail, Member badgeOwner, List<Badge> badgeList, List<Friend> friendList) {
+    private void popularBadge(Member badgeOwner, List<Badge> badgeList, List<Friend> friendList) {
         List<String> followerFriendList = friendList.stream()
-                .filter(f->f.getFollowerId().equals(principaldetail.getMember().getSocialId()))
+                .filter(f->f.getFollowerId().equals(badgeOwner.getSocialId()))
                 .map(Friend::getFollowingId)
                 .collect(Collectors.toList());
+
         int standardNumber = followerFriendList.size();
         int friendNumber =0;
         if(standardNumber>4) {
             Set<String> followingFriendList = friendList.stream()
-                    .filter(f->f.getFollowingId().equals(principaldetail.getMember().getSocialId()))
+                    .filter(f->f.getFollowingId().equals(badgeOwner.getSocialId()))
                     .map(Friend::getFollowerId)
                     .collect(Collectors.toSet());
+
             for(int i=0; i<standardNumber; i++){
                 if(followingFriendList.contains(followerFriendList.get(i))){
                     friendNumber++;
