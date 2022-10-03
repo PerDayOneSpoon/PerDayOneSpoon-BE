@@ -30,6 +30,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
     // querydsl 추가 시작
 
+    implementation 'com.github.maricn:logback-slack-appender:1.4.0'
+//    implementation 'com.github.maricn:logback-slack-appender:1.4.0'
+
     implementation 'com.querydsl:querydsl-jpa'
     implementation 'com.querydsl:querydsl-apt'
 
