@@ -100,9 +100,10 @@ public class MainService {
         if(!dayList.isEmpty()){
             dayList.clear();
         }
+        List<WeekRateDto> weekRateDtos = weekRateDtoList.stream().sorted(Comparator.comparing(WeekRateDto::getId)).collect(Collectors.toList());
         List<TodayGoalsDto> todayGoalsDtoList = goalRepository.getTodayGoal(LocalDateTime.now(),principaldetail.getMember().getSocialId());
         AchivementResponseDto achivementResponseDto = AchivementResponseDto.builder()
-                .weekRateDtoList(weekRateDtoList)
+                .weekRateDtoList(weekRateDtos)
                 .todayGoalsDtoList(todayGoalsDtoList)
                 .msgDto(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("주간 습관 확인에 성공하셨습니다. 힘내세요!").build())
                 .weekStartDate(sunday.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
