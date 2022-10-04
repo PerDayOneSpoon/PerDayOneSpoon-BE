@@ -339,7 +339,6 @@ public class MainService {
             throw new IllegalArgumentException("금일을 넘는 목표는 생성할 수 없습니다. 다시 생성해 주세요");
     }
 
-    @Transactional
     public ResponseEntity<GoalResponseDto> ChangeGoal(long goalId,Boolean achievement,Principaldetail principaldetail) {
         if(achievement == null){
             throw new IllegalArgumentException("통신시 달성여부가 보내져야 합니다.");
