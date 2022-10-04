@@ -18,12 +18,12 @@ public class HeartRepositoryImpl implements HeartRepositoryCustom{
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Goal> findGoalsHeart(String goalFlag,String socialId){
+    public List<Goal> findGoalsHeart(String goalFlag){
         return jpaQueryFactory
                 .selectDistinct(goal)
                 .from(goal)
                 .where(goal.goalFlag.eq(goalFlag))
-                .join(goal.member, member)
+                .innerJoin(goal.member, member).fetchJoin()
                 .leftJoin(member.badgeList,badge)
                 .leftJoin(goal.heartList,heart).fetchJoin()
                 .fetch();
