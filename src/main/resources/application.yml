@@ -73,7 +73,10 @@ spring:
     url: jdbc:mysql://database-1.cjqsacqcnhg0.ap-northeast-2.rds.amazonaws.com:3306/testdb222?serverTimezone=Asia/Seoul
     username: ENC(ra3fPVdpel5Ze2nnanW60w==)
     password: ENC(TIukE6eAJmSYxDlIli+AcJf2NNIo/7xf)
-#    hikari:
+    tomcat:
+      max-active: 10
+      max-wait: 10000
+  #    hikari:
 #      pool-name: jpa-hikari-pool
 #      maximum-pool-size: 30
 #      jdbc-url: ${spring.datasource.url}
