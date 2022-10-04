@@ -30,7 +30,7 @@ public class HeartService {
 
     private final MemberRepository memberRepository;
 
-    @Transactional
+
     public ResponseEntity<HeartResponseDto> addHearts(Principaldetail principaldetail, String goalFlag) {
         List<Goal> goalList= heartRepository.findGoalsHeart(goalFlag,principaldetail.getMember().getSocialId());
         if(!goalList.isEmpty()) {

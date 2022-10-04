@@ -40,7 +40,6 @@ public class MainService {
     private static double totalCount = 0;
     private final GoalRepository goalRepository;
 
-    @Transactional(readOnly = true)
     public ResponseEntity getGoal(Principaldetail principaldetail) {
         LocalDateTime sunday;
         LocalDateTime saturday;
@@ -89,7 +88,7 @@ public class MainService {
                     if(y == 7){
                         weekRateDtoList.add(0,WeekRateDto.builder().id(0).rate(0).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());
                     }
-                    else weekRateDtoList.add(y,WeekRateDto.builder().id(y).rate(0).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());
+                    else weekRateDtoList.add(y-1,WeekRateDto.builder().id(y).rate(0).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());
                 }
             }
             else {
