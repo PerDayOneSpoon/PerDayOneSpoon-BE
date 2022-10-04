@@ -9,5 +9,6 @@ import java.util.Optional;
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long>,RefreshTokenRepositoryCustom {
     Optional<RefreshToken> findByKey(String name);
 
+    boolean existsByKey(String socialId);
 }
 
