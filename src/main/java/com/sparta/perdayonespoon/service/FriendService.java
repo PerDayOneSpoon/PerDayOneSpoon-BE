@@ -34,6 +34,7 @@ public class FriendService {
     private final MemberRepository memberRepository;
     private final FriendRepository friendRepository;
 
+    @Transactional
     public ResponseEntity<FriendResponseDto> addFriend(Principaldetail principaldetail, String friendId) {
         if(principaldetail.getMember().getSocialId().equals(friendId)){
             throw new IllegalArgumentException("자신은 팔로우 할 수 없습니다.");

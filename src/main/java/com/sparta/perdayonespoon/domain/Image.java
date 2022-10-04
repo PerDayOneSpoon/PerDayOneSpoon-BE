@@ -27,7 +27,7 @@ public class Image extends Timestamped {
         @Column
         private String imgName;
 
-        @OneToOne
+        @OneToOne(fetch = FetchType.LAZY)
         @JsonBackReference
         private Member member;
 

@@ -22,7 +22,7 @@ public class CommentController {
     @ApiOperation(value = "캘린더 페이지 습관 댓글 추가 API", notes = "토큰검사 후 습관 댓글 추가")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름"),
-            @ApiImplicitParam(name = "goalId", required = false,  dataType = "Long", paramType = "path", value = "추가할때 요청하는 습관의 Id")
+            @ApiImplicitParam(name = "goalId", required = false,  dataType = "Long", paramType = "path", value = "추가할때 요청하는 습관의 Id",example = "0")
     })
     @ApiResponses({
             @ApiResponse(code = 200, message = "API 정상 작동" , response = FriendResponseDto.class)
@@ -35,7 +35,7 @@ public class CommentController {
     @ApiOperation(value = "캘린더 페이지 습관 댓글 삭제 API", notes = "토큰검사 후 습관 댓글 삭제")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름"),
-            @ApiImplicitParam(name = "commentId", required = false,  dataType = "Long", paramType = "path", value = "습관 댓글 삭제할때 요청하는 댓글의 Id")
+            @ApiImplicitParam(name = "commentId", required = false,  dataType = "Long", paramType = "path", value = "습관 댓글 삭제할때 요청하는 댓글의 Id",example = "0")
     })
     @ApiResponses({
             @ApiResponse(code = 200, message = "API 정상 작동" , response = FriendResponseDto.class)

@@ -16,6 +16,7 @@ import com.sparta.perdayonespoon.util.GetCharacterUrl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
@@ -29,6 +30,7 @@ public class PrivateService {
     private final NotificationService notificationService;
     private final BadgeRepository badgeRepository;
     private final GoalRepository goalRepository;
+    @Transactional
     public ResponseEntity changePrivateCheck(Principaldetail principaldetail, PrivateDto privateDto, String goalFlag) {
         List<Goal> goalList = goalRepository.getCategoryGoals(principaldetail.getMember().getSocialId(),goalFlag);
         List<GoalResponseDto> goalResponseDtoList = new ArrayList<>();

@@ -87,13 +87,13 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
     @Override
     public List<Goal> getMyTodayGoal(LocalDateTime currentDate, String socialId){
         return queryFactory
-                .selectDistinct(goal)
-                .from(goal)
+                .selectFrom(goal)
                 .where(goal.currentDate.dayOfYear().eq(currentDate.getDayOfYear()),
                         GoalSocialEq(socialId))
                 .join(goal.member,member).fetchJoin()
                 .leftJoin(goal.heartList,heart).fetchJoin()
                 .leftJoin(goal.commentList,comment)
+                .distinct()
                 .fetch();
     }
 

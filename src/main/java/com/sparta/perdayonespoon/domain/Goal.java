@@ -1,6 +1,8 @@
 package com.sparta.perdayonespoon.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sparta.perdayonespoon.comment.domain.entity.Comment;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -55,6 +57,7 @@ public class Goal{
     private String goalFlag;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -63,6 +66,7 @@ public class Goal{
     private Set<Heart> heartList;
 
     @OneToMany(mappedBy = "goal",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonManagedReference
     private List<Comment> commentList;
 
     @Builder

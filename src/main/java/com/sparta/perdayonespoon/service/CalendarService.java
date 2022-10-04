@@ -18,6 +18,8 @@ import com.sparta.perdayonespoon.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -32,6 +34,7 @@ public class CalendarService {
     private final FriendRepository friendRepository;
     private final GoalRepository goalRepository;
 
+    @Transactional(readOnly = true)
     //TODO : 여기는 캘린더를 들어왔을때 모든걸 보여주는 함수
     public ResponseEntity<CalendarUniteDto> getAlldate(Principaldetail principaldetail) {
         List<FriendDto> peopleList = friendRepository.getFollowerList(principaldetail.getMember().getSocialId());
@@ -68,6 +71,7 @@ public class CalendarService {
             }
         }
     }
+    @Transactional(readOnly = true)
     //TODO :  캘린더에서 특정 날짜 눌러서 데이터 나오는거 통합 api 적용
     public ResponseEntity<DayGoalsDto> findMemberSpecificDate(CalendarRequestDto calendarRequestDto, Principaldetail principaldetail) {
         assert calendarRequestDto.getCalendarDate() != null;
@@ -101,6 +105,7 @@ public class CalendarService {
                 .build());
     }
 
+    @Transactional(readOnly = true)
     //TODO :  캘린더에서 특정 날짜 눌러서 데이터 나오는거 통합 api 적용중이라 추후 삭제될 API
     public ResponseEntity getFriendCalendar(Long friendId , Principaldetail principaldetail) {
         HashMap<String, List<String>> twolist = new LinkedHashMap<>();
@@ -145,6 +150,7 @@ public class CalendarService {
         }
     }
 
+    @Transactional(readOnly = true)
     //TODO :  캘린더에서 특정 날짜 달 눌러서 데이터 나오는거 통합 api 적용중
     public ResponseEntity findMemberSpecificMonth(CalendarRequestDto calendarRequestDto, Principaldetail principaldetail) {
         if(calendarRequestDto.getCalendarYearAndMonth() == null){

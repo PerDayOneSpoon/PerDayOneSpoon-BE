@@ -83,7 +83,6 @@ spring:
 #      data-source-properties:
 #        rewriteBatchedStatements: true
 
-
   jpa:
 #    database-platform : org.hibernate.dialect.MySQL5Dialect
 #    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
