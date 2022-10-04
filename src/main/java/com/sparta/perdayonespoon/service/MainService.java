@@ -154,7 +154,6 @@ public class MainService {
         }
     }
     // TODO : 달력 날짜 받기X 주간 달성도 리턴하기
-    @Transactional
     public ResponseEntity<List<GoalResponseDto>> CreateGoal(GoalDto goalDto, Principaldetail principaldetail) {
         String goalFlag = UUID.randomUUID().toString();
         if(goalDto.getTitle() == null) {
