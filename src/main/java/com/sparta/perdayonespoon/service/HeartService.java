@@ -128,14 +128,14 @@ public class HeartService {
                 notificationService.send(BadgeSseDto.builder()
                         .notificationType(NotificationType.Heart)
                         .message(message)
-                        .member(badgeOwner)
+                        .member(goalList.get(0).getMember())
                         .build());
             }else {
                 String message = goalList.get(0).getTitle().substring(0,8)+"...에 " + member.getNickname() + "님이 좋아요를 눌렀습니다!";
                 notificationService.send(BadgeSseDto.builder()
                         .notificationType(NotificationType.Heart)
                         .message(message)
-                        .member(badgeOwner)
+                        .member(goalList.get(0).getMember())
                         .build());
             }
             return ResponseEntity.ok().body(heartResponseDto);
