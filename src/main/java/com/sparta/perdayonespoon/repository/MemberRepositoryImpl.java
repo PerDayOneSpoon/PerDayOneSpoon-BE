@@ -4,10 +4,8 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sparta.perdayonespoon.domain.Member;
-import com.sparta.perdayonespoon.domain.QBadge;
-import com.sparta.perdayonespoon.domain.QFriend;
-import com.sparta.perdayonespoon.domain.QGoal;
+import com.sparta.perdayonespoon.comment.domain.entity.QComment;
+import com.sparta.perdayonespoon.domain.*;
 import com.sparta.perdayonespoon.domain.dto.request.MemberSearchCondition;
 import com.sparta.perdayonespoon.domain.dto.response.MemberSearchDto;
 import com.sparta.perdayonespoon.domain.dto.response.MyPageCollectDto;
@@ -24,9 +22,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.sparta.perdayonespoon.comment.domain.entity.QComment.comment;
 import static com.sparta.perdayonespoon.domain.QBadge.badge;
 import static com.sparta.perdayonespoon.domain.QFriend.friend;
 import static com.sparta.perdayonespoon.domain.QGoal.goal;
+import static com.sparta.perdayonespoon.domain.QImage.image;
 import static com.sparta.perdayonespoon.domain.QMember.member;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
@@ -75,6 +75,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                         JPAExpressions.select(friend.count()).from(friend).where(friend.followingId.eq(socialId)).groupBy(friend.followingId)))
                 .from(member)
                 .where(member.socialId.eq(socialId))
+                .innerJoin(member.image,image).fetchJoin()
                 .leftJoin(member.badgeList,badge).fetchJoin()
                 .fetchFirst();
     }
@@ -82,12 +83,13 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     @Override
     public Optional<Member> findByMemberId(Long id){
         return Optional.ofNullable(queryFactory
-                .selectDistinct(member)
-                .from(member)
+                .selectFrom(member)
                 .where(member.id.eq(id))
+                .join(member.image, image).fetchJoin()
                 .leftJoin(member.badgeList, badge)
                 .leftJoin(member.goalList,goal).fetchJoin()
-                .fetchFirst());
+                .distinct()
+                .fetchOne());
     }
     @Override
     public List<Member> getTwoMember(String socialId, String friendId){

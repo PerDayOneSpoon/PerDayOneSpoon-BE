@@ -53,7 +53,7 @@ public class Member extends Timestamped {
     @Column
     private String status;
 
-    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private Image image;
 

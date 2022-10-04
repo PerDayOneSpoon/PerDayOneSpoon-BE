@@ -15,13 +15,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
 
 @Slf4j
 @Service
@@ -32,6 +32,7 @@ public class NotificationService {
 
 //    private final ChatMessageRepository messageRepository;
 
+    @Transactional
     public SseEmitter subscribe(Member member, String lastEventId)  {
         Long userId = member.getId();
         //emitter 하나하나 에 고유의 값을 주기 위해
@@ -128,7 +129,7 @@ public class NotificationService {
      */
 
     @Async
-    @TransactionalEventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMPLETION)
     public void send(BadgeSseDto badgeSseDto) {
         Notification notification = notificationRepository.save(createNotification(badgeSseDto.getMember(),badgeSseDto.getMessage(),badgeSseDto.getNotificationType()));
         NotificationDto notificationDto = NotificationDto.builder()
