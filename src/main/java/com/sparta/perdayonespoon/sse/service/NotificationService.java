@@ -32,7 +32,7 @@ public class NotificationService {
 
 //    private final ChatMessageRepository messageRepository;
 
-    @Transactional
+
     public SseEmitter subscribe(Member member, String lastEventId)  {
         Long userId = member.getId();
         //emitter 하나하나 에 고유의 값을 주기 위해
