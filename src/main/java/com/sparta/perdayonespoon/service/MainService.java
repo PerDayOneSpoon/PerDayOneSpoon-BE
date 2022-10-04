@@ -40,7 +40,6 @@ public class MainService {
     private static double totalCount = 0;
     private final GoalRepository goalRepository;
 
-    @Transactional(readOnly = true)
     public ResponseEntity getGoal(Principaldetail principaldetail) {
         LocalDateTime sunday;
         LocalDateTime saturday;

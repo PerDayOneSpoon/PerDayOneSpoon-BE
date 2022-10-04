@@ -30,7 +30,8 @@ public class PrivateService {
     private final NotificationService notificationService;
     private final BadgeRepository badgeRepository;
     private final GoalRepository goalRepository;
-    @Transactional
+
+
     public ResponseEntity changePrivateCheck(Principaldetail principaldetail, PrivateDto privateDto, String goalFlag) {
         List<Goal> goalList = goalRepository.getCategoryGoals(principaldetail.getMember().getSocialId(),goalFlag);
         List<GoalResponseDto> goalResponseDtoList = new ArrayList<>();
