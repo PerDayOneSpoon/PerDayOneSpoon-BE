@@ -87,7 +87,6 @@ public class MyPageService {
         scalr_resize_s3Uploader.remove(deletedUrlPath.getDeletedUrlPath());
     }
 
-    @Transactional
     public ResponseEntity changeProfile(Principaldetail principaldetail, MultipartFile multipartFile, StatusDto statusDto) throws IOException {
         Member member = memberRepository.findBySocialId(principaldetail.getMember().getSocialId()).orElseThrow(IllegalArgumentException::new);
         if(statusDto.getStatus() != null && statusDto.getNickname() != null){
