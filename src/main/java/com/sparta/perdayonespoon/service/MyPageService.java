@@ -43,16 +43,21 @@ public class MyPageService {
     }
 
     public ResponseEntity deleteToken(Principaldetail principaldetail){
-        refreshTokenRepository.findByKey(principaldetail.getMember().getSocialId())
-                .map(this::delete)
-                .orElseThrow(() -> new IllegalArgumentException("이미 로그아웃한 사용자입니다."));
+
+        if(refreshTokenRepository.existsByKey(principaldetail.getMember().getSocialId())) {
+            refreshTokenRepository.findByKey(principaldetail.getMember().getSocialId())
+                    .map(this::delete)
+                    .orElseThrow(() -> new IllegalArgumentException("이미 로그아웃한 사용자입니다."));
+        }
         //(6)
         return ResponseEntity.ok(MsgDto.builder().code(HttpServletResponse.SC_OK).msg(principaldetail.getMember().getNickname()+"님 로그아웃에 성공하셨습니다.").build());
     }
     public ResponseEntity deleteMember(Principaldetail principaldetail) {
+
         refreshTokenRepository.findByKey(principaldetail.getMember().getSocialId())
                 .map(this::delete)
-                .orElseThrow(() -> new IllegalArgumentException("이미 로그아웃한 사용자입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("이미 탈퇴한 회원입니다."));
+
         memberRepository.findBySocialId(principaldetail.getMember().getSocialId())
                 .map(this::deleteDb)
                 .orElseThrow(() -> new IllegalArgumentException("이미 탈퇴한 회원입니다."));
@@ -98,10 +103,12 @@ public class MyPageService {
             DeletedUrlPath deletedUrlPath = DeletedUrlPath.builder().deletedUrlPath(member.getImage().getImgUrl()).build();
             deletedUrlPathRepository.save(deletedUrlPath);
             member.getImage().SetTwoField(s3Dto);
+
             if(!commentList.isEmpty()) {
                 commentList.forEach(comment -> changeImageandName(comment, s3Dto.getUploadImageUrl(), statusDto.getNickname()));
                 commentRepository.saveAll(commentList);
             }
+
         } else if(!commentList.isEmpty()) {
             commentList.forEach(comment -> changeName(comment, statusDto.getNickname()));
             commentRepository.saveAll(commentList);
