@@ -36,7 +36,7 @@ public class SpecificGoalsDto {
     List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 
     @Builder(builderClassName = "MyGoalsBuilder", builderMethodName = "MyGoalsBuilder")
-    public SpecificGoalsDto(Goal goal,String nickname){
+    public SpecificGoalsDto(Goal goal){
         id = goal.getId();
         title = goal.getTitle();
         startDate = goal.getStartDate().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13);
@@ -49,11 +49,11 @@ public class SpecificGoalsDto {
         heartCnt = goal.getHeartList().size();
         goalFlag =goal.getGoalFlag();
         heartCheck = true;
-        goal.getCommentList().forEach(c->convertDto(c,nickname));
+        goal.getCommentList().forEach(this::convertDto);
     }
 
     @Builder(builderClassName = "FriendGoalsBuilder", builderMethodName = "FriendGoalsBuilder")
-    public SpecificGoalsDto(Goal goal, String socialId,String nickname){
+    public SpecificGoalsDto(Goal goal, String socialId){
         id = goal.getId();
         title = goal.getTitle();
         startDate = goal.getStartDate().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13);
@@ -66,11 +66,22 @@ public class SpecificGoalsDto {
         heartCnt = goal.getHeartList().size();
         goalFlag =goal.getGoalFlag();
         heartCheck = goal.getHeartList().stream().anyMatch(h->h.getSocialId().equals(socialId));
-        goal.getCommentList().forEach(c->convertDto(c,nickname));
+        goal.getCommentList().forEach(c->convertDtoCheck(c,socialId));
     }
 
-    private void convertDto(Comment comment,String nickname) {
-        boolean isMe = comment.getNickname().equals(nickname);
+    private void convertDto(Comment comment) {
+        commentResponseDtoList.add(CommentResponseDto.builder()
+                .goalId(id)
+                .isMe(true)
+                .createdAt(convertTime(comment.getCreatedAt()))
+                .profileImage(comment.getProfileImage())
+                .commentId(comment.getId())
+                .nickname(comment.getNickname())
+                .content(comment.getContent())
+                .build());
+    }
+    private void convertDtoCheck(Comment comment, String socialId) {
+        boolean isMe = comment.getSocialId().equals(socialId);
         commentResponseDtoList.add(CommentResponseDto.builder()
                 .goalId(id)
                 .isMe(isMe)

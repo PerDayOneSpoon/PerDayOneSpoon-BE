@@ -7,6 +7,6 @@ import java.util.List;
 public interface HeartRepositoryCustom {
 
 
-    List<Goal> findGoalsHeart(String goalFlag, String socialId);
+    List<Goal> findGoalsHeart(String goalFlag);
 
 }

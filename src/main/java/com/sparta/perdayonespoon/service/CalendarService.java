@@ -18,6 +18,8 @@ import com.sparta.perdayonespoon.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,6 +33,7 @@ public class CalendarService {
     private final MemberRepository memberRepository;
     private final FriendRepository friendRepository;
     private final GoalRepository goalRepository;
+
 
     //TODO : 여기는 캘린더를 들어왔을때 모든걸 보여주는 함수
     public ResponseEntity<CalendarUniteDto> getAlldate(Principaldetail principaldetail) {
@@ -68,6 +71,7 @@ public class CalendarService {
             }
         }
     }
+
     //TODO :  캘린더에서 특정 날짜 눌러서 데이터 나오는거 통합 api 적용
     public ResponseEntity<DayGoalsDto> findMemberSpecificDate(CalendarRequestDto calendarRequestDto, Principaldetail principaldetail) {
         assert calendarRequestDto.getCalendarDate() != null;
@@ -78,7 +82,7 @@ public class CalendarService {
 
         if(Objects.equals(calendarRequestDto.getMemberId(), principaldetail.getMember().getId())) {
             List<Goal> goalList = goalRepository.getMyTodayGoal(localDateTime,principaldetail.getMember().getSocialId());
-            goalList.forEach(Goal->convertMySpecificDto(Goal,specificGoalsDtoList,principaldetail.getMember().getNickname()));
+            goalList.forEach(Goal->convertMySpecificDto(Goal,specificGoalsDtoList));
         } else {
             List<Goal> goalList = goalRepository.getFollwerTodayGoal(localDateTime, calendarRequestDto.getMemberId(), false);
             goalList.forEach(Goal->convertFollowerSpecificDto(Goal,specificGoalsDtoList,principaldetail.getMember()));
@@ -89,19 +93,18 @@ public class CalendarService {
         return ResponseEntity.ok().body(dayGoalsDto);
     }
 
-    private void convertMySpecificDto(Goal goal, List<SpecificGoalsDto> specificGoalsDtoList,String nickname) {
+    private void convertMySpecificDto(Goal goal, List<SpecificGoalsDto> specificGoalsDtoList) {
         specificGoalsDtoList.add(SpecificGoalsDto.MyGoalsBuilder()
                 .goal(goal)
-                .nickname(nickname)
                 .build());
     }
     private void convertFollowerSpecificDto(Goal goal, List<SpecificGoalsDto> specificGoalsDtoList, Member member) {
         specificGoalsDtoList.add(SpecificGoalsDto.FriendGoalsBuilder()
                 .goal(goal)
-                .nickname(member.getNickname())
                 .socialId(member.getSocialId())
                 .build());
     }
+
 
     //TODO :  캘린더에서 특정 날짜 눌러서 데이터 나오는거 통합 api 적용중이라 추후 삭제될 API
     public ResponseEntity getFriendCalendar(Long friendId , Principaldetail principaldetail) {
@@ -146,6 +149,7 @@ public class CalendarService {
             return ResponseEntity.ok().body(calenderFriendUniteDto);
         }
     }
+
 
     //TODO :  캘린더에서 특정 날짜 달 눌러서 데이터 나오는거 통합 api 적용중
     public ResponseEntity findMemberSpecificMonth(CalendarRequestDto calendarRequestDto, Principaldetail principaldetail) {

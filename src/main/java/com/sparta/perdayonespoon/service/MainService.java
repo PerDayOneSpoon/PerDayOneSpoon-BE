@@ -40,7 +40,6 @@ public class MainService {
     private static double totalCount = 0;
     private final GoalRepository goalRepository;
 
-    @Transactional(readOnly = true)
     public ResponseEntity getGoal(Principaldetail principaldetail) {
         LocalDateTime sunday;
         LocalDateTime saturday;
@@ -86,24 +85,25 @@ public class MainService {
         for(int y=1; y<=7; y++){
             if(!dayList.isEmpty()) {
                 if (!dayList.contains(y)) {
-                    if(y == 7){
-                        weekRateDtoList.add(0,WeekRateDto.builder().id(0).rate(0).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());
+                    if(y < 7){
+                        weekRateDtoList.add(y-1,WeekRateDto.builder().id(y).rate(0).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());
                     }
-                    else weekRateDtoList.add(y-1,WeekRateDto.builder().id(y).rate(0).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());
+                    else weekRateDtoList.add(0,WeekRateDto.builder().id(0).rate(0).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());
                 }
             }
             else {
-                if(y == 7){
-                    weekRateDtoList.add(0,WeekRateDto.builder().rate(0).id(0).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());
+                if(y < 7){
+                    weekRateDtoList.add(y-1,WeekRateDto.builder().rate(0).id(y).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());
                 }
-                else weekRateDtoList.add(y-1,WeekRateDto.builder().rate(0).id(y).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());}
+                else weekRateDtoList.add(0,WeekRateDto.builder().rate(0).id(0).dayString(DayOfWeek.of(y).getDisplayName(TextStyle.SHORT, Locale.KOREAN)).build());}
         }
         if(!dayList.isEmpty()){
             dayList.clear();
         }
+        List<WeekRateDto> weekRateDtos = weekRateDtoList.stream().sorted(Comparator.comparing(WeekRateDto::getId)).collect(Collectors.toList());
         List<TodayGoalsDto> todayGoalsDtoList = goalRepository.getTodayGoal(LocalDateTime.now(),principaldetail.getMember().getSocialId());
         AchivementResponseDto achivementResponseDto = AchivementResponseDto.builder()
-                .weekRateDtoList(weekRateDtoList)
+                .weekRateDtoList(weekRateDtos)
                 .todayGoalsDtoList(todayGoalsDtoList)
                 .msgDto(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("주간 습관 확인에 성공하셨습니다. 힘내세요!").build())
                 .weekStartDate(sunday.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
@@ -154,7 +154,6 @@ public class MainService {
         }
     }
     // TODO : 달력 날짜 받기X 주간 달성도 리턴하기
-    @Transactional
     public ResponseEntity<List<GoalResponseDto>> CreateGoal(GoalDto goalDto, Principaldetail principaldetail) {
         String goalFlag = UUID.randomUUID().toString();
         if(goalDto.getTitle() == null) {
@@ -339,7 +338,6 @@ public class MainService {
             throw new IllegalArgumentException("금일을 넘는 목표는 생성할 수 없습니다. 다시 생성해 주세요");
     }
 
-    @Transactional
     public ResponseEntity<GoalResponseDto> ChangeGoal(long goalId,Boolean achievement,Principaldetail principaldetail) {
         if(achievement == null){
             throw new IllegalArgumentException("통신시 달성여부가 보내져야 합니다.");

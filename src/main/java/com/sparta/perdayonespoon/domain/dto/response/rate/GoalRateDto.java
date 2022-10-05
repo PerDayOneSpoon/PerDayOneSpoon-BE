@@ -39,7 +39,7 @@ public class GoalRateDto {
 
     public WeekRateDto getWeekRateDto(){
         if(whatsDay == 7)
-            whatsDay =0;
+            whatsDay = 0;
         return WeekRateDto.builder()
                 .id(whatsDay)
                 .rate(rate)

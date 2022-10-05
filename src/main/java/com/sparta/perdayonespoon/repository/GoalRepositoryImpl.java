@@ -87,37 +87,13 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
     @Override
     public List<Goal> getMyTodayGoal(LocalDateTime currentDate, String socialId){
         return queryFactory
-                .selectDistinct(goal)
-                .from(goal)
+                .selectFrom(goal)
                 .where(goal.currentDate.dayOfYear().eq(currentDate.getDayOfYear()),
                         GoalSocialEq(socialId))
                 .join(goal.member,member).fetchJoin()
                 .leftJoin(goal.heartList,heart).fetchJoin()
                 .leftJoin(goal.commentList,comment)
-                .fetch();
-    }
-
-    @Override
-    public List<TodayGoalsDto> getFriendTodayGoal(LocalDateTime currentDate,Long friendId,String socialId, boolean privateCheck){
-        return queryFactory
-                .select(new QTodayGoalsDto(
-                        goal.title,
-                        goal.startDate,
-                        goal.endDate,
-                        goal.time,
-                        goal.characterId,
-                        goal.id,
-                        goal.privateCheck,
-                        goal.currentDate,
-                        goal.achievementCheck,
-                        goal.heartList.size(),
-                        goal.goalFlag,
-                        JPAExpressions.selectFrom(heart).where(heart.goal.id.eq(goal.id),heart.socialId.eq(socialId)).exists()
-                        ))
-                .from(goal)
-                .rightJoin(member).on(goal.socialId.eq(member.socialId),member.id.eq(friendId))
-                .where(goal.currentDate.dayOfYear().eq(currentDate.getDayOfYear()),
-                        GoalPrivateEq(privateCheck))
+                .distinct()
                 .fetch();
     }
 

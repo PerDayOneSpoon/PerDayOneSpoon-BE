@@ -1,5 +1,7 @@
 package com.sparta.perdayonespoon.service;
 
+import com.sparta.perdayonespoon.comment.domain.entity.Comment;
+import com.sparta.perdayonespoon.comment.domain.repository.CommentRepository;
 import com.sparta.perdayonespoon.domain.*;
 import com.sparta.perdayonespoon.domain.dto.S3Dto;
 import com.sparta.perdayonespoon.domain.dto.request.StatusDto;
@@ -18,10 +20,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class MyPageService {
+
+    private final CommentRepository commentRepository;
     private final GoalRepository goalRepository;
     private final FriendRepository friendRepository;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -38,16 +43,21 @@ public class MyPageService {
     }
 
     public ResponseEntity deleteToken(Principaldetail principaldetail){
-        refreshTokenRepository.findByKey(principaldetail.getMember().getSocialId())
-                .map(this::delete)
-                .orElseThrow(() -> new IllegalArgumentException("이미 로그아웃한 사용자입니다."));
+
+        if(refreshTokenRepository.existsByKey(principaldetail.getMember().getSocialId())) {
+            refreshTokenRepository.findByKey(principaldetail.getMember().getSocialId())
+                    .map(this::delete)
+                    .orElseThrow(() -> new IllegalArgumentException("이미 로그아웃한 사용자입니다."));
+        }
         //(6)
         return ResponseEntity.ok(MsgDto.builder().code(HttpServletResponse.SC_OK).msg(principaldetail.getMember().getNickname()+"님 로그아웃에 성공하셨습니다.").build());
     }
     public ResponseEntity deleteMember(Principaldetail principaldetail) {
+
         refreshTokenRepository.findByKey(principaldetail.getMember().getSocialId())
                 .map(this::delete)
-                .orElseThrow(() -> new IllegalArgumentException("이미 로그아웃한 사용자입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("이미 탈퇴한 회원입니다."));
+
         memberRepository.findBySocialId(principaldetail.getMember().getSocialId())
                 .map(this::deleteDb)
                 .orElseThrow(() -> new IllegalArgumentException("이미 탈퇴한 회원입니다."));
@@ -68,43 +78,6 @@ public class MyPageService {
         memberRepository.delete(member);
         return true;
     }
-
-//    public ResponseEntity changeImage(Principaldetail principaldetail, MultipartFile multipartFile) throws IOException {
-//        if(multipartFile.isEmpty()){
-//            throw new IllegalArgumentException("게시글 작성시 이미지 파일이 필요합니다.");
-//        }
-//        Member member = memberRepository.findBySocialId(principaldetail.getMember().getSocialId()).orElseThrow(IllegalArgumentException::new);
-//        S3Dto s3Dto = scalr_resize_s3Uploader.uploadImage(multipartFile);
-//        DeletedUrlPath deletedUrlPath = DeletedUrlPath.builder().deletedUrlPath(member.getImage().getImgUrl()).build();
-//        deletedUrlPathRepository.save(deletedUrlPath);
-//        member.getImage().SetTwoField(s3Dto);
-//        memberRepository.save(member);
-//        ImageDto imageDto = ImageDto.builder()
-//                .imageName(member.getImage().getImgName())
-//                .uploadImageUrl(member.getImage().getImgUrl())
-//                .build();
-//        imageDto.SetTwoproperties(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"이미지 변경에 성공하셨습니다."));
-//        return ResponseEntity.ok(imageDto);
-//    }
-//
-//    public ResponseEntity changeStatus(Principaldetail principaldetail, StatusDto statusDto) {
-//        Member member = memberRepository.findBySocialId(principaldetail.getMember().getSocialId()).orElseThrow(IllegalArgumentException::new);
-//        if(statusDto.getStatus() != null && statusDto.getNickname() !=null){
-//            member.SetTwoColumn(statusDto);
-//        }else if (statusDto.getNickname() != null){
-//            member.Setname(statusDto.getNickname());
-//        }else if (statusDto.getStatus() != null) {
-//            member.SetStatus(statusDto.getStatus());
-//        }else if(statusDto.getStatus() == null && statusDto.getNickname() == null){
-//            throw new IllegalArgumentException("입력을 받지 못했습니다.");
-//        }
-//
-//        memberRepository.save(member);
-//        MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member);
-//        memberResponseDto.setTwoField(GenerateMsg.getMsg(HttpServletResponse.SC_OK,"성공하셨습니다."));
-//        return ResponseEntity.ok(memberResponseDto);
-//    }
-
     public void removeS3Image() {
         List<DeletedUrlPath> deletedUrlPaths = deletedUrlPathRepository.findAll();
         deletedUrlPaths.forEach(this::remove);
@@ -114,7 +87,6 @@ public class MyPageService {
         scalr_resize_s3Uploader.remove(deletedUrlPath.getDeletedUrlPath());
     }
 
-    @Transactional
     public ResponseEntity changeProfile(Principaldetail principaldetail, MultipartFile multipartFile, StatusDto statusDto) throws IOException {
         Member member = memberRepository.findBySocialId(principaldetail.getMember().getSocialId()).orElseThrow(IllegalArgumentException::new);
         if(statusDto.getStatus() != null && statusDto.getNickname() != null){
@@ -124,15 +96,32 @@ public class MyPageService {
         }else if (statusDto.getStatus() != null) {
             member.SetStatus(statusDto.getStatus());
         }
-
+        List<Comment> commentList = commentRepository.getCommentByMemberId(principaldetail.getMember().getId());
         if(multipartFile != null) {
             S3Dto s3Dto = scalr_resize_s3Uploader.uploadImage(multipartFile);
             DeletedUrlPath deletedUrlPath = DeletedUrlPath.builder().deletedUrlPath(member.getImage().getImgUrl()).build();
             deletedUrlPathRepository.save(deletedUrlPath);
             member.getImage().SetTwoField(s3Dto);
+
+            if(!commentList.isEmpty()) {
+                commentList.forEach(comment -> changeImageandName(comment, s3Dto.getUploadImageUrl(), statusDto.getNickname()));
+                commentRepository.saveAll(commentList);
+            }
+
+        } else if(!commentList.isEmpty()) {
+            commentList.forEach(comment -> changeName(comment, statusDto.getNickname()));
+            commentRepository.saveAll(commentList);
         }
         MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member);
         memberResponseDto.setTwoField(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("프로필 변경에 성공하셨습니다.").build());
         return ResponseEntity.ok(memberResponseDto);
+    }
+
+    private void changeImageandName(Comment comment , String profileImage, String nickname){
+        comment.changeImageandName(profileImage,nickname);
+    }
+
+    private void changeName(Comment comment, String nickname) {
+        comment.changeName(nickname);
     }
 }

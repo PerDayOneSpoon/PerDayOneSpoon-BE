@@ -31,7 +31,6 @@ dependencies {
     // querydsl 추가 시작
 
     implementation 'com.github.maricn:logback-slack-appender:1.4.0'
-//    implementation 'com.github.maricn:logback-slack-appender:1.4.0'
 
     implementation 'com.querydsl:querydsl-jpa'
     implementation 'com.querydsl:querydsl-apt'
@@ -107,10 +106,10 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.0.1.RELEASE'
 
     // Quartz 의존성
-    implementation "org.springframework.boot:spring-boot-starter-quartz"
+//    implementation "org.springframework.boot:spring-boot-starter-quartz"
 
     //이미지 메타 데이터 읽어내는 의존성 - 이미지 orientation을 읽어내기 위함
-    implementation group: 'com.drewnoakes', name: 'metadata-extractor', version: '2.9.1'
+//    implementation group: 'com.drewnoakes', name: 'metadata-extractor', version: '2.9.1'
 
     //Redis 의존성
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'

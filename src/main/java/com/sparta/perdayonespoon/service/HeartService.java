@@ -30,11 +30,11 @@ public class HeartService {
 
     private final MemberRepository memberRepository;
 
-    @Transactional
+
     public ResponseEntity<HeartResponseDto> addHearts(Principaldetail principaldetail, String goalFlag) {
-        List<Goal> goalList= heartRepository.findGoalsHeart(goalFlag,principaldetail.getMember().getSocialId());
+        List<Goal> goalList= heartRepository.findGoalsHeart(goalFlag);
         if(!goalList.isEmpty()) {
-            if (goalList.get(0).getSocialId().equals(principaldetail.getMember().getSocialId()))
+            if (goalList.get(0).getMember().getSocialId().equals(principaldetail.getMember().getSocialId()))
                 throw new IllegalArgumentException("자신의 습관에 좋아요를 할 수 없습니다");
         }
         else
@@ -123,21 +123,17 @@ public class HeartService {
             if(!badgeList.isEmpty()){
                 badgeRepository.saveAll(badgeList);
             }
+            String message;
             if(goalList.get(0).getTitle().length() <= 8) {
-                String message = goalList.get(0).getTitle()+"에 " + member.getNickname() + "님이 좋아요를 눌렀습니다!";
-                notificationService.send(BadgeSseDto.builder()
-                        .notificationType(NotificationType.Heart)
-                        .message(message)
-                        .member(badgeOwner)
-                        .build());
+                message = goalList.get(0).getTitle() + "에 " + member.getNickname() + "님이 좋아요를 눌렀습니다!";
             }else {
-                String message = goalList.get(0).getTitle().substring(0,8)+"...에 " + member.getNickname() + "님이 좋아요를 눌렀습니다!";
-                notificationService.send(BadgeSseDto.builder()
-                        .notificationType(NotificationType.Heart)
-                        .message(message)
-                        .member(badgeOwner)
-                        .build());
+                message = goalList.get(0).getTitle().substring(0, 8) + "...에 " + member.getNickname() + "님이 좋아요를 눌렀습니다!";
             }
+            notificationService.send(BadgeSseDto.builder()
+                    .notificationType(NotificationType.Heart)
+                    .message(message)
+                    .member(badgeOwner)
+                    .build());
             return ResponseEntity.ok().body(heartResponseDto);
         }else{
             List<Heart> heartList = goalList.stream()

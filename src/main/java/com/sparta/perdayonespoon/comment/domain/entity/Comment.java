@@ -1,5 +1,7 @@
 package com.sparta.perdayonespoon.comment.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.perdayonespoon.domain.Goal;
 import com.sparta.perdayonespoon.domain.Member;
 ;
@@ -21,10 +23,12 @@ public class Comment extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     private Goal goal;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JsonIgnore
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -37,13 +41,26 @@ public class Comment extends Timestamped {
     @Column
     private String nickname;
 
+    @Column
+    private String socialId;
+
     @Builder
-    public Comment(Goal goal, Member member, String content,String profileImage,String nickname){
+    public Comment(Goal goal, Member member, String content,String profileImage,String nickname,String socialId){
         this.goal =goal;
         goal.getCommentList().add(this);
         this.member = member;
         this.content = content;
         this.profileImage = profileImage;
+        this.nickname = nickname;
+        this.socialId = socialId;
+    }
+
+    public void changeImageandName(String profileImage, String nickname){
+        this.profileImage = profileImage;
+        this.nickname = nickname;
+    }
+
+    public void changeName(String nickname) {
         this.nickname = nickname;
     }
 }

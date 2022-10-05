@@ -7,6 +7,7 @@ import com.sparta.perdayonespoon.domain.QGoal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.sparta.perdayonespoon.comment.domain.entity.QComment.comment;
@@ -26,5 +27,12 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom{
                 .innerJoin(comment.member, member).fetchJoin()
                 .innerJoin(comment.goal, goal).fetchJoin()
                 .fetchOne());
+    }
+    @Override
+    public List<Comment> getCommentByMemberId(Long id){
+        return  queryFactory
+                .selectFrom(comment)
+                .where(comment.member.id.eq(id))
+                .fetch();
     }
 }
