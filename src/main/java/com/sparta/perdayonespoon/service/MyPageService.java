@@ -87,6 +87,7 @@ public class MyPageService {
         scalr_resize_s3Uploader.remove(deletedUrlPath.getDeletedUrlPath());
     }
 
+    @Transactional
     public ResponseEntity changeProfile(Principaldetail principaldetail, MultipartFile multipartFile, StatusDto statusDto) throws IOException {
         Member member = memberRepository.findBySocialId(principaldetail.getMember().getSocialId()).orElseThrow(IllegalArgumentException::new);
         if(statusDto.getStatus() != null && statusDto.getNickname() != null){
@@ -112,6 +113,7 @@ public class MyPageService {
             commentList.forEach(comment -> changeName(comment, statusDto.getNickname()));
             commentRepository.saveAll(commentList);
         }
+
         MemberResponseDto memberResponseDto = MemberMapper.INSTANCE.orderToDto(member);
         memberResponseDto.setTwoField(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("프로필 변경에 성공하셨습니다.").build());
         return ResponseEntity.ok(memberResponseDto);

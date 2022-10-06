@@ -17,9 +17,9 @@ import com.sparta.perdayonespoon.repository.MemberRepository;
 import com.sparta.perdayonespoon.repository.RefreshTokenRepository;
 import com.sparta.perdayonespoon.sse.domain.repository.EmitterRepository;
 import com.sparta.perdayonespoon.util.HeaderUtil;
-import com.sparta.perdayonespoon.util.MailUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,10 +42,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class KakaoService {
+
+    private final ApplicationEventPublisher eventPublisher;
     private final EmitterRepository emitterRepository;
     private final HeaderUtil headerUtil;
-
-    private final MailUtil mailUtil;
 
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -152,7 +152,8 @@ public class KakaoService {
                     .build();
             image.setMember(member);
             imageRepository.save(image);
-            mailUtil.RegisterMail(member);
+            eventPublisher.publishEvent(member);
+//            mailUtil.RegisterMail(member);
             emitterRepository.save(member.getSocialId()+1,new SseEmitter(45000L));
             return member;
         }

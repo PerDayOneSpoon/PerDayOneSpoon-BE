@@ -17,9 +17,9 @@ import com.sparta.perdayonespoon.repository.MemberRepository;
 import com.sparta.perdayonespoon.repository.RefreshTokenRepository;
 import com.sparta.perdayonespoon.sse.domain.repository.EmitterRepository;
 import com.sparta.perdayonespoon.util.HeaderUtil;
-import com.sparta.perdayonespoon.util.MailUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -44,10 +44,9 @@ import java.util.UUID;
 @Service
 public class GoogleService {
 
+    private final ApplicationEventPublisher eventPublisher;
     private final EmitterRepository emitterRepository;
     private final HeaderUtil headerUtil;
-
-    private final MailUtil mailUtil;
 
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -143,7 +142,8 @@ public class GoogleService {
                     .build();
             image.setMember(member);
             imageRepository.save(image);
-            mailUtil.RegisterMail(member);
+            eventPublisher.publishEvent(member);
+//            mailUtil.RegisterMail(member);
             emitterRepository.save(member.getSocialId()+1,new SseEmitter(45000L));
             return member;
         }
