@@ -58,7 +58,6 @@ public class Member extends Timestamped {
     private Image image;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @OrderColumn
     @JsonManagedReference
     private List<Badge> badgeList;
 
