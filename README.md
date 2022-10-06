@@ -46,9 +46,9 @@
 
 <li>습관은 3일과 7일 중에 선택할 수 있습니다.</li>
 <li>시간과 캐릭터를 선택할 수 있습니다.</li>
-<img src="https://perday-onespoon.s3.ap-northeast-2.amazonaws.com/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA+2022-10-06+%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE+6.56.59.png" width="150">
+<img src="https://perday-onespoon.s3.ap-northeast-2.amazonaws.com/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA+2022-10-06+%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE+6.56.59.png" width="200">
 <li>설정한 시간으로 타이머를 진행하고 습관을 달성할 수 있습니다.</li>
-<img src="https://perday-onespoon.s3.ap-northeast-2.amazonaws.com/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA+2022-10-06+%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE+7.29.43.png" width="150">
+<img src="https://perday-onespoon.s3.ap-northeast-2.amazonaws.com/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA+2022-10-06+%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE+7.29.43.png" width="200">
 <li>설정한 습관을 캘린더에서도 확인할 수 있습니다.</li>
 
 
@@ -65,9 +65,9 @@
   <ul>
 
 <li>친구의 이메일, 이름 또는 검색코드를 사용하여 검색할 수 있습니다.</li>
-<img src="https://perday-onespoon.s3.ap-northeast-2.amazonaws.com/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA+2022-10-06+%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE+7.31.32.png" width="150">
+<img src="https://perday-onespoon.s3.ap-northeast-2.amazonaws.com/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA+2022-10-06+%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE+7.31.32.png" width="200">
 <li>캘린더에서 친구가 공개 설정한 습관을 확인할 수 있습니다.</li>
-<img src="https://perday-onespoon.s3.ap-northeast-2.amazonaws.com/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA+2022-10-06+%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE+7.32.40.png" width="150">
+<img src="https://perday-onespoon.s3.ap-northeast-2.amazonaws.com/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA+2022-10-06+%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE+7.32.40.png" width="200">
 
 
 
@@ -84,7 +84,7 @@
   <ul>
 
   <li>친구가 어떤 습관을 했는지 둘러보고 응원과 코멘트를 남길 수 있습니다.</li>
-  <img src="https://perday-onespoon.s3.ap-northeast-2.amazonaws.com/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA+2022-10-06+%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE+7.36.25.png" width="150">
+  <img src="https://perday-onespoon.s3.ap-northeast-2.amazonaws.com/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA+2022-10-06+%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE+7.36.25.png" width="200">
 
 
   </ul>
