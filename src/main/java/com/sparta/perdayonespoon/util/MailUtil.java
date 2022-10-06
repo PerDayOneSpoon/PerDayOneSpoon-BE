@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -14,7 +15,7 @@ import javax.mail.internet.InternetAddress;
 import java.io.IOException;
 
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class MailUtil {
     private final JavaMailSender mailSender;
@@ -23,7 +24,7 @@ public class MailUtil {
 
     // 최초 회원가입시 메일 전송
     @Async
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMPLETION)
+    @TransactionalEventListener
     public void RegisterMail(Member member) throws MessagingException, IOException {
         InternetAddress from = new InternetAddress(fromMail, "하루 한 줌");
         MailHandler mailHandler = new MailHandler(mailSender);

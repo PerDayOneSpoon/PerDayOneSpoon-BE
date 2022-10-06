@@ -77,7 +77,8 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .where(member.socialId.eq(socialId))
                 .innerJoin(member.image,image).fetchJoin()
                 .leftJoin(member.badgeList,badge).fetchJoin()
-                .fetchFirst();
+                .distinct()
+                .fetchOne();
     }
 
     @Override

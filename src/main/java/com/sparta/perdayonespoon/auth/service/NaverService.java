@@ -21,6 +21,7 @@ import com.sparta.perdayonespoon.sse.service.NotificationService;
 import com.sparta.perdayonespoon.util.HeaderUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -43,6 +44,7 @@ import java.util.UUID;
 @Service
 public class NaverService {
 
+    private final ApplicationEventPublisher eventPublisher;
     private final EmitterRepository emitterRepository;
     private final HeaderUtil headerUtil;
 
@@ -135,6 +137,7 @@ public class NaverService {
             image.setMember(member);
             imageRepository.save(image);
             emitterRepository.save(member.getSocialId()+1,new SseEmitter(45000L));
+            eventPublisher.publishEvent(member);
             return member;
         }
 
