@@ -78,7 +78,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .innerJoin(member.image,image).fetchJoin()
                 .leftJoin(member.badgeList,badge).fetchJoin()
                 .distinct()
-                .fetchOne();
+                .fetchFirst();
     }
 
     @Override
