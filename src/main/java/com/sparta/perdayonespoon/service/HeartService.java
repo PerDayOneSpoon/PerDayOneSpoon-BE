@@ -10,6 +10,7 @@ import com.sparta.perdayonespoon.repository.MemberRepository;
 import com.sparta.perdayonespoon.sse.NotificationType;
 import com.sparta.perdayonespoon.sse.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class HeartService {
+    private final ApplicationEventPublisher eventPublisher;
     private final NotificationService notificationService;
     private final BadgeRepository badgeRepository;
     private final HeartRepository heartRepository;
@@ -129,11 +131,16 @@ public class HeartService {
             }else {
                 message = goalList.get(0).getTitle().substring(0, 8) + "...에 " + member.getNickname() + "님이 좋아요를 눌렀습니다!";
             }
-            notificationService.send(BadgeSseDto.builder()
-                    .notificationType(NotificationType.Heart)
+            eventPublisher.publishEvent(BadgeSseDto.builder()
+                    .notificationType(NotificationType.Badge)
                     .message(message)
                     .member(badgeOwner)
                     .build());
+//            notificationService.send(BadgeSseDto.builder()
+//                    .notificationType(NotificationType.Heart)
+//                    .message(message)
+//                    .member(badgeOwner)
+//                    .build());
             return ResponseEntity.ok().body(heartResponseDto);
         }else{
             List<Heart> heartList = goalList.stream()

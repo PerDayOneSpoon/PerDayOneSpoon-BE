@@ -129,7 +129,6 @@ public class NotificationService {
      */
 
     @Async
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMPLETION)
     public void send(BadgeSseDto badgeSseDto) {
         Notification notification = notificationRepository.save(createNotification(badgeSseDto.getMember(),badgeSseDto.getMessage(),badgeSseDto.getNotificationType()));
         NotificationDto notificationDto = NotificationDto.builder()

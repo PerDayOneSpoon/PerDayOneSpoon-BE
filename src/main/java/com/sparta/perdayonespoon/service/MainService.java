@@ -18,9 +18,11 @@ import com.sparta.perdayonespoon.sse.service.NotificationService;
 import com.sparta.perdayonespoon.util.BadgeUtil;
 import com.sparta.perdayonespoon.util.GetCharacterUrl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.servlet.http.HttpServletResponse;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -32,6 +34,7 @@ import java.util.stream.Collectors;
 @Service
 public class MainService {
 
+    private final ApplicationEventPublisher eventPublisher;
     private final NotificationService notificationService;
     private final BadgeUtil badgeUtil;
     private final MemberRepository memberRepository;
@@ -40,6 +43,7 @@ public class MainService {
     private static double totalCount = 0;
     private final GoalRepository goalRepository;
 
+    @Transactional(readOnly = true)
     public ResponseEntity getGoal(Principaldetail principaldetail) {
         LocalDateTime sunday;
         LocalDateTime saturday;
@@ -153,6 +157,7 @@ public class MainService {
             }
         }
     }
+    @Transactional
     // TODO : 달력 날짜 받기X 주간 달성도 리턴하기
     public ResponseEntity<List<GoalResponseDto>> CreateGoal(GoalDto goalDto, Principaldetail principaldetail) {
         String goalFlag = UUID.randomUUID().toString();
@@ -263,13 +268,19 @@ public class MainService {
                     .build());}
     }
 
+    @Transactional
     public void getWelcomeBadge(Member member, List<Badge> badgeList) {
         String message = "축하합니다! 🐣 웰컴 뱃지를 획득하셨습니다.";
-        notificationService.send(BadgeSseDto.builder()
+        eventPublisher.publishEvent(BadgeSseDto.builder()
                 .notificationType(NotificationType.Badge)
                 .message(message)
                 .member(member)
                 .build());
+//        notificationService.send(BadgeSseDto.builder()
+//                .notificationType(NotificationType.Badge)
+//                .message(message)
+//                .member(member)
+//                .build());
         badgeList.add(Badge.realBadgeBuilder()
                 .badgeName("웰컴 뱃지")
                 .member(member)
