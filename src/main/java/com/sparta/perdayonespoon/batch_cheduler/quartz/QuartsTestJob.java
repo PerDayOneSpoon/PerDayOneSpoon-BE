@@ -1,4 +1,4 @@
-package com.sparta.perdayonespoon.quartzscheduler;
+package com.sparta.perdayonespoon.batch_cheduler.quartz;
 
 import org.quartz.Job;
 import org.quartz.JobDataMap;
@@ -7,7 +7,7 @@ import org.quartz.JobKey;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TestJob implements Job {
+public class QuartsTestJob implements Job {
 
 
     @Override

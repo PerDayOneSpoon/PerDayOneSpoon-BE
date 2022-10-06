@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableJpaAuditing
 @SpringBootApplication
 @EnableEncryptableProperties
-@EnableBatchProcessing
 @EnableScheduling
 public class PerDayOneSpoonApplication {
 

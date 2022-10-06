@@ -1,6 +1,5 @@
-package com.sparta.perdayonespoon.quartzscheduler;
+package com.sparta.perdayonespoon.batch_cheduler.quartz;
 
-import lombok.RequiredArgsConstructor;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.stereotype.Component;
@@ -8,7 +7,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 @Component
-public class MyScheduler {
+public class QuartzMyScheduler {
 
     private SchedulerFactory schedulerFactory;
     private Scheduler scheduler;
@@ -21,7 +20,7 @@ public class MyScheduler {
         scheduler.start();
 
         // 수행할 Job 의 인스턴스 를 정의 한다.
-        JobDetail jobDetail = JobBuilder.newJob(TestJob.class)
+        JobDetail jobDetail = JobBuilder.newJob(QuartsTestJob.class)
                 .withIdentity("TestJob")    // 필요 할 경우 그룹을 지정 가능.
                 .usingJobData("JobKey", "My First Job")
                 .requestRecovery()
