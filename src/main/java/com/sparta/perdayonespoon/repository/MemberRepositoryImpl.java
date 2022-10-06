@@ -87,7 +87,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .selectFrom(member)
                 .where(member.id.eq(id))
                 .join(member.image, image).fetchJoin()
-                .leftJoin(member.badgeList, badge).fetchJoin()
+                .leftJoin(member.badgeList, badge)
                 .leftJoin(member.goalList,goal).fetchJoin()
                 .leftJoin(goal.commentList,comment)
                 .fetchOne());
