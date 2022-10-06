@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -129,6 +130,8 @@ public class NotificationService {
      */
 
     @Async
+    @TransactionalEventListener
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void send(BadgeSseDto badgeSseDto) {
         Notification notification = notificationRepository.save(createNotification(badgeSseDto.getMember(),badgeSseDto.getMessage(),badgeSseDto.getNotificationType()));
         NotificationDto notificationDto = NotificationDto.builder()
