@@ -210,9 +210,6 @@ public class MainService {
             if(member.getBadgeList().size()>=5){
                 checkKingBadge(member, badgeList);
             }
-            if(!badgeList.isEmpty()) {
-                badgeRepository.saveAll(badgeList);
-            }
             while(period -->0){
                     goalList.add(Goal.builder()
                     .achievementCheck(goalDto.achievementCheck)
@@ -232,6 +229,9 @@ public class MainService {
             }
 
             goalRepository.saveAll(goalList);
+            if(!badgeList.isEmpty()) {
+                badgeRepository.saveAll(badgeList);
+            }
             List<GoalResponseDto> goalResponseDtoList = new ArrayList<>();
             goalList.forEach(Goal -> goalResponseDtoList.add(GoalResponseDto.builder()
                     .currentdate(Goal.getCurrentDate().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")).substring(0,13))
@@ -746,6 +746,8 @@ public class MainService {
     }
 
     private void cutMapping(Goal goal) {
+        goal.getCommentList().clear();
         goal.getMember().getGoalList().remove(goal);
+
     }
 }
