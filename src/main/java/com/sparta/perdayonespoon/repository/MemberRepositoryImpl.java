@@ -75,8 +75,8 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                         JPAExpressions.select(friend.count()).from(friend).where(friend.followingId.eq(socialId)).groupBy(friend.followingId)))
                 .from(member)
                 .where(member.socialId.eq(socialId))
-                .innerJoin(member.image,image).fetchJoin()
-                .leftJoin(member.badgeList,badge).fetchJoin()
+                .join(member.image,image)
+                .join(member.badgeList,badge)
                 .distinct()
                 .fetchFirst();
     }
