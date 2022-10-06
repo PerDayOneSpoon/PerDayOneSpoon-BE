@@ -11,4 +11,5 @@ public interface CommentRepositoryCustom {
     Optional<Comment> getCommentById(Long commentId);
 
     List<Comment> getCommentByMemberId(Long id);
+
 }

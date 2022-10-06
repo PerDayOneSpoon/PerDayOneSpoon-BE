@@ -19,4 +19,6 @@ public interface MemberRepositoryCustom {
     Optional<Member> findByMemberId(Long id);
 
     List<Member> getTwoMember(String socialId, String friendId);
+
+    Optional<Member> getMemberAndImage(Long id);
 }

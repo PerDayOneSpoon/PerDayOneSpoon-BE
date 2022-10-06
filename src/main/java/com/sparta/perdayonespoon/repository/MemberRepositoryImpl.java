@@ -87,9 +87,9 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .selectFrom(member)
                 .where(member.id.eq(id))
                 .join(member.image, image).fetchJoin()
-                .leftJoin(member.badgeList, badge)
+                .leftJoin(member.badgeList, badge).fetchJoin()
                 .leftJoin(member.goalList,goal).fetchJoin()
-                .distinct()
+                .leftJoin(goal.commentList,comment)
                 .fetchOne());
     }
     @Override
@@ -99,6 +99,14 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .where(member.socialId.eq(socialId).or(member.socialId.eq(friendId)))
                 .limit(2)
                 .fetch();
+    }
+    @Override
+    public Optional<Member> getMemberAndImage(Long id){
+        return Optional.ofNullable(queryFactory
+                .selectFrom(member)
+                .where(member.id.eq(id))
+                .innerJoin(member.image,image).fetchJoin()
+                .fetchOne());
     }
 
 

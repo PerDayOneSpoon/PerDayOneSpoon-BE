@@ -57,11 +57,12 @@ public class Member extends Timestamped {
     @JsonManagedReference
     private Image image;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OrderColumn
     @JsonManagedReference
     private List<Badge> badgeList;
 
-    @OneToMany(mappedBy = "member" , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member" , cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Goal> goalList;
 

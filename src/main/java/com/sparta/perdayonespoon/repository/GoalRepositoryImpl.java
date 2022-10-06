@@ -6,6 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.perdayonespoon.comment.domain.entity.Comment;
 import com.sparta.perdayonespoon.comment.domain.entity.QComment;
 import com.sparta.perdayonespoon.domain.Goal;
+import com.sparta.perdayonespoon.domain.QImage;
 import com.sparta.perdayonespoon.domain.dto.CountDto;
 import com.sparta.perdayonespoon.domain.dto.QCountDto;
 import com.sparta.perdayonespoon.domain.dto.response.Goal.EveryTwoDaysGoalDto;
@@ -29,6 +30,7 @@ import static com.sparta.perdayonespoon.comment.domain.entity.QComment.comment;
 import static com.sparta.perdayonespoon.domain.QBadge.badge;
 import static com.sparta.perdayonespoon.domain.QGoal.goal;
 import static com.sparta.perdayonespoon.domain.QHeart.heart;
+import static com.sparta.perdayonespoon.domain.QImage.image;
 import static com.sparta.perdayonespoon.domain.QMember.member;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
@@ -200,6 +202,10 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom{
         return queryFactory
                 .selectFrom(goal)
                 .where(GoalSocialEq(socialId),GoalFlagEq(deleteFlag))
+                .leftJoin(goal.commentList,comment).fetchJoin()
+                .innerJoin(goal.member,member).fetchJoin()
+                .innerJoin(member.image, image).fetchJoin()
+                .distinct()
                 .fetch();
     }
 

@@ -35,4 +35,5 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom{
                 .where(comment.member.id.eq(id))
                 .fetch();
     }
+
 }

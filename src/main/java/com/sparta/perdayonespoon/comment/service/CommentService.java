@@ -35,8 +35,8 @@ public class CommentService {
     public ResponseEntity<MsgDto> addComment(Principaldetail principaldetail, Long goalId, CommentRequestDto commentRequestDto) {
         Goal goal = goalRepository.findById(goalId).orElseThrow(
                 ()-> new IllegalArgumentException("해당 습관이 없습니다."));
-        Member member = memberRepository.findById(principaldetail.getMember().getId()).orElseThrow(
-                () -> new IllegalArgumentException("해당 유저가 없습니다."));
+        Member member = memberRepository.getMemberAndImage(principaldetail.getMember().getId()).orElseThrow(
+                () -> new IllegalArgumentException(" 해당 유저가 없습니다."));
         Comment comment = Comment.builder()
                 .goal(goal)
                 .member(member)
@@ -67,13 +67,13 @@ public class CommentService {
         Comment comment = commentRepository.getCommentById(commentId).orElseThrow(
                 ()-> new IllegalArgumentException("해당 댓글이 없습니다."));
         if(comment.getGoal().getMember().getId().equals(principaldetail.getMember().getId()) && comment.getNickname().equals(principaldetail.getMember().getNickname())){
-            commentRepository.delete(comment);
+            commentRepository.deleteById(comment.getId());
             return ResponseEntity.ok().body(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("댓글 삭제에 성공하셨습니다.").build());
         }else if(comment.getGoal().getMember().getId().equals(principaldetail.getMember().getId()) && !comment.getNickname().equals(principaldetail.getMember().getNickname())){
-            commentRepository.delete(comment);
+            commentRepository.deleteById(comment.getId());
             return ResponseEntity.ok().body(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("댓글 삭제에 성공하셨습니다.").build());
         }else if(!comment.getGoal().getMember().getId().equals(principaldetail.getMember().getId()) && comment.getNickname().equals(principaldetail.getMember().getNickname())){
-            commentRepository.delete(comment);
+            commentRepository.deleteById(comment.getId());
             return ResponseEntity.ok().body(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("댓글 삭제에 성공하셨습니다.").build());
         }
         else throw new IllegalArgumentException("해당 댓글을 지울 수 없습니다.");
