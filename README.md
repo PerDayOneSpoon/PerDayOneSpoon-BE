@@ -207,5 +207,5 @@
 - [linux - 이미지 업로드]()
 - [QueryDsl - N+1 , 카테시안 곱 , multiplebag]()
 - [hikari pool time out]()<br>
-- **[ec2 메모리-스왑](https://github.com/PerDayOneSpoon/PerDayOneSpoon-BE.wiki.git)<br>**
+- **[ec2 메모리-스왑](https://github.com/PerDayOneSpoon/PerDayOneSpoon-BE/wiki/EC2-%EB%A9%94%EB%AA%A8%EB%A6%AC-%EC%82%AC%EC%9A%A9%EB%9F%89%EC%9C%BC%EB%A1%9C-%EC%9D%B8%ED%95%B4-%EC%84%9C%EB%B2%84-%EB%8B%A4%EC%9A%B4)<br>**
 - [SSE]()
