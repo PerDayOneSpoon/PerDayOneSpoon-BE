@@ -2,9 +2,12 @@
 
 ### 하루에 한 줌씩 🧑🏻‍🌾🌱 꾸준히 습관을 기록해보자! <br><br>
 
-하루 한 줌은 체득하고 싶은 습관들을 기록하여 꾸준히 이뤄나갈 수 있도록 도와주는 서비스입니다. <br>
-내 습관뿐만 아니라 친구의 습관까지 확인하고 독려할 수 있어요.
+> 하루 한 줌은 체득하고 싶은 습관들을 기록하여 꾸준히 이뤄나갈 수 있도록 도와주는 서비스입니다.<br><br>
+> 사용자들이 단순히 자신의 습관을 만드는 것보다 좀 더 재미있게 습관을 형성할 수 있도록 하자는 취지에서 시작된 프로젝트입니다. <br>
+> 따라서 내 습관뿐만 아니라 친구의 습관까지 확인하고 독려할 수 있습니다.
 <br>
+
+<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FmtAhG%2FbtrNhOL2bvc%2FnjDlPCDAfNPXkU5q19MNq0%2Fimg.jpg" width="800">
 
 - **[하루한줌 바로가기](https://www.perday-onespoon.com/)<br>**
 - **[발표 자료](https://docs.google.com/presentation/d/1u2x1SL4Bt863htJeiWeb8mTztDs20Rne1hU_DN310EU/edit?usp=sharing)<br>**
@@ -15,10 +18,13 @@
 
 ## 📆 프로젝트 기간 <br>
 
-<strong>2022/08/26~ 2022/10/07</strong>
+<ul>
+  <li>개발 기간: 2022/08/26 ~ 2022/10/07</li>
+  <li>런칭: 2022/10/03</li>
+  <li>유저 피드백: 2022/10/03 ~ 2022/10/07</li>
+  <li>추가 업데이트: 2022/10/03 ~ 진행 중</li>
+</ul>
 
-<br>
-<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FmtAhG%2FbtrNhOL2bvc%2FnjDlPCDAfNPXkU5q19MNq0%2Fimg.jpg" width="800">
 
 <br>
 <br>
@@ -26,6 +32,11 @@
 ## 📖 서비스 아키텍쳐<br>
 
 ![image](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fbg3Vqy%2FbtrNjyBAtmG%2Fz58lk6MglF7kHzwkWhkgBK%2Fimg.png)
+
+<br>
+<br>
+
+## 👊 아키텍쳐 도입 배경<br>
 
 <br>
 <br>
@@ -39,13 +50,17 @@
   <br/>
 
   <ul>
+    <li>시간과 캐릭터를 선택할 수 있습니다.</li>
+    <li>습관은 3일과 7일 중에 선택할 수 있습니다.</li>
+    <li>설정한 시간으로 타이머를 진행하고 습관을 달성할 수 있습니다.</li>
+    <li>설정한 습관을 캘린더에서도 확인할 수 있습니다.</li>
+    
+<br>
 
-<li>습관은 3일과 7일 중에 선택할 수 있습니다.</li>
-<li>시간과 캐릭터를 선택할 수 있습니다.</li>
-<li>설정한 시간으로 타이머를 진행하고 습관을 달성할 수 있습니다.</li>
-<li>설정한 습관을 캘린더에서도 확인할 수 있습니다.</li>
-
-[//]: # '<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbABAAD%2FbtrDuwnBz1i%2FCaQkquPqk4bEf2QJcL6Wt1%2Fimg.png" width="700">'
+  <img src="https://user-images.githubusercontent.com/84265783/194710362-81fb0bb3-8dfe-420e-996b-9fe94b28b3da.gif" width="300">
+  <img src="https://user-images.githubusercontent.com/84265783/194705245-90084918-5f83-495f-8804-9bbcd0e6fa8a.gif" width="300">
+    <img src="https://user-images.githubusercontent.com/84265783/194713505-59592dd2-dcd3-4d8b-b85f-9462b5940d3d.gif" width="300">
+<br>
 
   </ul>
 
@@ -61,10 +76,11 @@
 
 <li>친구의 이메일, 이름 또는 검색코드를 사용하여 검색할 수 있습니다.</li>
 <li>캘린더에서 친구가 공개 설정한 습관을 확인할 수 있습니다.</li>
+    <br/>
 
-[//]: # '<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F1IK8r%2FbtrDzx6boYh%2FD3cgCKUXNKV9s346poAZk1%2Fimg.png" width="500">'
-[//]: #
-[//]: # '<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbQQhc5%2FbtrDuvWvAyD%2Fro0Y69Q0fTeayMyn9GkL20%2Fimg.png" width="230">'
+<img src="https://user-images.githubusercontent.com/84265783/194705193-8292ef03-5278-49c2-8176-1591f9f20470.gif" width="300">
+<img src="https://user-images.githubusercontent.com/84265783/194705267-d68aebd3-08f6-4757-a9f3-4abd11dfe066.gif" width="300">
+    
 
   </ul>
 
@@ -79,10 +95,9 @@
   <ul>
 
   <li>친구가 어떤 습관을 했는지 둘러보고 응원과 코멘트를 남길 수 있습니다.</li>
+    <br/>
 
-[//]: # '<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F1IK8r%2FbtrDzx6boYh%2FD3cgCKUXNKV9s346poAZk1%2Fimg.png" width="500">'
-[//]: #
-[//]: # '<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbQQhc5%2FbtrDuvWvAyD%2Fro0Y69Q0fTeayMyn9GkL20%2Fimg.png" width="230">'
+<img src="https://user-images.githubusercontent.com/84265783/194709252-57c689ea-0399-4a0f-a639-9fa06cd8e618.gif" width="300">
 
   </ul>
 
@@ -95,8 +110,10 @@
 <br/>
 
 <ul>
-
-[//]: # '<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FPpdcS%2FbtrDnkHNAya%2FfBPyWypz382bJSPn2KcHK1%2Fimg.png" width="600">'
+  <li>프라이빗을 설정한 습관은 친구들이 캘린더에서 볼 수 없습니다.</li>
+  <br />
+  
+<img src="https://user-images.githubusercontent.com/84265783/194713335-245c547b-7203-4546-97d2-92d842239e8d.gif" width="300">
 
 </ul>
 
@@ -112,8 +129,10 @@
 
 <li>얻은 뱃지들은 이미지와 함께 언제 획득했는지 알 수 있습니다.</li>
 <li>얻지 않은 뱃지들은 물음표 모양의 뱃지와 함께 힌트를 제공합니다.</li>
+    <br/>    
 
-[//]: # '<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FsAMZp%2FbtrDy1TWRyO%2Fy0ddlC8V0ZFw85FBrPsdA1%2Fimg.png" width="700">'
+<img src="https://user-images.githubusercontent.com/84265783/194710480-997ca3db-83e9-4712-a59a-e0154a1dd91e.gif" width="300">
+    <br>
 
   </ul>
 
@@ -128,8 +147,29 @@
   <ul>
 
   <li>뱃지 획득, 댓글, 좋아요, 습관 달성 시 실시간으로 알림을 받을 수 있습니다.</li>
+    <br/>
 
-[//]: # '<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FsAMZp%2FbtrDy1TWRyO%2Fy0ddlC8V0ZFw85FBrPsdA1%2Fimg.png" width="700">'
+<img src="https://user-images.githubusercontent.com/84265783/194705255-4b4a48fc-f99b-4e1d-ab42-25aed71f6070.gif" width="300">
+<img src="https://user-images.githubusercontent.com/84265783/194705258-24af8f5a-8ffc-463c-8f7d-0f8546e2d238.gif" width="300">
+
+  </ul>
+
+</details>
+
+<details>
+
+  <summary><strong>🙍‍♂️내 프로필을 편집할 수 있어요!</strong></summary>
+
+  <br/>
+
+  <ul>
+
+  <li>사진과 이름, 상태메시지를 변경할 수 있습니다.</li>
+  <li>친구들의 상태메시지는 팔로우 또는 팔로워 목록에서 확인할 수 있습니다.</li>
+    <br/>
+
+<img src="https://user-images.githubusercontent.com/84265783/194712944-8d4b2dc3-5897-46f2-ac3d-c590dda5df3c.gif" width="300">
+    <img src="https://user-images.githubusercontent.com/84265783/194710374-d72647b4-ac21-45ff-b107-3d252be5239d.gif" width="300">
 
   </ul>
 
@@ -189,6 +229,7 @@
 
   <br>
   <br>
+
 
 ## 🎇 개발 포인트
 
