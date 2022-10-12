@@ -234,19 +234,22 @@
 ## 🎇 개발 포인트
 
 - [무중단 배포]()
-- [QueryDsl]()
-- [이미지 리사이징]()
-- [소셜로그인]()
+- **[이미지 리사이징](https://github.com/PerDayOneSpoon/PerDayOneSpoon-BE/wiki/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EB%A6%AC%EC%82%AC%EC%9D%B4%EC%A7%95)<br>**
+- **[Jasypt 암호화,복호화 적용](https://github.com/PerDayOneSpoon/PerDayOneSpoon-BE/wiki/Jasypt-%EC%95%94%ED%98%B8%ED%99%94-,-%EB%B3%B5%ED%98%B8%ED%99%94-application-yaml%ED%8C%8C%EC%9D%BC-%EC%A0%81%EC%9A%A9)<br>**
+- **[SSE 적용 간 서비스 강결합 문제 해결](https://github.com/PerDayOneSpoon/PerDayOneSpoon-BE/wiki/SSE-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EB%B0%9C%ED%96%89-,-%EA%B5%AC%EB%8F%85-%EC%A0%81%EC%9A%A9-%EB%B0%8F-%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EC%88%9C%EC%84%9C%EC%97%90-%EB%94%B0%EB%A5%B8-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EB%B0%9C%EC%83%9D-%EC%A0%81%EC%9A%A9(@TransactionalEventListner-,-@Transactional))<br>**
+- **[swagger 적용](https://github.com/PerDayOneSpoon/PerDayOneSpoon-BE/wiki/swagger-%EC%A0%81%EC%9A%A9)<br>**
+- **[QueryDsl 동적 쿼리 적용](https://github.com/PerDayOneSpoon/PerDayOneSpoon-BE/wiki/QueryDsl-%EB%8F%99%EC%A0%81-%EC%BF%BC%EB%A6%AC)<br>**
+- **[QueryDsl Jpa 성능 최적화 적용](https://github.com/PerDayOneSpoon/PerDayOneSpoon-BE/wiki/JPA-N%E2%9E%95-1-%EC%84%B1%EB%8A%A5-%EC%B5%9C%EC%A0%81%ED%99%94)<br>**
+- **[mapstruct 도입](https://github.com/PerDayOneSpoon/PerDayOneSpoon-BE/wiki/Map-Struct-%EB%8F%84%EC%9E%85)<br>**
 
 <br>
 <br>
 
 ## 🚀 트러블슈팅
 
-- [소셜로그인]()
-- [Jasypt]()
-- [linux - 이미지 업로드]()
-- [QueryDsl - N+1 , 카테시안 곱 , multiplebag]()
-- [hikari pool time out]()<br>
+- **[소셜로그인-코드변조](https://github.com/PerDayOneSpoon/PerDayOneSpoon-BE/wiki/%EC%86%8C%EC%85%9C-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EC%A0%81%EC%9A%A9(%EC%9D%B8%EA%B0%80-%EC%BD%94%EB%93%9C-%EB%B3%80%EC%A1%B0))<br>**
+- **[linux - 이미지 업로드](https://github.com/PerDayOneSpoon/PerDayOneSpoon-BE/wiki/Linux-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%97%85%EB%A1%9C%EB%93%9C-%EC%8B%A4%ED%8C%A8-%ED%98%84%EC%83%81)<br>**
+- **[QueryDsl - N+1 , 카테시안 곱 , multiplebag](https://github.com/PerDayOneSpoon/PerDayOneSpoon-BE/wiki/QueryDsl-Fetchjoin(%EC%B9%B4%ED%85%8C%EC%8B%9C%EC%95%88-%EA%B3%B1(Cartesian-Product),-Multiplebag-%EB%AC%B8%EC%A0%9C))<br>**
+- **[hikari pool time out](https://github.com/PerDayOneSpoon/PerDayOneSpoon-BE/wiki/Hikari-pool-time-out)<br>**
 - **[ec2 메모리-스왑](https://github.com/PerDayOneSpoon/PerDayOneSpoon-BE/wiki/EC2-%EB%A9%94%EB%AA%A8%EB%A6%AC-%EC%82%AC%EC%9A%A9%EB%9F%89%EC%9C%BC%EB%A1%9C-%EC%9D%B8%ED%95%B4-%EC%84%9C%EB%B2%84-%EB%8B%A4%EC%9A%B4)<br>**
-- [SSE]()
+- **[SSE 적용 간 리눅스 환경 설정 문제](https://github.com/PerDayOneSpoon/PerDayOneSpoon-BE/wiki/SSE-%EC%A0%81%EC%9A%A9-(%EB%A6%AC%EB%B2%84%EC%8A%A4-%ED%94%84%EB%A1%9D%EC%8B%9C-%ED%99%98%EA%B2%BD-%EC%84%A4%EC%A0%95-))<br>**
