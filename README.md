@@ -37,7 +37,51 @@
 <br>
 
 ## 👊 아키텍쳐 도입 배경<br>
-
+<details> 
+  <summary><strong>Git Action</strong></summary><br>
+  <li> CI & CD 구축 당시 구축된 환경에서 팀원들이 개발에만 집중할 수 있게 만드려는 것이 우리의 중점 과제였다.</li>
+  <li> 대안으로는 Genkins Travis가 존재했으나 둘다 EC2서버를 두대로 CI & CD 구축해야 한다는 차이점이 존재했다.</li>
+  <li> Git Action은 하나의 서버로 CI & CD구축이 가능하여 서버 비용의 문제 감당 시 비용 최소화를 할 수 있다고 생각했다.</li>
+  <li> 레퍼런스도 많고 러닝커브가 적으며 원격 저장소로 Git Hub를 사용하는 우리에겐 git action은 난이도도 적용하기도 제일 쉽다고 생각했다.</li>
+  <li> 상기 이유들로 비용 최소화 , 최소한의 시간으로 구축된 환경을 만족한다고 생각하여 Git Action으로 자동 배포환경을 구축했다.</li>
+</details>
+<details> 
+  <summary><strong>google, kakao, naver 소셜로그인 </strong></summary><br>
+  <li> 로그인을 구현하게 되었을 때 사용자들의 편의성을 고려하는 단계에서 일반 로그인은 편의성을 떨어뜨린다고 판단했다.</li>
+  <li> 소셜 로그인으로 인증 , 인가를 보증된 소셜(kakao등)에 맡겨 간편한 로그인 처리 방식으로 편의성을 향상시키고자 하였다.</li>
+  <li> 소셜 로그인 중 애플의 경우 (1년간 9~12만원의 비용) 결제금액의 이슈로 카카오 , 네이버 , 구글 3개의 소셜로그인을 선택하게 되었다.</li>
+  <li> git hub는 일반 사용자들에겐 접근성이 떨어진다고 판단했고 facebook은 naver, goolge로 대체 가능하다 판단했다.</li>
+  <li> 상기 이유들로 3개의 소셜 로그인을 선택하게 되었고 그에따라 편의성을 향상시킬 수 있었다.</li>
+</details>
+<details> 
+  <summary><strong>Redis</strong></summary><br>
+  <li> 데이터의 I/O가 잦은 경우 변동성이 적은 데이터일때 매번 DB를 조회하는 것은 트래픽 부하와 성능 저하를 해결할 수 없었다.</li>
+  <li> 데이터를 캐싱 처리하는 경우 트래픽을 줄이고 성능을 향상시킬 수 있는데 이때 로컬캐시 , Redis를 고려하게 되었다.</li>
+  <li> 로컬캐시(caffeine cache)를 고려하게 되었으나 무중단 배포 환경에서 휘발성 캐시가 사라질 위험이 존재한다고 판단했고 scale-out시 데이터 정합성 문제가 생긴다고 판단했다.</li>
+  <li> Redis의 경우 여러 자료구를 지원하여 캐싱 처리, 데이터를 처리하기 편리하다고 생각했고 무중단 배포환경에서 서버의 자원을 사용하기에 데이터가 사라질 위험이 존재하지 않았다.</li>
+  <li> Redis는 여러 서버간 데이터 정합성 문제도 해결할 수 있다고 생각했다.</li>
+  <li> 상기 이유들로 Redis를 캐싱처리를 위해 사용하기로 결정했다.</li>
+</details>
+<details> 
+  <summary><strong>aws RDS MySql</strong></summary><br>
+  <li> DB를 저장하기 위한 RDBMS로는 RDBS와 NOSQL이 존재한다.</li>
+  <li> NOSQL은 검색속도가 월등하나 테이블간 연관관계를 설정할 수 없고 데이터의 형태가 정확하게 유지되지 않으며 데이터의 무결성이 <br>지켜지지 않는다.</li>
+  <li> RDBMS는 데이터의 무결성이 지켜지며 일정한 스키마로 데이터를 관리할 수 있어 테이블 내 데이터를 각각 관리할 스트레스가 줄어들며 <br>연관관계로 테이블들을 관리할 수 있다.</li>
+  <li> 상기 이유들로 RDBMS를 선택했으며 aws의 RDS인 MySql을 사용하기로 결정했다.</li>
+</details>
+<details> 
+  <summary><strong>router53 , Amazon ELB</strong></summary><br>
+  <li> Front-End와 통신시 HTTP프로토콜로만 통신하는 것은 보안상의 위험성을 야기한다고 생각한다.</li>
+  <li> Back-End 배포시 HTTPS 프로토콜을 사용하여 보안을 높히고자 하였고 이때 aws의 router53, Amazon ELB를 도입하는 것이 EC2를 사용하는 우리가 바로 적용할 수 있는 부분이라고 생각했다.</li>
+  <li> 상기 이유들로 HTTP,HTTPS프로토콜을 통신할 수 있는 배포 환경을 구축하는 것에 aws의 router53과 Amazon ELB를 이용하기로 결정했다. </li>
+</details>
+<details> 
+  <summary><strong>SSE</strong></summary><br>
+  <li> 실시간 알림을 구현하기 위해선 기존의 HTTP 통신 방식(폴링 , 긴폴링)을 사용하기엔 자원의 낭비가 발생하여 새로운 방식을 도입해야 했다.</li>
+  <li> 기존의 HTTP프로토콜을 사용하는 streaming방식의 SSE와 WebSocket을 사용하는 웹소켓 두가지가 존재했으나 우리가 구현하려는 알림은 <br>양방향의 알림이 아니었다.</li>
+  <li> 배터리 소모량이 적고 연결이 끊어지면 재연결을 시도하며 pollyfill로 모든 브라우저 지원이 가능하게할 수 있는 SSE가 우리의 알림과 <br>맞는다고 판단했다.</li>
+  <li> SSE는 첫 연결 이후 매번 재요청을 하지않고 서버의 응답을 줄 수 있어 비용을 아낄 수 있는 측면과 웹소켓의 차이 , 프로젝트의 방향성을 <br>고려하여 사용하기로 결정했다.</li>
+</details>
 <br>
 <br>
 
@@ -233,6 +277,7 @@
 
 ## 🎇 개발 포인트
 
+- **[ERD](https://github.com/PerDayOneSpoon/PerDayOneSpoon-BE/wiki/ERD)<br>**
 - [무중단 배포]()
 - **[이미지 리사이징](https://github.com/PerDayOneSpoon/PerDayOneSpoon-BE/wiki/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EB%A6%AC%EC%82%AC%EC%9D%B4%EC%A7%95)<br>**
 - **[Jasypt 암호화,복호화 적용](https://github.com/PerDayOneSpoon/PerDayOneSpoon-BE/wiki/Jasypt-%EC%95%94%ED%98%B8%ED%99%94-,-%EB%B3%B5%ED%98%B8%ED%99%94-application-yaml%ED%8C%8C%EC%9D%BC-%EC%A0%81%EC%9A%A9)<br>**
