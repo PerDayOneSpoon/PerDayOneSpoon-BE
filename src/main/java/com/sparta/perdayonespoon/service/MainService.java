@@ -52,6 +52,7 @@ public class MainService {
         int day = LocalDate.now().getDayOfWeek().getValue();
         Set<Integer> dayList = new HashSet<>();
         List<GoalRateDto> goalRateDtos;
+    Map<Integer , Double> map = new HashMap<>();
         if(day != 6 && day != 7) {
             sunday = LocalDateTime.now().minusDays(day);
             saturday = LocalDateTime.now().plusDays(6-day);
@@ -268,8 +269,7 @@ public class MainService {
                     .build());}
     }
 
-    @Transactional
-    public void getWelcomeBadge(Member member, List<Badge> badgeList) {
+    private void getWelcomeBadge(Member member, List<Badge> badgeList) {
         String message = "축하합니다! 🐣 웰컴 뱃지를 획득하셨습니다.";
         eventPublisher.publishEvent(BadgeSseDto.builder()
                 .notificationType(NotificationType.Badge)
@@ -308,7 +308,10 @@ public class MainService {
     }
 
     private void getComebackBadge(Member member, List<Badge> badgeList) {
-        LocalDate latestDay = member.getGoalList().stream().sorted(Comparator.comparing(Goal::getCurrentDate).reversed()).map(Goal::getCurrentDate).findFirst()
+        LocalDate latestDay = member.getGoalList().stream()
+                .sorted(Comparator.comparing(Goal::getCurrentDate).reversed())
+                .map(Goal::getCurrentDate)
+                .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("목표가 존재하지 않습니다.")).toLocalDate();
         LocalDate today = LocalDate.now();
         Period pe = Period.between(latestDay, today);

@@ -2,6 +2,7 @@ package com.sparta.perdayonespoon.sse.service;
 
 import com.sparta.perdayonespoon.domain.BadgeSseDto;
 import com.sparta.perdayonespoon.domain.Member;
+import com.sparta.perdayonespoon.domain.dto.response.MsgDto;
 import com.sparta.perdayonespoon.jwt.Principaldetail;
 import com.sparta.perdayonespoon.sse.NotificationType;
 import com.sparta.perdayonespoon.sse.domain.entity.Notification;
@@ -21,7 +22,9 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -182,7 +185,18 @@ public class NotificationService {
                 .build();
     }
 
-    public ResponseEntity getAllSse(Principaldetail principaldetail) {
-        return ResponseEntity.ok().body("이거잖아");
+    public ResponseEntity<List<NotificationDto>> getAllSse(Principaldetail principaldetail) {
+        List<NotificationDto> notificationDtoList = notificationRepository.getMessageById(principaldetail.getMember().getId());
+        return ResponseEntity.ok().body(notificationDtoList);
+    }
+
+    public ResponseEntity<MsgDto> deleteAllMessage(Principaldetail principaldetail) {
+        long msgCnt = notificationRepository.changeAllMessage(principaldetail.getMember().getId());
+        return ResponseEntity.ok().body(MsgDto.builder().code(HttpServletResponse.SC_OK).msg(msgCnt + "개의 알림을 읽음 처리하셨습니다.").build());
+    }
+
+    public ResponseEntity<MsgDto> deleteOneMessage(Principaldetail principaldetail, Long notificationId) {
+        long msgCnt = notificationRepository.changeOneMessage(principaldetail.getMember().getId(),notificationId);
+        return ResponseEntity.ok().body(MsgDto.builder().code(HttpServletResponse.SC_OK).msg(msgCnt + "개의 알림을 읽음 처리하셨습니다.").build());
     }
 }

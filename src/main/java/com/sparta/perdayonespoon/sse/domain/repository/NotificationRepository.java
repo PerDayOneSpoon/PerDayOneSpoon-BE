@@ -9,8 +9,8 @@ import java.util.Optional;
 
 public interface NotificationRepository extends JpaRepository<Notification,Long>, NotificationRepositoryCustom {
 
-    @Query("select n from Notification n where n.receiver.id = :userId order by n.id desc")
-    List<Notification> findAllByUserId( Long userId);
+//    @Query("select n from Notification n where n.receiver.id = :userId order by n.id desc")
+//    List<Notification> findAllByUserId(Long userId);
 
     @Query("select count(n) from Notification n where n.receiver.id = :userId and n.isRead = false")
     Long countUnReadNotifications( Long userId);

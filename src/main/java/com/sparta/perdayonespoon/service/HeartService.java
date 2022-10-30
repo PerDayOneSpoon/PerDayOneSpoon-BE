@@ -110,7 +110,7 @@ public class HeartService {
             if(badgeOwner.getBadgeList().size()>4){
                 if(badgeOwner.getBadgeList().stream().noneMatch(b->b.getBadgeName().equals("뱃지 왕 뱃지"))){
                     String message = "축하합니다! 👑 뱃지 왕 뱃지를 획득하셨습니다.";
-                    notificationService.send(BadgeSseDto.builder()
+                    eventPublisher.publishEvent(BadgeSseDto.builder()
                             .notificationType(NotificationType.Badge)
                             .message(message)
                             .member(badgeOwner)

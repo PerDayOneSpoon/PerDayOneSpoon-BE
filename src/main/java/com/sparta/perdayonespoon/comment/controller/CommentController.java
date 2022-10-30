@@ -32,6 +32,19 @@ public class CommentController {
         return commentService.addComment(principaldetail,goalId,commentRequestDto);
     }
 
+    @ApiOperation(value = "캘린더 페이지 습관 댓글 수정 API", notes = "토큰검사 후 습관 댓글 수정")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름"),
+            @ApiImplicitParam(name = "commentId", required = false,  dataType = "Long", paramType = "path", value = "습관 댓글 삭제할때 요청하는 댓글의 Id",example = "0")
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "API 정상 작동" , response = FriendResponseDto.class)
+    })
+    @PutMapping("/change/comment/{commentId}")
+    public ResponseEntity<MsgDto> changeComment(@ApiIgnore @AuthenticationPrincipal Principaldetail principaldetail,@PathVariable Long commentId, @RequestBody CommentRequestDto commentRequestDto){
+        return commentService.changeComment(principaldetail,commentId,commentRequestDto);
+    }
+
     @ApiOperation(value = "캘린더 페이지 습관 댓글 삭제 API", notes = "토큰검사 후 습관 댓글 삭제")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", required = false,  dataType = "string", paramType = "header", value = "accesstoken이 담기는 헤더이름"),

@@ -20,7 +20,7 @@ public class BadgeRepositoryImpl implements BadgeRepositoryCustom{
     public List<Badge> findAllByMember_Id(Long id){
         return queryFactory
                 .selectFrom(badge)
-                .join(badge.member, member)
+                .join(badge.member, member).fetchJoin()
                 .where(member.id.eq(id))
                 .orderBy(badge.badgeNumber.asc())
                 .fetch();
