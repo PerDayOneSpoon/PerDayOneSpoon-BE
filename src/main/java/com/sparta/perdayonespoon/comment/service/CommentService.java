@@ -78,4 +78,10 @@ public class CommentService {
         }
         else throw new IllegalArgumentException("해당 댓글을 지울 수 없습니다.");
     }
+
+    public ResponseEntity<MsgDto> changeComment(Principaldetail principaldetail, Long commentId, CommentRequestDto commentRequestDto) {
+        commentRepository.changeComment(principaldetail,commentId,commentRequestDto);
+        return ResponseEntity.ok().body(MsgDto.builder().code(HttpServletResponse.SC_OK).msg("댓글 변경에 성공하셨습니다.").build());
+    }
+
 }

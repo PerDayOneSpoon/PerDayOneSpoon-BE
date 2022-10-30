@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sparta.perdayonespoon.domain.dto.request.StatusDto;
 import com.sparta.perdayonespoon.util.Timestamped;
+import com.sparta.perdayonespoon.websocket.domain.entity.Participant;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
@@ -13,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -59,11 +61,15 @@ public class Member extends Timestamped {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JsonManagedReference
-    private List<Badge> badgeList;
+    private List<Badge> badgeList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member" , cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JsonManagedReference
-    private List<Goal> goalList;
+    private List<Goal> goalList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member" , cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Participant> participantList = new ArrayList<>();
 
     @Column(columnDefinition = "Integer Default 0",nullable = false)
     private int heartClickCnt;

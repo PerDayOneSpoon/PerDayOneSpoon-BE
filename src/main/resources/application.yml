@@ -21,8 +21,6 @@ spring:
 #    username: sa
 #    password:
 #
-#
-#
 #  jpa:
 #    database-platform: org.hibernate.dialect.H2Dialect
 #    hibernate:
@@ -34,10 +32,10 @@ spring:
 #      hibernate.default_batch_fetch_size: 1000
 #      hibernate:
 #   redis 설정 기본 6379로 작동
-#  redis:
-#    host: ENC(LY/fQOcSgwDyQHb4+WqSRXETqOMDOZQD)
-#    port: 6379
-#
+  redis:
+    host: 127.0.0.1
+    port: 6379
+
 ##명순님 RDS
 #  datasource:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
@@ -173,13 +171,13 @@ spring:
 jasypt:
   encryptor:
     bean: jasyptStringEncryptor
-    algorithm: PBEWithMD5AndDES
-    iv-generator-classname: org.jasypt.iv.NoIvGenerator
-    property:
-      prefix: ENC(
-      suffix: )
-    pool-size: 1
-    salt-generator-classname: org.jasypt.salt.RandomSaltGenerator
+#    algorithm: PBEWithMD5AndDES
+#    iv-generator-classname: org.jasypt.iv.NoIvGenerator
+#    property:
+#      prefix: ENC(
+#      suffix: )
+#    pool-size: 1
+#    salt-generator-classname: org.jasypt.salt.RandomSaltGenerator
     password: ${JASYPT_PASSWORD}
 
 #logging:

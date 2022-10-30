@@ -71,6 +71,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/login/naver").permitAll()
                 .antMatchers(HttpMethod.GET,"/login/health").permitAll()
                 .antMatchers(HttpMethod.POST,"/login/reissue").permitAll()
+                .antMatchers(HttpMethod.POST,"/test/**").permitAll()
+                .antMatchers("/sub/**").permitAll()
+                .antMatchers("/pub/**").permitAll()
+                .antMatchers("/websocket/**").permitAll()
+                .antMatchers("/sub").permitAll()
+                .antMatchers("/websocket").permitAll()
+                .antMatchers("/pub").permitAll()
 //                .antMatchers(HttpMethod.GET,"/sse/subscribe").permitAll()
 //                .antMatchers("/api/**").permitAll()
                 .anyRequest().authenticated()   // 나머지 API 는 전부 인증 필요

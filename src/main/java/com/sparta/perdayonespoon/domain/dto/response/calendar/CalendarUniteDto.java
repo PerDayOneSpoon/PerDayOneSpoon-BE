@@ -18,7 +18,6 @@ public class CalendarUniteDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String endDate;
 
-
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<MonthCalendarDto> monthCalenderDtoList;
 

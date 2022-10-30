@@ -33,6 +33,8 @@ public class SpecificGoalsDto {
     private String goalFlag;
     private boolean heartCheck;
 
+    private long commentCnt = 0;
+
     List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 
     @Builder(builderClassName = "MyGoalsBuilder", builderMethodName = "MyGoalsBuilder")
@@ -50,6 +52,7 @@ public class SpecificGoalsDto {
         goalFlag =goal.getGoalFlag();
         heartCheck = true;
         goal.getCommentList().forEach(this::convertDto);
+        commentCnt = commentResponseDtoList.size();
     }
 
     @Builder(builderClassName = "FriendGoalsBuilder", builderMethodName = "FriendGoalsBuilder")
